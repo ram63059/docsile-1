@@ -1,0 +1,274 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                            Int                      @id @default(autoincrement())
+  category                      String
+  email                         String                   @unique
+  password                      String
+  name                          String?
+  gender                        String?
+  department                    String?
+  country                       String?
+  city                          String?
+  organisation_name             String?
+  specialisation_field_of_study String?
+  register_number               String?
+  verified                      Boolean                  @default(false)
+  date_of_birth                 DateTime?
+  created_at                    DateTime                 @default(now())
+  skills                        Skills[]
+  posts                         Posts[]
+  questions                     Questions[]
+  friends                       Friends[]
+  certifications                Certifications[]
+  memberships                   Memberships[]
+  education                     Education[]
+  professionalExperience        ProfessionalExperience[]
+  jobs                          Jobs[]
+  conferrences                  Conferrences[]
+  achievementsAwards            AchievementsAwards[]
+}
+
+model Doctors {
+  id Int @id @default(autoincrement())
+  registrationNo String
+  doctors String
+}
+
+model AchievementsAwards {
+  id Int @id @default(autoincrement())
+
+  User   User? @relation(fields: [userId], references: [id])
+  userId Int?
+
+  awardName   String?
+  awardedBy   String?
+  awardedOn   String?
+  descreption String?
+}
+
+model Organisations {
+  id                Int       @id @default(autoincrement())
+  category          String
+  email             String    @unique
+  password          String
+  organisation_name String?
+  country           String?
+  city              String?
+  organisation_type String?
+  register_number   String?
+  verified          Boolean   @default(false)
+  founding_year     DateTime?
+  created_at        DateTime  @default(now())
+}
+
+//Jobs
+
+model Jobs {
+  id     Int   @id @default(autoincrement())
+  User   User? @relation(fields: [userId], references: [id])
+  userId Int?
+}
+
+//Conferrences
+
+model Conferrences {
+  id     Int   @id @default(autoincrement())
+  User   User? @relation(fields: [userId], references: [id])
+  userId Int?
+}
+
+//skillss
+
+model Skills {
+  id     Int    @id @default(autoincrement())
+  User   User?  @relation(fields: [userId], references: [id])
+  userId Int?
+  skill  String
+}
+
+//posts
+
+model Posts {
+  id             Int              @id @default(autoincrement())
+  User           User?            @relation(fields: [userId], references: [id])
+  userId         Int?
+  title          String?
+  description    String?
+  postImageLinks PostImageLinks[]
+  posted_at      DateTime         @default(now())
+  comments       Comments[]
+  likes          Likes[]
+  reposts        Reposts[]
+  shares         Shares[]
+}
+
+model PostImageLinks {
+  id            Int     @id @default(autoincrement())
+  Posts         Posts?  @relation(fields: [postsId], references: [id])
+  postsId       Int?
+  postImageLink String?
+}
+
+model Comments {
+  id           Int      @id @default(autoincrement())
+  Posts        Posts?   @relation(fields: [postsId], references: [id])
+  postsId      Int?
+  comment      String
+  commented_at DateTime @default(now())
+}
+
+model Likes {
+  id            Int    @id @default(autoincrement())
+  Posts         Posts? @relation(fields: [postsId], references: [id])
+  postsId       Int?
+  liked_user_id Int?
+}
+
+model Reposts {
+  id               Int    @id @default(autoincrement())
+  Posts            Posts? @relation(fields: [postsId], references: [id])
+  postsId          Int?
+  reposted_user_id Int?
+}
+
+model Shares {
+  id             Int    @id @default(autoincrement())
+  Posts          Posts? @relation(fields: [postsId], references: [id])
+  postsId        Int?
+  shared_user_id Int?
+}
+
+//questions
+
+model Questions {
+  id                   Int                  @id @default(autoincrement())
+  User                 User?                @relation(fields: [userId], references: [id])
+  userId               Int?
+  question             String
+  question_description String
+  asked_at             DateTime             @default(now())
+  question_image_links QuestionImageLinks[]
+  insightful           Insightful[]
+  answers              Answers[]
+  questionComments     QuestionComments[]
+  questionReferences   QuestionReferences[]
+}
+
+model QuestionReferences {
+  id          Int        @id @default(autoincrement())
+  Questions   Questions? @relation(fields: [questionsId], references: [id])
+  questionsId Int?
+  reference   String?
+}
+
+model QuestionComments {
+  id              Int        @id @default(autoincrement())
+  Questions       Questions? @relation(fields: [questionsId], references: [id])
+  questionsId     Int?
+  comment         String
+  comment_user_id Int
+}
+
+model Answers {
+  id                 Int                  @id @default(autoincrement())
+  Questions          Questions?           @relation(fields: [questionsId], references: [id])
+  questionsId        Int?
+  answered_user_id   String
+  answer_description String
+  answer_image_links Answer_Image_Links[]
+}
+
+model Answer_Image_Links {
+  id                Int      @id @default(autoincrement())
+  Answers           Answers? @relation(fields: [answersId], references: [id])
+  answersId         Int?
+  answer_image_link String?
+}
+
+model QuestionImageLinks {
+  id          Int        @id @default(autoincrement())
+  Questions   Questions? @relation(fields: [questionsId], references: [id])
+  questionsId Int?
+}
+
+model Insightful {
+  id                 Int        @id @default(autoincrement())
+  Questions          Questions? @relation(fields: [questionsId], references: [id])
+  questionsId        Int?
+  insightful_user_id String?
+}
+
+//friends
+
+model Friends {
+  id     Int   @id @default(autoincrement())
+  User   User? @relation(fields: [userId], references: [id])
+  userId Int?
+}
+
+//certifications
+
+model Certifications {
+  id                   Int     @id @default(autoincrement())
+  User                 User?   @relation(fields: [userId], references: [id])
+  userId               Int?
+  certificateName      String?
+  issuingOrganisation  String?
+  issueDate            String?
+  descreption          String?
+  certificateURL       String?
+  certificateMediaLink String?
+}
+
+//memberships
+
+model Memberships {
+  id     Int   @id @default(autoincrement())
+  User   User? @relation(fields: [userId], references: [id])
+  userId Int?
+  societyname String?
+  position String?
+  relatedDepartment String?
+  membershipId String?
+}
+
+//educationss
+
+model Education {
+  id     Int   @id @default(autoincrement())
+  User   User? @relation(fields: [userId], references: [id])
+  userId Int?
+  schoolName String?
+  degree String?
+  department String?
+  startDate String?
+  endDate String?
+  grade String?
+}
+
+//professuionalExperience
+
+model ProfessionalExperience {
+  id     Int   @id @default(autoincrement())
+  User   User? @relation(fields: [userId], references: [id])
+  userId Int?
+  title String?
+  organisation String?
+  startDate String?
+  endDate String?
+  location String?
+}
