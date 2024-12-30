@@ -9,7 +9,6 @@ import { cors } from "hono/cors";
 
 
 
-
 const auth = new Hono<{
     Bindings: {
       DATABASE_URL: string;
@@ -22,7 +21,7 @@ auth.use('/*', cors({
   credentials: true,
   allowMethods: ['POST', 'GET', 'OPTIONS', 'DELETE', 'PUT'],
   allowHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  exposeHeaders: ['Content-Length', 'X-Requested-With'],
+  exposeHeaders: ['Content-Length', 'X-Requested-With',"Content-Type", "Authorization"],
   maxAge: 600,
 }));
 
@@ -75,8 +74,16 @@ auth.post("/signup", async (c) => {
         },
       },
       c.env.JWT_SECRET
+
     );
 
+    setCookie(c, "authtoken", token, {
+      httpOnly: true,
+      secure: true, // Ensures cookie is only sent over HTTPS
+      sameSite: "strict", // Protects against CSRF
+      path: "/", // Cookie is available across all paths
+      maxAge: 7 * 24 * 60 * 60, // Cookie expires in 7 days (in seconds)
+    });
   
 
     return c.json({

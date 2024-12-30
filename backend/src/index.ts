@@ -20,7 +20,37 @@ app.route("/auth" , auth);
 
 
 
+import likeRoutes from './routes/likeRoutes';
+import feedRoutes from './routes/feedRoutes';
+import postRoutes from './routes/postRoutes';
+import commentRoutes from './routes/commentRoutes';
+import userRoutes from './routes/userRoutes';
+import followRoutes from './routes/followRoutes';
+import unfollowRoutes from './routes/unfollowRoutes';
+// import { errorHandler } from './utils/errorHandler';
 
+// Apply routes
+app.route('/feed', feedRoutes);
+app.route('/posts', postRoutes);
+app.route('/comments', commentRoutes);
+app.route('/users', userRoutes);
+app.route('/likes', likeRoutes);
+app.route('/follow', followRoutes);
+app.route('/unfollow', unfollowRoutes);
+
+
+
+// Error handling
+app.onError((error, context) => {
+  console.error(error);
+  return context.json(
+    {
+      success: false,
+      message: error instanceof Error ? error.message : "Internal Server Error"
+    },
+    500
+  );
+});
 
 //signup//doctor
 
@@ -218,7 +248,7 @@ app.get("/profile/:id", async (c) => {
       },
     });
 
-    const posts = await prisma.posts.findMany({
+    const posts = await prisma.post.findMany({
       where: {
         userId: userid,
       },
@@ -321,9 +351,7 @@ app.post("/ask-question/:id", async (c) => {
 
 app.post("/publish-post/:id", async (c) => {
   const body = await c.req.json();
-
   const params = c.req.param();
-
   const userid = parseInt(params.id);
 
   const prisma = new PrismaClient({
@@ -331,17 +359,17 @@ app.post("/publish-post/:id", async (c) => {
   }).$extends(withAccelerate());
 
   try {
-    const post = await prisma.posts.create({
+    const post = await prisma.post.create({
       data: {
         userId: userid,
-        title: body.title,
-        description: body.description,
+        content: body.description,
+        mediaUrl: body.mediaUrl,
       },
     });
 
     return c.json(post);
   } catch (e) {
-    return c.json({ e });
+    return c.json({ error: e instanceof Error ? e.message : "Error creating post" }, 500);
   }
 });
 

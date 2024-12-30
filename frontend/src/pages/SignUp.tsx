@@ -81,7 +81,7 @@ function SignUp() {
         email: signupInputs.email,
         password: signupInputs.password,
         category: category,
-      });
+      },);
 
       // adding to firebase
 
