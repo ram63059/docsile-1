@@ -34,10 +34,14 @@ import InvitationsList from "@/pages/InvitationsList";
 import ConnectionsProfile from "@/pages/ConnectionsProfile";
 import Jobs from "@/pages/Jobs";
 import Conferrences from "@/pages/Conferrences";
-import Message from "@/pages/Message";
+// import Message from "@/pages/Message";
+
 import Notifications from "@/pages/Notifications";
 import QuestionPage from "@/pages/QuestionPage";
 import PhoneSignup from "@/pages/PhoneSignup";
+// import Safety from "@/pages/Safety";
+import Group from "@/pages/Group";
+import Grpsafety from "@/pages/socketsafe/grpsafety";
 
 
 export const router = createBrowserRouter([
@@ -99,8 +103,8 @@ export const router = createBrowserRouter([
   { path: "/connections-profile/:id", element: <ConnectionsProfile /> },
   { path: "/jobs/:id", element: <Jobs /> },
   { path: "/conferrences/:id", element: <Conferrences /> },
-  {path : "/message", element : <Message/>},
+  {path : "/message/:id", element : <Group/>},
   {path : "/notifications", element : <Notifications/>},
   {path : "question-page", element : <QuestionPage/>},
-  {path : "/phonesignup" , element : <PhoneSignup />}
+  {path : "/phonesignup" , element : <PhoneSignup/>}
 ]);

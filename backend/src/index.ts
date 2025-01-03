@@ -27,6 +27,9 @@ import commentRoutes from './routes/commentRoutes';
 import userRoutes from './routes/userRoutes';
 import followRoutes from './routes/followRoutes';
 import unfollowRoutes from './routes/unfollowRoutes';
+import conversations from "./routes/conversation";
+import messages from "./routes/message";
+import groupRoutes from "./routes/groupRoutes";
 // import { errorHandler } from './utils/errorHandler';
 
 // Apply routes
@@ -38,6 +41,11 @@ app.route('/likes', likeRoutes);
 app.route('/follow', followRoutes);
 app.route('/unfollow', unfollowRoutes);
 
+
+
+app.route("/conversations", conversations);
+app.route("/messages", messages);
+app.route("/groups", groupRoutes);
 
 
 // Error handling
@@ -340,6 +348,8 @@ app.post("/ask-question/:id", async (c) => {
         questionReferences: {
           create: body.referenceTags.map((ref: string) => ({ reference: ref })),
         },
+        state : "telangana",
+        urgency : "high"
       },
     });
 
@@ -364,6 +374,7 @@ app.post("/publish-post/:id", async (c) => {
         userId: userid,
         content: body.description,
         mediaUrl: body.mediaUrl,
+        city : "hyderabad"
       },
     });
 

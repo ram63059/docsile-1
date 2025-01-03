@@ -1,0 +1,69 @@
+
+
+
+// import { Server } from 'socket.io';
+// import { serve } from '@hono/node-server';
+// import { Hono } from 'hono';
+// import { cors } from 'hono/cors';
+
+// const app = new Hono();
+// const io = new Server({
+//   cors: {
+//     origin: "http://localhost:5173", // Your frontend URL
+//     methods: ["GET", "POST"],
+//     credentials: true // Add this to allow credentials
+//   }
+// });
+
+// app.use('/*', cors());
+
+// io.on('connection', (socket) => {
+  
+//   socket.onAny((eventName, ...args) => {
+//   });
+
+//   console.log('User connected:', socket.id);
+
+//   // Handle joining conversations
+//   socket.on('join_conversation', (data) => {
+//     const { conversationId, isGroup } = data;
+//     const roomId = conversationId.toString();
+    
+//     socket.join(roomId);
+//   });
+
+//   // Handle direct messages
+//   socket.on('send_message', (data) => {
+//     console.log('Received message:', data);
+//     const roomId = data.conversationId.toString();
+    
+//     // Emit to all clients in the room including sender
+//     io.to(roomId).emit('new_message', {
+//       ...data,
+//       timestamp: new Date().toISOString()
+//     });
+//   });
+
+//   // Handle group messages
+//   socket.on('send_group_message', (data) => {
+//     console.log('Received group message:', data);
+//     const roomId = data.groupId.toString();
+    
+//     // Emit to all clients in the group room including sender
+//     io.to(roomId).emit('new_group_message', {
+//       ...data,
+//       timestamp: new Date().toISOString()
+//     });
+//   });
+
+//   socket.on('disconnect', () => {
+//     console.log('User disconnected:', socket.id);
+//   });
+// });
+
+// const port = 3000;
+// io.listen(port);
+
+// console.log(`Socket.IO server running on port ${port}`);
+
+// export { io }; 
