@@ -41,7 +41,9 @@ import QuestionPage from "@/pages/QuestionPage";
 import PhoneSignup from "@/pages/PhoneSignup";
 // import Safety from "@/pages/Safety";
 import Group from "@/pages/Group";
-import Grpsafety from "@/pages/socketsafe/grpsafety";
+import { SocialFeed } from "@/components/socialFeed/SocialFeed";
+// import Grpsafety from "@/pages/socketsafe/grpsafety";
+
 
 
 export const router = createBrowserRouter([
@@ -106,5 +108,7 @@ export const router = createBrowserRouter([
   {path : "/message/:id", element : <Group/>},
   {path : "/notifications", element : <Notifications/>},
   {path : "question-page", element : <QuestionPage/>},
-  {path : "/phonesignup" , element : <PhoneSignup/>}
+  {path : "/phonesignup" , element : <PhoneSignup/>},
+  {path : "/socialfeed" , element : <SocialFeed/>}
+  
 ]);

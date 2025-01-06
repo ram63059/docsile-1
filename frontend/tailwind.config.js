@@ -18,7 +18,8 @@ export default {
 			jobColor3 : '#f7e3f4',
 			jobColor4 : '#e1dbf7',
 			jobColor5 : '#edeff3',
-			jobColor6 : '#fcebdb'
+			jobColor6 : '#fcebdb',
+			maincl:'#3B5D8F',
 
   		},
   		borderRadius: {
