@@ -20,13 +20,22 @@ export default {
 			jobColor5 : '#edeff3',
 			jobColor6 : '#fcebdb',
 			maincl:'#3B5D8F',
+			fillc:"#6688CC",
+			urgentbg:"#F7ECD1",
+			urgenttxt:"#D9A21B",
+			buttonclr:"#F0F4FA"
 
   		},
+		fontFamily:{
+			fontsm:['Lexend', 'sans-serif']},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		fontSize:{
+			fontlit:"10px"
+		}
   	}
   },
   plugins: [require("tailwindcss-animate")],

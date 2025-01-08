@@ -34,25 +34,8 @@ export const SocialFeed: React.FC = () => {
     },
   ]);
 
-  const [navItems] = React.useState([
-    { icon: "", label: "Home", isActive: true },
-    {
-      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/44f8cb44e5becefaa3383cd94c29b7f18ab3690d9cabc37c08f524f69d184fec?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-      label: "Questions",
-    },
-    {
-      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/dd8a158b5334a5d19c2a0374f78f9cfa24bbed190684415c1ccb81151caecdad?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-      label: "Videos",
-    },
-    {
-      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/d268e1589cf40432eb8a71f29a56cd6d68b80aa8dc18d111bfe797382f084e11?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-      label: "Connect",
-    },
-    {
-      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/6afad3671eb4a389e048e5051fb6c07b3272db69a8e6d0115990ab4fd1506955?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-      label: "Careers",
-    },
-  ]);
+  
+   
 
   const handleSearch = (query: string) => {
     console.log("Searching for:", query);
@@ -63,7 +46,7 @@ export const SocialFeed: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen max-w-[480px] mx-auto bg--50">
+    <div className="flex flex-col min-h-screen max-w-[480px] mx-auto ">
       <Header
         onNotification={() => console.log("Notification clicked")}
         onMessage={() => console.log("Message clicked")}
@@ -86,7 +69,7 @@ export const SocialFeed: React.FC = () => {
         <Post
           avatar="https://cdn.builder.io/api/v1/image/assets/TEMP/13d83c993760da19a222234c3cbcb356d551631f91a34653bf73ab3984455ff6?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
           name="Nampally Sriram"
-          bio="Ophthalmologist | AIIMS Delhi'25 | Aspiring Medical Professional"
+          bio="Ophthalmologist | AIIMS Delhi'25 | Asp"
           timeAgo="3 days ago"
           title="Ophthalmology: The Future of Eye Care"
           content="Ophthalmology has seen incredible advancements in recent years, particularly in surgical techniques and diagnostic tools. The field continues to evolve with new technologies and treatment methods, promising better outcomes for patients."
@@ -108,7 +91,7 @@ export const SocialFeed: React.FC = () => {
         />
       </div>
 
-      <Navigation items={navItems} />
+      <Navigation  />
     </div>
   );
 };

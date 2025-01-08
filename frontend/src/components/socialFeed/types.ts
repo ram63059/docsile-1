@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface StoryProps {
   imageUrl: string;
   name: string;
@@ -24,9 +26,11 @@ export interface PostProps {
 }
 
 export interface NavItemProps {
-  icon: string;
+  activeIcon: ReactNode;
+  inactiveIcon: ReactNode;
   label: string;
-  isActive?: boolean;
+  path: string;
+  isActive: boolean;
   onClick?: () => void;
 }
 

@@ -42,6 +42,9 @@ import PhoneSignup from "@/pages/PhoneSignup";
 // import Safety from "@/pages/Safety";
 import Group from "@/pages/Group";
 import { SocialFeed } from "@/components/socialFeed/SocialFeed";
+import { QuestionFeed } from "@/components/questionFeed/QuestionFeed";
+import Networkpage from "@/components/Network/Networkpage";
+import CommunityPage from "@/components/Network/CommunityPage";
 // import Grpsafety from "@/pages/socketsafe/grpsafety";
 
 
@@ -109,6 +112,9 @@ export const router = createBrowserRouter([
   {path : "/notifications", element : <Notifications/>},
   {path : "question-page", element : <QuestionPage/>},
   {path : "/phonesignup" , element : <PhoneSignup/>},
-  {path : "/socialfeed" , element : <SocialFeed/>}
+  {path : "/socialfeed" , element : <SocialFeed/>},
+  {path: "/questionsfeed",element:<QuestionFeed/>},
+  {path: "/network",element:<Networkpage/>},
+  {path: "/network/community",element:<CommunityPage/>}
   
 ]);
