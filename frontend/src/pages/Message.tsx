@@ -410,7 +410,7 @@ function ChatApp() {
 
       // Scroll to bottom
       setTimeout(() => {
-        if (chatContainerRef.current) {
+    if (chatContainerRef.current) {
           chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         }
       }, 100);
@@ -679,23 +679,23 @@ function ChatApp() {
                         {msg.timestamp}
                       </p>
                     </div>
-                  </div>
-                ))}
               </div>
+            ))}
+          </div>
               <div className="p-4 bg-gray-50 border-t flex items-center">
-                <input
-                  type="text"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
+              <input
+                type="text"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
                   placeholder="Type your message here..."
                   className="flex-1 p-2 border border-gray-300 rounded-full focus:outline-none"
-                />
-                <button
-                  onClick={handleSendMessage}
+              />
+              <button
+                onClick={handleSendMessage}
                   className="ml-2 p-2 bg-blue-500 text-white rounded-full"
-                >
+              >
                   <FaPaperPlane />
-                </button>
+              </button>
               </div>
             </>
           ) : (

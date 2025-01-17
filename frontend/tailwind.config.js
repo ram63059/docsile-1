@@ -34,7 +34,8 @@ export default {
   			sm: 'calc(var(--radius) - 4px)'
   		},
 		fontSize:{
-			fontlit:"10px"
+			fontlit:"10px",
+			fontvlit:"8px"
 		}
   	}
   },

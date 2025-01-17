@@ -63,7 +63,7 @@ interface NavigationProps {
   items?: NavItemProps[];
 }
 
-export const Navigation: React.FC<NavigationProps> = ({
+export const Navigation: React.FC<NavigationProps > = ({
   items = defaultNavItems,
 }) => {
   const [navItems, setNavItems] = useState<NavItemProps[]>(items);

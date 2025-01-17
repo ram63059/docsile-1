@@ -45,6 +45,13 @@ import { SocialFeed } from "@/components/socialFeed/SocialFeed";
 import { QuestionFeed } from "@/components/questionFeed/QuestionFeed";
 import Networkpage from "@/components/Network/Networkpage";
 import CommunityPage from "@/components/Network/CommunityPage";
+import OrganizationPage from "@/components/Network/OrganizationPage";
+import { ResourcesPage } from "@/components/resouces/ResourcesPage";
+import MentorshipPage from "@/components/mentorship/MentorshipPage";
+import ConferencePage from "@/components/conferences/ConferencesPage";
+import { JobsPage } from "@/components/jobs/JobsPage";
+import ReelPlayerPage from "@/components/videos/ReelplayerPage";
+import { JobPostingForm } from "@/components/jobPosting/JobPostingForm";
 // import Grpsafety from "@/pages/socketsafe/grpsafety";
 
 
@@ -115,6 +122,13 @@ export const router = createBrowserRouter([
   {path : "/socialfeed" , element : <SocialFeed/>},
   {path: "/questionsfeed",element:<QuestionFeed/>},
   {path: "/network",element:<Networkpage/>},
-  {path: "/network/community",element:<CommunityPage/>}
+  {path: "/network/community",element:<CommunityPage/>},
+  {path: "/network/organization",element:<OrganizationPage/>},
+  {path: "/resources",element:<ResourcesPage/>},
+  {path: "/mentorship",element:<MentorshipPage/>},
+  {path: "/conferences",element:<ConferencePage/>},
+  {path: "/job",element:<JobsPage/>},
+  {path: "/videos",element:<ReelPlayerPage/>},
+  {path: "/jobposting",element:<JobPostingForm/>}
   
 ]);

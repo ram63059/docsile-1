@@ -21,7 +21,7 @@ export const QuestionFeed: React.FC = () => {
   
  
   return (
-    <div className="flex flex-col min-h-screen max-w-[480px] mx-auto ">
+    <div className="flex flex-col min-h-screen max-w-[480px] mx-auto  ">
       <Header
         onNotification={() => console.log("Notification clicked")}
         onMessage={() => console.log("Message clicked")}

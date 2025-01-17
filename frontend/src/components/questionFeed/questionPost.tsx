@@ -103,7 +103,7 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
         </div>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-4 mb-3">
         <h4 className="text-sm font-medium text-neutral-700">{title}</h4>
         <p
           className={`mt-1 text-sm font-light text-neutral-500 ${

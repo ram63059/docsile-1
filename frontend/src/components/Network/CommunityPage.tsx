@@ -34,49 +34,59 @@ const CommunityPage = () => {
 
   const renderCommunitySection = (title: string, communities: Community[]) => (
     <div className="mt-6 font-fontsm">
-      <div className="flex justify-between items-center px-4 mb-4">
-        <div className="text-sm text-gray-600">{title}</div>
-        <button className="text-sm text-maincl">See all</button>
-      </div>
-      
-      <div className="flex overflow-x-auto scrollbar-hide px-4 space-x-4">
-        {communities.map((community) => (
-          <div 
-            key={community.id} 
-            className="min-w-[180px] bg-white rounded-xl shadow-sm border border-gray-100"
-          >
-            <div className="relative ">
-              <img 
-                src={community.image} 
-                alt={community.name}
-                className="w-full h-16 object-cover rounded-t-xl"
-              />
-              <button
-                className="absolute right-2 top-2 bg-white rounded-full p-1.5 hover:bg-gray-100"
-                aria-label="Remove suggestion"
-              >
-                <X className="w-4 h-4 text-gray-400" />
-              </button>
-              <img src={community.avatar} alt="" className='absolute right-14 top-8 w-16' />
-            </div>
-
-            <div className="p-3 text-center pt-10">
-              <h3 className="font-medium text-sm">{community.name}</h3>
-              <p className="text-xs text-gray-500 mt-1">{community.description}</p>
-              <div className="flex flex-row items-center  mb-2 pt-3">
-                  <div className="w-7 h-7 rounded-full"><img src={community.avatar} alt="" /></div>
-                  <div className="text-fontlit text-gray-400  ">
-                    {community.mutualConnection} and {community.mutualCount} mutual connections
-                  </div>
-                </div>
-              <button className=" mt-3 py-1 px-6 text-sm text-white bg-maincl rounded-xl font-light">
-                Join
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="flex justify-between items-center px-4 mb-4">
+      <div className="text-sm text-gray-600">{title}</div>
+      <button className="text-sm text-maincl">See all</button>
     </div>
+    
+    <div className="flex overflow-x-auto scrollbar-hide px-4 space-x-4">
+      {communities.map((community) => (
+        <div 
+          key={community.id} 
+          className="min-w-[160px] bg-white rounded-xl shadow-sm border border-gray-100"
+        >
+          <div className="relative ">
+            <img 
+              src={community.image} 
+              alt={community.name}
+              className="w-full h-16 object-cover rounded-t-xl"
+            />
+            <button
+              className="absolute right-2 top-2 bg-white rounded-full p-1.5 hover:bg-gray-100"
+              aria-label="Remove suggestion"
+            >
+              <X className="w-4 h-4 text-gray-400" />
+            </button>
+            <img src={community.avatar} alt="" className='absolute right-12 top-8 w-16' />
+          </div>
+  
+          <div className="p-3 text-center pt-10">
+            <h3 className="font-medium text-sm">{community.name}</h3>
+            
+            {/* Description with line clamp */}
+            <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+              {community.description}
+            </p>
+            
+            {/* Mutual info with line clamp */}
+            <div className="flex flex-row items-center mb-2 pt-2 px-3">
+              <div className="w-7 h-7 rounded-full">
+                <img src={community.avatar} alt="" />
+              </div>
+              <div className="text-fontlit text-gray-400 ml-2 line-clamp-2">
+                {community.mutualConnection} and {community.mutualCount} mutual connections
+              </div>
+            </div>
+            
+            <button className="mt-2 py-1 px-6 text-sm text-white bg-maincl rounded-xl font-light">
+              Join
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+  
   );
 
   return (
@@ -127,39 +137,53 @@ const CommunityPage = () => {
       )}
 
       {/* More Suggestions */}
-      <div className="px-4 mt-6">
+      <div className="px-4 mt-8 ">
+        <div className='mb-6'>
         <h2 className="text-sm text-gray-700 mb-4">More Suggestions for you</h2>
-        <div className="space-y-4 grid grid-cols-2">
+        </div>
+        <div className="overflow-x-auto  grid grid-cols-2 gap-2 ">
           {communitiesData.slice(0, 4).map((community) => (
             <div 
-              key={community.id}
-              className="flex bg-white rounded-xl shadow-sm border border-gray-100 p-3"
-            >
+              key={community.id} 
+              className="flex bg-white rounded-xl shadow-sm border border-gray-100  flex-col text-center"
+            > <div className='relative'>
+
+              
               <img 
                 src={community.image}
                 alt={community.name}
-                className="w-20 h-20 rounded-lg object-cover"
+                className="w-full h-20 rounded-lg object-cover"
               />
-              <div className="ml-3 flex-1">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-medium text-sm">{community.name}</h3>
-                    <p className="text-xs text-gray-500 mt-1">{community.description}</p>
-                    <div className="flex items-center mt-2">
-                      <div className="w-5 h-5 rounded-full bg-gray-200"></div>
-                      <span className="text-xs text-gray-400 ml-2">{community.mutualCount}</span>
-                    </div>
-                  </div>
-                  <button
-                    className="p-1.5 hover:bg-gray-100 rounded-full"
+
+               <button
+                    className="absolute right-2 top-2 bg-white rounded-full p-1.5 hover:bg-gray-100"
                     aria-label="Remove suggestion"
                   >
                     <X className="w-4 h-4 text-gray-400" />
                   </button>
+
+                  <img src={community.avatar} alt="" className='absolute right-16 top-10 w-16' />
+              </div>
+              
+              <div className="ml-3 flex-1 mt-6">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-medium text-sm">{community.name}</h3>
+                    <p className="text-xs text-gray-500 mt-1 px-4 line-clamp-2">{community.description}</p>
+                    <div className="flex flex-row items-center  mb-2 pt-2 px-5 ">
+                  <div className="w-7 h-7 rounded-full"><img src={community.avatar} alt="" /></div>
+                  <div className="text-fontlit text-gray-400 line-clamp-2  ">
+                    {community.mutualConnection} and {community.mutualCount} mutual connections
+                  </div>
                 </div>
-                <button className="mt-2 py-1.5 px-4 text-sm text-white bg-blue-600 rounded-full hover:bg-blue-700">
+                  </div>
+                 
+                </div >
+                <div className='mb-3'>
+                <button className="mt-2 py-1 px-5 text-sm text-white bg-maincl   rounded-xl">
                   Join
                 </button>
+                </div>
               </div>
             </div>
           ))}
