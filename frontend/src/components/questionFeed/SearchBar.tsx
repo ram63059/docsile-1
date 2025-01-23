@@ -13,11 +13,11 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <div className="flex flex-col mt-2 w-full px-5">
-      <div className="flex gap-3 items-center w-full">
+    <div className="flex flex-col mt-2 px-4 font-fontsm">
+      <div className="flex gap-3 justify-between items-center w-full">
         <form
           onSubmit={handleSubmit}
-          className="flex flex-1 shrink justify-center self-stretch px-3 py-2 my-auto text-xs font-light text-center whitespace-nowrap rounded-2xl basis-0 bg-neutral-200 bg-opacity-60 min-h-[29px] text-neutral-500"
+          className="flex flex-1 shrink  justify-center self-stretch px-3 py-2 my-auto text-xs font-light text-center whitespace-nowrap rounded-2xl basis-0 bg-neutral-200 bg-opacity-60 min-h-[29px] text-neutral-500"
         >
           <div className="flex gap-2 items-center w-full">
             <img

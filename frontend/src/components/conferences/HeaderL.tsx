@@ -1,3 +1,4 @@
+
 import * as React from "react";
 import { useState } from "react";
 import home1 from "../../assets/icon/home1.svg";
@@ -76,7 +77,7 @@ const defaultNavItems: NavItemProps[] = [
   },
 ];
 
-export const Header: React.FC<HeaderProps> = ({
+export const HeaderL: React.FC<HeaderProps> = ({
   onNotification,
   onMessage,
   onProfile,

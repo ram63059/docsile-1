@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { X,  ChevronLeft, ChevronRight } from 'lucide-react';
 import like1 from "../../assets/icon/like1.svg"
+import like from "../../assets/icon/like1.svg"
 import liked from "../../assets/icon/liked.svg"
+import liked1 from "../../assets/icon/liked.svg"
 import share from "../../assets/icon/share.svg"
 import comment   from "../../assets/icon/comment1.svg"
+import comment1   from "../../assets/icon/comment1.svg"
 import repost   from "../../assets/icon/repost.svg"
 
 interface Author {
@@ -28,7 +31,7 @@ interface Comment {
       timeAgo: string;
     };
     content: string;
-    timeAgo: string;
+    timeAgo?: string;
     likes: number;
   }>;
 }
@@ -61,6 +64,7 @@ const PostExpandedView: React.FC<PostExpandedViewProps> = ({ isOpen, onClose, po
   const [replyText, setReplyText] = useState('');
   const [likedComments, setLikedComments] = useState<Set<string>>(new Set());
   const [likedPost, setLikedPost] = useState(false);
+  const [isReplyLiked, setIsReplyLiked] = useState(false);
   const [expandedReplies, setExpandedReplies] = useState<Set<string>>(new Set());
 
   if (!isOpen) return null;
@@ -120,10 +124,10 @@ const PostExpandedView: React.FC<PostExpandedViewProps> = ({ isOpen, onClose, po
 
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 font-fontsm">
+    <div className="fixed inset-0 bg-black/55  flex items-center justify-center z-50 font-fontsm">
       <div className="bg-white w-[1000px] h-[600px] rounded-xl flex overflow-hidden">
         {/* Left Side - Image Carousel */}
-        <div className="w-[55%] bg-black relative">
+        <div className="w-[60%] bg-black relative">
           <div className="relative h-full">
             <img
               src={post.images[currentImageIndex]}
@@ -212,7 +216,7 @@ const PostExpandedView: React.FC<PostExpandedViewProps> = ({ isOpen, onClose, po
                     className="flex items-center gap-2 text-gray-600"
                   >
                   
-                    <img src={likedPost ? liked : like1} alt="" className='w-5' />
+                    <img src={likedPost ? liked1 : like1} alt="" className='w-5' />
                     <div>
 
                     <p className='text-fontlit'>likes</p>
@@ -247,6 +251,7 @@ const PostExpandedView: React.FC<PostExpandedViewProps> = ({ isOpen, onClose, po
 
               {/* Comments Section */}
               <div className="space-y-4">
+                <p className='text-maincl pt-1 font-semibold'>Comments</p>
                 {post.comments.map((comment) => (
                   <div key={comment.id} className="space-y-3">
                     <div className="flex gap-3">
@@ -272,15 +277,16 @@ const PostExpandedView: React.FC<PostExpandedViewProps> = ({ isOpen, onClose, po
                         <div className="flex items-center gap-4 mt-2 text-sm text-gray-500 ml-4">
                           <button 
                             onClick={() => handleLikeComment(comment.id)}
-                            className="hover:text-gray-700"
+                            className="hover:text-gray-700 flex text-xs"
                           >
+                             <img src={ likedComments ?  liked : like} alt=""  className='pr-1'/>
                             {likedComments.has(comment.id) ? comment.likes + 1 : comment.likes} 
-                            <img src={ likedComments?  liked : like1} alt="" />
                           </button>
                           <button 
                             onClick={() => setShowReplyInput(comment.id)}
-                            className="hover:text-gray-700"
+                            className="hover:text-gray-700 text-xs flex gap-1"
                           >
+                            <img src={comment1} alt="" />
                             Reply
                           </button>
                         </div>
@@ -304,22 +310,22 @@ const PostExpandedView: React.FC<PostExpandedViewProps> = ({ isOpen, onClose, po
                                     <img
                                       src={reply.author.avatar}
                                       alt=""
-                                      className="w-8 h-8 rounded-full"
+                                      className="w-6 h-6 rounded-full"
                                     />
                                     <div className="flex-1">
-                                      <div className="bg-gray-100 rounded-2xl rounded-tl-none p-4 relative">
+                                      <div className="bg-gray-100 rounded-2xl rounded-tl-none px-3 py-2 relative">
                                         <div className="flex items-center justify-between mb-1">
                                           <div>
-                                            <span className="font-medium">{reply.author.name}</span>
-                                            <p className="text-xs text-gray-500">{reply.author.bio}</p>
+                                            <span className="text-xs">{reply.author.name}</span>
+                                            <span className="text-fontlit right-0 absolute pr-2 text-gray-500">{reply.timeAgo}</span>
+                                            <p className="text-fontlit line-clamp-1 text-gray-500 ">{reply.author.bio}</p>
                                           </div>
-                                          <span className="text-sm text-gray-500">{reply.timeAgo}</span>
                                         </div>
-                                        <p className="text-gray-600">{formatComment(reply.content)}</p>
+                                        <p className="text-gray-600 text-sm">{formatComment(reply.content)}</p>
                                       </div>
-                                      <div className="flex items-center gap-4 mt-2 text-sm text-gray-500 ml-4">
-                                        <button className="hover:text-gray-700">
-                                          {reply.likes} likes
+                                      <div className="flex items-center gap-4 mt-1 text-sm text-gray-500 ml-4">
+                                        <button className="hover:text-gray-700 flex gap-1 items-center">
+                                           <img src={isReplyLiked ? liked :like}  onClick={()=>setIsReplyLiked(!isReplyLiked)} alt="" /> {reply.likes} 
                                         </button>
                                       </div>
                                     </div>
@@ -382,7 +388,7 @@ const PostExpandedView: React.FC<PostExpandedViewProps> = ({ isOpen, onClose, po
                 />
                 <button 
                   onClick={handleSubmitComment}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-full text-sm font-medium"
+                  className="px-4 py-2 bg-maincl text-white rounded-full text-sm font-medium"
                 >
                   Comment
                 </button>

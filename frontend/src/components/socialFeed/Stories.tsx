@@ -12,6 +12,9 @@ interface StoriesProps {
 }
 
 export const Stories: React.FC<StoriesProps> = ({ stories }) => {
+
+
+  
   return (
     <div className="bg-white rounded-xl shadow-sm p-4">
       <div className="flex items-center justify-between mb-4">

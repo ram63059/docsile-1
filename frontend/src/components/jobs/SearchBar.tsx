@@ -26,7 +26,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <div className="flex flex-col mt-6 w-full px-5 font-fontsm">
+    <div className="flex flex-col mt-6 w-full px-3 font-fontsm">
       <div className="flex gap-3 items-center w-full px-1">
         <form
           onSubmit={handleSubmit}

@@ -36,9 +36,10 @@ export default {
 		fontSize:{
 			fontlit:"10px",
 			fontvlit:"8px"
-		}
+		},
+		
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate",)],
 }
 

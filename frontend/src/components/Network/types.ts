@@ -17,12 +17,6 @@ export interface NavItemProps {
 }
 
 
-export interface HeaderProps {
-  onNotification: () => void;
-  onMessage: () => void;
-  onProfile: () => void;
-}
-
 export interface SocialMetric {
   icon: string;
   label: string;

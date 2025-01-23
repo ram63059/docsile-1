@@ -15,7 +15,7 @@ import messages1 from "../../assets/icon/lmessages1.svg"
 import messages from "../../assets/icon/messages.svg"
 import careers1 from "../../assets/icon/lcareers1.svg";
 import careers2 from "../../assets/icon/careers2.svg";
-import SearchPopup from "../search/SearchPopup";
+import SearchPopup from "./SearchPopup";
 import { Search} from 'lucide-react';
 
 interface HeaderProps {
@@ -109,7 +109,7 @@ export const Header: React.FC<HeaderProps> = ({
             alt=""
             className="w-6 h-6"
           />
-          <span className="text-2xl text-maincl font-medium">Docsile</span>
+          <span className="text-3xl text-maincl font-medium">Docsile</span>
         </div>
 
         <div className="hidden lg:block ml-8 w-3/4">
