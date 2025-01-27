@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { NavItemProps } from "./types";
-import home1 from "../../assets/icon/home1.svg";
+import home1 from "../../assets/icon/homel.svg";
 import home2 from "../../assets/icon/lhome2.svg";
 import questions1 from "../../assets/icon/lquestions1.svg";
 import questions2 from "../../assets/icon/questions2.svg";
@@ -35,7 +35,7 @@ const defaultNavItems: NavItemProps[] = [
     isActive: false,
   },
   {
-    activeIcon: <img src={questions2} className="w-16 h-16" alt="" />,
+    activeIcon: <img src={questions2} className="w-16 h-16 " alt="" />,
     inactiveIcon: <img src={questions1} className="w-16 h-16" alt="" />,
     label: "Questions",
     path: "/questionsfeed",
@@ -154,7 +154,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               key={index}
               onClick={() => handleNavClick(index)}
-              className={`flex items-center w-16  gap-1 ${
+              className={`flex items-center w-16    gap-1 ${
                 item.isActive ? "text-blue-600" : "text-gray-500"
               }`}
             >

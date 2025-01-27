@@ -1,7 +1,7 @@
-import TopNavbar from "@/components/TopNavbar";
+import { Header } from "@/components/jobs/Header";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { FaEllipsisV, FaPaperPlane } from "react-icons/fa";
+import { FaEllipsisV, FaPaperPlane, FaSearch } from "react-icons/fa";
 import { BACKEND_URL } from "@/config";
 import { io, Socket } from "socket.io-client";
 
@@ -105,6 +105,7 @@ function UnifiedChat() {
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const socketRef = useRef<Socket | null>(null);
 
@@ -552,136 +553,200 @@ function UnifiedChat() {
     }
   };
 
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    // Implement search functionality here
+  };
+
+  const handleNotification = () => {
+    // Handle notification click
+  };
+
+  const handleMessage = () => {
+    // Handle message click
+  };
+
+  const handleProfile = () => {
+    // Handle profile click
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center bg-white min-h-screen">
-      <TopNavbar />
-      <div className="container max-w-7xl shadow-xl rounded-lg mt-12 overflow-hidden flex h-[87vh] bg-white">
-        {/* Sidebar */}
-        <div className="w-1/3 border-r border-gray-200 flex flex-col">
-          <div className="p-4 border-b bg-gray-50">
-            <input
-              type="text"
-              placeholder="Search groups..."
-              className="w-full p-2 border border-gray-300 rounded-full focus:outline-none"
-            />
-          </div>
-          <div className="flex-1 overflow-y-auto">
-            {conversations.map((conversation) => (
-              <div
-                key={conversation.id}
-                className={`flex items-center p-4 cursor-pointer ${
-                  selectedConversation?.id === conversation.id
-                    ? "bg-blue-100"
-                    : "hover:bg-gray-50"
-                }`}
-                onClick={() => handleConversationClick(conversation)}
-              >
-                <img
-                  src={conversation.imageUrl}
-                  alt={conversation.name}
-                  className="w-12 h-12 rounded-full"
+    <div className="min-h-screen bg-gray-100">
+      <Header
+        onNotification={handleNotification}
+        onMessage={handleMessage}
+        onProfile={handleProfile}
+        onSearch={handleSearch}
+      />
+      
+      <div className="max-w-[1200px] mx-auto px-8 py-2  font-fontsm">
+      <div className="px-6 pt-6 pb-2 bg-white rounded-t-xl border border-x-gray-150  border-t-gray-150  ">
+              <h1 className="text-xl font-semibold border-b pb-2 border-fillc text-maincl ">Messages</h1>
+            </div>
+        <div className="bg-white rounded-b-xl shadow-sm flex h-[calc(100vh-180px)]">
+          {/* Left Sidebar */}
+          <div className="w-[320px] border-r border-gray-200 flex flex-col rounded-l-xl">
+            {/* Messages Header */}
+           
+              
+            {/* Search Bar */}
+            <div className="px-6 pb-4 ">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search..."
+                  className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-gray-100 border-0 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
                 />
-                <div className="ml-4">
-                  <p className="font-semibold">{conversation.name}</p>
-                  <p className="text-sm text-gray-500 truncate">
-                    {conversation.lastMessage}
-                  </p>
-                </div>
-                <p className="text-sm text-gray-400 ml-auto">
-                  {conversation.lastActive}
-                </p>
+                <FaSearch className="absolute left-3 top-3 text-gray-400 w-4 h-4" />
               </div>
-            ))}
-          </div>
-        </div>
-        {/* Chat Area */}
-        <div className="w-2/3 flex flex-col">
-          {selectedConversation ? (
-            <>
-              <div className="flex items-center p-4 border-b bg-gray-50">
-                <img
-                  src={selectedConversation.imageUrl}
-                  alt={selectedConversation.name}
-                  className="w-10 h-10 rounded-full"
-                />
-                <div className="ml-4">
-                  <p className="font-semibold">{selectedConversation.name}</p>
-                  <p className="text-sm text-gray-500">
-                    {selectedConversation.isGroup 
-                      ? `${selectedConversation.members?.length || 0} members`
-                      : 'Direct Message'}
-                  </p>
-                </div>
-                <button className="ml-auto">
-                  <FaEllipsisV className="text-gray-500" />
+            </div>
+
+            {/* Tabs */}
+            <div className="px-6 pb-4">
+              <div className="flex space-x-4">
+                <button className="text-sm font-medium text-gray-500 hover:text-gray-900">
+                  All
+                </button>
+                <button className="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                  Unread
+                </button>
+                <button className="text-sm font-medium text-gray-500 hover:text-gray-900">
+                  Communities
+                </button>
+                <button className="text-sm font-medium text-gray-500 hover:text-gray-900">
+                  Drafts
                 </button>
               </div>
-              <div
-                ref={chatContainerRef}
-                className="flex-1 overflow-y-auto p-4 bg-gray-100"
-              >
-                {messages.length === 0 ? (
-                  <div className="flex items-center justify-center h-full text-gray-500">
-                    No messages yet. Start a conversation!
+            </div>
+
+            {/* Conversations List */}
+            <div className="flex-1 overflow-y-auto">
+              {conversations.map((conversation) => (
+                <div
+                  key={conversation.id}
+                  onClick={() => handleConversationClick(conversation)}
+                  className={`flex items-center px-6 py-3 cursor-pointer ${
+                    selectedConversation?.id === conversation.id
+                      ? "bg-blue-50"
+                      : "hover:bg-gray-50"
+                  }`}
+                >
+                  <img
+                    src={conversation.imageUrl || "/default-avatar.png"}
+                    alt={conversation.name}
+                    className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                  />
+                  <div className="ml-3 flex-1 min-w-0">
+                    <div className="flex justify-between items-center">
+                      <h3 className="font-medium text-gray-900 truncate">
+                        {conversation.name}
+                        {conversation.isGroup && <span className="text-sm text-gray-500 ml-1">(Group)</span>}
+                      </h3>
+                      <span className="text-xs text-gray-500 flex-shrink-0 ml-2">{conversation.lastActive}</span>
+                    </div>
+                    <p className="text-sm text-gray-500 truncate mt-0.5">{conversation.lastMessage}</p>
                   </div>
-                ) : (
-                  messages.map((msg, index) => (
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Main Chat Area */}
+          <div className="flex-1 flex flex-col bg-gray-50 rounded-r-xl">
+            {selectedConversation ? (
+              <>
+                {/* Chat Header */}
+                <div className="h-[72px] px-6 border-b bg-white flex items-center justify-between rounded-tr-xl">
+                  <div className="flex items-center">
+                    <img
+                      src={selectedConversation.imageUrl || "/default-avatar.png"}
+                      alt={selectedConversation.name}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                    <div className="ml-3">
+                      <h2 className="font-medium text-gray-900">
+                        {selectedConversation.name}
+                        {selectedConversation.isGroup && <span className="text-sm text-gray-500 ml-1">(Group)</span>}
+                      </h2>
+                      <p className="text-sm text-gray-500">
+                        {selectedConversation.isGroup 
+                          ? `${selectedConversation.members?.length || 0} members`
+                          : "Active now"
+                        }
+                      </p>
+                    </div>
+                  </div>
+                  <button className="p-2 hover:bg-gray-100 rounded-full">
+                    <FaEllipsisV className="text-gray-600 w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* Messages Container */}
+                <div
+                  ref={chatContainerRef}
+                  className="flex-1 overflow-y-auto p-6 space-y-4"
+                >
+                  {messages.map((message, index) => (
                     <div
-                      key={index}
+                      key={message.id || index}
                       className={`flex ${
-                        msg.type === "self" ? "justify-end" : "justify-start"
-                      } mb-4`}
+                        message.type === "self" ? "justify-end" : "justify-start"
+                      }`}
                     >
                       <div
-                        className={`px-4 py-2 rounded-lg ${
-                          msg.type === "self"
-                            ? "bg-blue-500 text-white"
-                            : "bg-gray-200 text-gray-700"
+                        className={`max-w-[70%] rounded-2xl px-4 py-2.5 ${
+                          message.type === "self"
+                            ? "bg-blue-600 text-white"
+                            : "bg-white text-gray-900 shadow-sm"
                         }`}
                       >
-                        {msg.type !== "self" && (
-                          <p className="text-xs font-semibold mb-1">{msg.sender}</p>
+                        {message.type !== "self" && (
+                          <p className="text-sm font-medium text-gray-900 mb-1">
+                            {message.sender}
+                          </p>
                         )}
-                        <p>{msg.content}</p>
-                        <p className="text-xs mt-1 text-gray-500">
-                          {msg.timestamp}
+                        <p className="text-sm">{message.content}</p>
+                        <p className="text-[11px] mt-1 opacity-70">
+                          {message.timestamp}
                         </p>
                       </div>
                     </div>
-                  ))
-                )}
+                  ))}
+                </div>
+
+                {/* Message Input */}
+                <div className="px-6 py-4 bg-white border-t rounded-br-xl">
+                  <div className="flex items-center">
+                    <input
+                      type="text"
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                      placeholder="Type your message here..."
+                      className="flex-1 py-2.5 px-4 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
+                    />
+                    <button
+                      onClick={handleSendMessage}
+                      disabled={!newMessage.trim()}
+                      className="ml-2 p-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50"
+                    >
+                      <FaPaperPlane className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="flex-1 flex items-center justify-center">
+                <p className="text-gray-500">Select a conversation to start messaging</p>
               </div>
-              <div className="p-4 bg-gray-50 border-t flex items-center">
-                <input
-                  type="text"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSendMessage();
-                    }
-                  }}
-                  placeholder="Type a message..."
-                  className="flex-1 p-2 border border-gray-300 rounded-full focus:outline-none"
-                />
-                <button
-                  onClick={handleSendMessage}
-                  className="ml-2 bg-blue-500 text-white p-2 rounded-full"
-                >
-                  <FaPaperPlane />
-                </button>
-              </div>
-            </>
-          ) : (
-            <div className="flex items-center justify-center flex-1">
-              <p className="text-gray-500">Select a conversation to start chatting</p>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-export default UnifiedChat; 
+export default UnifiedChat;

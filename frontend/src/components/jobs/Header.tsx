@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import home1 from "../../assets/icon/home1.svg";
+import home1 from "../../assets/icon/homel.svg";
 import home2 from "../../assets/icon/lhome2.svg";
 import questions1 from "../../assets/icon/lquestions1.svg";
 import questions2 from "../../assets/icon/questions2.svg";
