@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ArticleCard } from "./ArticleCard";
 import { Header } from "./Header";
 import { SearchBar } from "./SearchBar";
+import ResourceDetails from "./ResourceDetails"; // Assuming ResourceDetails component is defined in a separate file
 
 import job from "../../assets/icon/jobs.svg"
 import job2 from "../../assets/icon/njob2.svg"
@@ -92,13 +93,12 @@ const articles = [
 ];
 
 export function ResourcesPage() {
-    
-
-  const [selectedOption, setSelectedOption] = useState<string >("resources");
+  const [selectedOption, setSelectedOption] = useState<string>("resources");
+  const [selectedResource, setSelectedResource] = useState<typeof articles[0] | null>(null);
   
-    const handleOptionSelect = (option: string) => {
-      setSelectedOption(option);
-    };
+  const handleOptionSelect = (option: string) => {
+    setSelectedOption(option);
+  };
     
   const handleSearch = (query: string) => {
     console.log("Searching for:", query);
@@ -107,9 +107,26 @@ export function ResourcesPage() {
   const handleAdd = () => {
     console.log("Asking new question");
   };
-  
 
-    
+  const handleResourceClick = (resource: typeof articles[0]) => {
+    setSelectedResource(resource);
+  };
+
+  const handleCloseResource = () => {
+    setSelectedResource(null);
+  };
+
+  if (selectedResource) {
+    return (
+      <ResourceDetails
+        resource={{
+          ...selectedResource,
+          content: "The future of AI in ophthalmology is poised to significantly enhance patient care, streamline diagnostic processes, and improve treatment outcomes. AI's most promising applications are in diagnostics, where it aids in the early detection of retinal conditions like diabetic retinopathy, macular degeneration, and glaucoma. Tools such as DeepMind's AI system have already demonstrated diagnostic accuracy comparable to that of trained ophthalmologists, enabling earlier intervention.\n\nThe future of AI in ophthalmology is poised to significantly enhance patient care, streamline diagnostic processes, and improve treatment outcomes. AI's most promising applications are in diagnostics, where it aids in the early detection of retinal conditions like diabetic retinopathy, macular degeneration, and glaucoma. Tools such as DeepMind's AI system have already demonstrated diagnostic accuracy comparable to that of trained ophthalmologists, enabling earlier intervention.\n\nThe future of AI in ophthalmology is poised to significantly enhance patient care, streamline diagnostic processes, and improve treatment outcomes. AI's most promising applications are in diagnostics, where it aids in the early detection of retinal conditions like diabetic retinopathy, macular degeneration, and glaucoma. Tools such as DeepMind's AI system have already demonstrated diagnostic accuracy comparable to that of trained ophthalmologists, enabling earlier intervention."
+        }}
+        onClose={handleCloseResource}
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen  mx-auto ">
@@ -211,7 +228,11 @@ export function ResourcesPage() {
             <div className="flex z-10 flex-col  w-full mx-auto p-7">
             <div className="flex flex-col w-full">
               {articles.map((article, index) => (
-                <ArticleCard key={index} {...article} />
+                <ArticleCard 
+                  key={index} 
+                  {...article} 
+                  onClick={() => handleResourceClick(article)}
+                />
               ))}
             </div>
           </div>

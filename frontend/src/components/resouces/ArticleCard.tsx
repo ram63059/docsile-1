@@ -1,15 +1,16 @@
 import * as React from "react";
 
 export interface ArticleCardProps {
-    type: string;
-    readTime: string;
-    date: string;
-    title: string;
-    description: string;
-    imageSrc: string;
-    hasBookmark?: boolean;
-  }
-  
+  type: string;
+  readTime: string;
+  date: string;
+  title: string;
+  description: string;
+  imageSrc: string;
+  hasBookmark?: boolean;
+  onClick?: () => void;
+}
+
 export const ArticleCard: React.FC<ArticleCardProps> = ({
   type,
   readTime,
@@ -17,10 +18,14 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
   title,
   description,
   imageSrc,
-  hasBookmark
+  hasBookmark,
+  onClick
 }) => {
   return (
-    <div className="flex gap-1 items-center p-3 w-full bg-white rounded-lg border-neutral-200 shadow-[0px_0px_4px_rgba(0,0,0,0.08)] mb-4">
+    <div 
+      className="flex gap-1 items-center p-3 w-full bg-white rounded-lg border-neutral-200 shadow-[0px_0px_4px_rgba(0,0,0,0.08)] mb-4 cursor-pointer hover:shadow-md transition-shadow"
+      onClick={onClick}
+    >
       <div className="flex flex-1 shrink gap-2 items-center self-stretch my-auto w-full  min-w-[240px]">
         <img
           loading="lazy"

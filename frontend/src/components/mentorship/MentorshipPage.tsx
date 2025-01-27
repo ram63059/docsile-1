@@ -12,7 +12,7 @@ import cme2 from "../../assets/icon/ncme2.svg"
 import membership from "../../assets/icon/membership.svg"
 import membership2 from "../../assets/icon/nmembership2.svg"
 import JobFilterStatic from './JobFilterCard';
-
+import { BeAMentorModal } from './BeAMentorModal';
 
 interface Mentor {
   id: string;
@@ -34,6 +34,7 @@ const MentorshipPage = () => {
   const [showAllInstitutes, setShowAllInstitutes] = useState(false);
   const [showAllOrganizations, setShowAllOrganizations] = useState(false);
   const [showAllSpeciality, setShowAllSpeciality] = useState(false);
+  const [isBeAMentorModalOpen, setIsBeAMentorModalOpen] = useState(false);
 
   const scrollContainerRefs = useRef<{
     [key: string]: HTMLDivElement | null;
@@ -200,7 +201,7 @@ const MentorshipPage = () => {
 
                         
               <div
-                className={`flex gap-3 p-2 cursor-pointer rounded-lg ${
+                className={`flex gap-3 p-3 cursor-pointer rounded-lg ${
                   selectedOption === "jobs" ? "bg-fillc text-white rounded-lg" : "bg-buttonclr"
                 }`}
                 onClick={() => handleOptionSelect("jobs")}
@@ -212,7 +213,7 @@ const MentorshipPage = () => {
                 <p>Jobs</p>
               </div>
               <div
-                className={`flex gap-3 p-2 cursor-pointer rounded-lg ${
+                className={`flex gap-3 p-3 cursor-pointer rounded-lg ${
                   selectedOption === "cme" ? "bg-fillc text-white rounded-lg" : "bg-buttonclr"
                 }`}
                 onClick={() => handleOptionSelect("cme")}
@@ -224,7 +225,7 @@ const MentorshipPage = () => {
                 <p>Conference</p>
               </div>
               <div
-                className={`flex gap-3 p-2 cursor-pointer rounded-lg ${
+                className={`flex gap-3 p-3 cursor-pointer rounded-lg ${
                   selectedOption === "mentorship" ? "bg-fillc text-white " : "bg-buttonclr"
                 }`}
                 onClick={() => handleOptionSelect("mentorship")}
@@ -236,7 +237,7 @@ const MentorshipPage = () => {
                 <p>Mentorship</p>
               </div>
               <div
-                className={`flex gap-3 p-2 cursor-pointer rounded-lg ${
+                className={`flex gap-3 p-3 cursor-pointer rounded-lg ${
                   selectedOption === "resources" ? "bg-fillc text-white rounded-lg" : "bg-buttonclr"
                 }`}
                 onClick={() => handleOptionSelect("resources")}
@@ -248,7 +249,24 @@ const MentorshipPage = () => {
                 <p>Resources</p>
               </div>
 
+
+             
           </div>
+          <div className='flex cursor-pointer mt-7 px-6 py-3 gap-3 items-center border border-gray-200 shadow-md rounded-xl'>
+                <img src={MentorData[0].avatar} alt="" className='w-10 h-10' />
+                <button 
+                  onClick={() => setIsBeAMentorModalOpen(true)}
+                  className='bg-maincl text-white text-xs rounded-3xl py-1.5 px-3'
+                > 
+                  <span className='font-bold rounded-full px-1.5 text-white bg-fillc'>+</span> be a Mentor
+                </button>
+          </div>
+
+          <BeAMentorModal 
+            isOpen={isBeAMentorModalOpen}
+            onClose={() => setIsBeAMentorModalOpen(false)}
+          />
+
         </div>
 
 

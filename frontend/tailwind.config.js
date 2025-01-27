@@ -23,7 +23,8 @@ export default {
 			fillc:"#6688CC",
 			urgentbg:"#F7ECD1",
 			urgenttxt:"#D9A21B",
-			buttonclr:"#F0F4FA"
+			buttonclr:"#F0F4FA",
+			buttonbgclr:"#D2DCF0",
 
   		},
 		fontFamily:{
