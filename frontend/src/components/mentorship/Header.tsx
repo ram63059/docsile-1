@@ -1,19 +1,19 @@
 import * as React from "react";
 import { useState } from "react";
-import home1 from "../../assets/icon/home1.svg";
+import home1 from "../../assets/icon/homel.svg";
 import home2 from "../../assets/icon/lhome2.svg";
 import questions1 from "../../assets/icon/lquestions1.svg";
-import questions2 from "../../assets/icon/questions2.svg";
+import questions2 from "../../assets/icon/lquestion2.svg";
 import videos1 from "../../assets/icon/lvideos1.svg";
 import videos2 from "../../assets/icon/videos2.svg";
 import connect1 from "../../assets/icon/lconnect1.svg";
-import connect2 from "../../assets/icon/connect2.svg";
+import connect2 from "../../assets/icon/lconnect2.svg";
 import notifications1 from "../../assets/icon/lnotifications1.svg"
 import notifications from "../../assets/icon/notifications.svg"
 import messages1 from "../../assets/icon/lmessages1.svg"
 import messages from "../../assets/icon/messages.svg"
 import careers1 from "../../assets/icon/lcareers1.svg";
-import careers2 from "../../assets/icon/careers2.svg";
+import careers2 from "../../assets/icon/lcareers2.svg";
 import { Search} from 'lucide-react';
 import SearchPopup from "./SearchPopup";
 
@@ -72,7 +72,7 @@ const defaultNavItems: NavItemProps[] = [
     inactiveIcon: <img src={careers1} className="w-16 h-16" alt="" />,
     label: "Careers",
     path: "/careers",
-    isActive: false,
+    isActive: true,
   },
 ];
 

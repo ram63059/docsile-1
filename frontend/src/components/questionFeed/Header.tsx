@@ -4,17 +4,17 @@ import { NavItemProps } from "./types";
 import home1 from "../../assets/icon/homel.svg";
 import home2 from "../../assets/icon/lhome2.svg";
 import questions1 from "../../assets/icon/lquestions1.svg";
-import questions2 from "../../assets/icon/questions2.svg";
+import questions2 from "../../assets/icon/lquestion2.svg"
 import videos1 from "../../assets/icon/lvideos1.svg";
-import videos2 from "../../assets/icon/videos2.svg";
+import videos2 from "../../assets/icon/lvideos2.svg";
 import connect1 from "../../assets/icon/lconnect1.svg";
-import connect2 from "../../assets/icon/connect2.svg";
+import connect2 from "../../assets/icon/lconnect2.svg";
 import notifications1 from "../../assets/icon/lnotifications1.svg"
 import notifications from "../../assets/icon/notifications.svg"
 import messages1 from "../../assets/icon/lmessages1.svg"
 import messages from "../../assets/icon/messages.svg"
 import careers1 from "../../assets/icon/lcareers1.svg";
-import careers2 from "../../assets/icon/careers2.svg";
+import careers2 from "../../assets/icon/lcareers2.svg";
 import { Search} from 'lucide-react';
 import SearchPopup from "./SearchPopup";
 
@@ -39,7 +39,7 @@ const defaultNavItems: NavItemProps[] = [
     inactiveIcon: <img src={questions1} className="w-16 h-16" alt="" />,
     label: "Questions",
     path: "/questionsfeed",
-    isActive: false,
+    isActive: true,
   },
   {
     activeIcon: <img src={videos2} className="w-16 h-16" alt="" />,
@@ -154,7 +154,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               key={index}
               onClick={() => handleNavClick(index)}
-              className={`flex items-center w-16    gap-1 ${
+              className={`flex items-center    gap-1 ${
                 item.isActive ? "text-blue-600" : "text-gray-500"
               }`}
             >

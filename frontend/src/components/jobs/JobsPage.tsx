@@ -475,7 +475,7 @@ export function JobsPage() {
 
         {/* Job Details Section */}
         {selectedJob && (
-          <div className="fixed lg:static top-[64px] left-0 right-0 bottom-0 bg-white lg:bg-transparent lg:flex-1 lg:min-w-[60px]">
+          <div className="fixed lg:static top-[64px] left-0 right-0 bottom-0 bg-white lg:bg-transparent lg:flex-1 lg:min-w-[60px] lg:pr-4">
             <div 
               id="job-details-container"
               className="h-full p-4 lg:p-0 overflow-auto scrollbar-hide"
@@ -496,11 +496,13 @@ export function JobsPage() {
       </div>
 
       {/* Right Sidebar - Filters */}
-      <div className="hidden lg:block w-[320px] flex-shrink-0 font-fontsm">
-        <div className="sticky top-[calc(theme(spacing.24)+1px)] space-y-4">
-          <SpecialtySection />
+      {!selectedJob && (
+        <div className="hidden lg:block w-[320px] flex-shrink-0 font-fontsm">
+          <div className="sticky top-[calc(theme(spacing.24)+1px)] space-y-4">
+            <SpecialtySection />
+          </div>
         </div>
-      </div>
+      )}
 
     </div>
     {selectedJob && (
