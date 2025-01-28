@@ -53,6 +53,7 @@ import { JobsPage } from "@/components/jobs/JobsPage";
 import ReelPlayerPage from "@/components/videos/ReelplayerPage";
 import { JobPostingForm } from "@/components/jobPosting/JobPostingForm";
 import StoriesSection from "@/components/socialFeed/StoriesPopup";
+import EducationPage from "@/components/education/EducationPage";
 // import Grpsafety from "@/pages/socketsafe/grpsafety";
 
 
@@ -132,5 +133,6 @@ export const router = createBrowserRouter([
   {path: "/videos",element:<ReelPlayerPage/>},
   {path: "/jobposting",element:<JobPostingForm/>},
   {path: "/stories",element:<StoriesSection/>},
+  {path: "/addEducation",element:<EducationPage/>},
   
 ]);

@@ -32,7 +32,7 @@ const defaultNavItems: NavItemProps[] = [
     inactiveIcon: <img src={home1} className="w-16 h-16" alt="" />,
     label: "Home",
     path: "/home",
-    isActive: false,
+    isActive: true,
   },
   {
     activeIcon: <img src={questions2} className="w-16 h-16" alt="" />,

@@ -192,6 +192,7 @@ export const QuestionFeed: React.FC = () => {
            </div>
 
            <QuestionPost  
+                  postId="sample-post-1"
                   isUrgent={true} 
                   avatar="https://cdn.builder.io/api/v1/image/assets/TEMP/13d83c993760da19a222234c3cbcb356d551631f91a34653bf73ab3984455ff6?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
                   name="Nampally Sriram"
@@ -206,15 +207,18 @@ export const QuestionFeed: React.FC = () => {
                     "https://cdn.builder.io/api/v1/image/assets/TEMP/6939df2c7edaf176e0907ced793a5e28a1df342e59d4610b8999ddc4aed782a9?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
                   ]}
                   agrees={120}
-                  date={"22 dec 2024"}
-                  comments={64}
+                  date="22 dec 2024"
                   shares={37}
-                  reposts={51}
-                  onAnswer={() => console.log("answer clicked")}
-                  onComment={() => console.log("Comment clicked")}
+                  onAnswer={async (postId: string, answerText: string) => {
+                    try {
+                      console.log("Answer submitted:", { postId, answerText });
+                      // Add your actual answer submission logic here
+                    } catch (error) {
+                      console.error("Error submitting answer:", error);
+                    }
+                  }}
                   onShare={() => console.log("Share clicked")}
-                  onReply={() => console.log("Repost clicked")}
-                  onMoreOptions={() => console.log("More options clicked")} 
+                  onReply={() => console.log("Reply clicked")}
                   answers={32} 
                   disagrees={54}    
             />
