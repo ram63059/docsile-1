@@ -173,7 +173,7 @@ const MentorshipPage = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen  mx-auto font-fontsm p-2">
+    <div className="flex flex-col min-h-screen  mx-auto font-fontsm ">
       {/* Header */}
       <div className="bg-white border-b sticky top-0 z-50">
       

@@ -204,7 +204,7 @@ const Networkpage = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen  mx-auto font-fontsm p-4">
+    <div className="flex flex-col min-h-screen  mx-auto font-fontsm">
 
               <div className="bg-white border-b sticky top-0 z-50">
       {/* Header */}
@@ -277,22 +277,6 @@ const Networkpage = () => {
                 </div>
               </div>
 
-               {/* Navigation Tabs */}
-                <div className="flex px-2 space-x-4 mt-2 bg-white z-10">
-                  {['People', 'Community', 'Organization'].map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveTab(tab)}
-                      className={`px-3 py-2 text-sm rounded-full transition-colors  ${
-                        activeTab === tab
-                          ? 'text-white bg-maincl'
-                          : 'text-maincl bg-buttonclr hover:bg-gray-100'
-                      }`}
-                    >
-                      {tab}
-                    </button>
-                  ))}
-                </div>
 
 
 
@@ -384,7 +368,23 @@ const Networkpage = () => {
       </div>
     </div>
 
-
+          
+               {/* Navigation Tabs */}
+               <div className="flex px-2 space-x-4 mt-2 mb-4 bg-white z-10">
+                  {['People', 'Community', 'Organization'].map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      className={`px-3 py-2 text-sm rounded-full transition-colors  ${
+                        activeTab === tab
+                          ? 'text-white bg-maincl'
+                          : 'text-maincl bg-buttonclr hover:bg-gray-100'
+                      }`}
+                    >
+                      {tab}
+                    </button>
+                  ))}
+                </div>
 
 
 

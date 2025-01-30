@@ -111,7 +111,7 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <div className="flex flex-row items-center justify-between font-fontsm mt-2  w-full px-5 py-1 bg-white  ">
+    <div className="flex flex-row items-center justify-between font-fontsm  w-full px-5 py-1 bg-white  ">
       {/* Logo and Search Section */}
       <div className="flex flex-row w-2/4 items-center gap-4 lg:pl-28 lg:ml-12 mx-auto ml-3">
         <div className="flex items-center gap-2  w-1/4">
