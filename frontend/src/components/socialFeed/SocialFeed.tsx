@@ -155,9 +155,9 @@ export const SocialFeed: React.FC = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex flex-1 px-4 lg:px-16 max-w-7xl mx-auto w-full gap-8 pt-2">
+      <div className="flex flex-1 px-4 lg:px-14 max-w-7xl mx-auto w-full gap-6 pt-2">
         {/* Left Sidebar */}
-        <div className="hidden lg:block w-[300px] flex-shrink-0 font-fontsm">
+        <div className="hidden lg:block w-[270px] flex-shrink-0 font-fontsm">
           <div className="top-[calc(theme(spacing.24)+1px)] space-y-6">
             {/* Profile Card */}
             <div className="bg-fillc bg-opacity-10 rounded-2xl p-6 shadow-sm">
@@ -165,17 +165,17 @@ export const SocialFeed: React.FC = () => {
                 <img
                   src={profileData.avatar}
                   alt={profileData.name}
-                  className="w-20 h-20 rounded-full mb-3"
+                  className="w-18 h-18 rounded-full mb-3"
                 />
-                <h2 className="text-base font-semibold text-gray-900 mb-0.5"><span className="text-fillc font-semibold bg-fillc bg-opacity-30 px-2 mr-1 rounded-lg">Dr.</span>
+                <h2 className="text-sm font-semibold text-gray-900 mb-0.5"><span className="text-fillc font-semibold bg-fillc bg-opacity-30 px-2 mr-1 rounded-lg">Dr.</span>
                   {profileData.name}
                 </h2>
-                <p className="text-sm text-gray-600 mb-1">{profileData.title}</p>
+                <p className="text-xs text-gray-600 mb-1">{profileData.title}</p>
                 <p className="text-xs text-gray-500 text-center mb-5">
                   {profileData.bio}
                 </p>
 
-                <div className="grid grid-cols-3 w-full gap-4 text-center  border-t pt-4">
+                <div className="grid grid-cols-3 w-full gap-4 text-center text-sm  border-t pt-4">
                   <StatItem 
                     value={profileData.stats.followers} 
                     label="Followers" 
@@ -196,7 +196,7 @@ export const SocialFeed: React.FC = () => {
         </div>
 
         {/* Main Feed */}
-        <div className="flex-1 max-w-[480px] mx- w-full ">
+        <div className="flex-1 max-w-[590px] mx- w-full ">
           {/* Stories Section */}
           <div className="bg-white rounded-2xl  mb-2  relative">
             {/* Left Arrow */}
@@ -295,7 +295,7 @@ export const SocialFeed: React.FC = () => {
         </div>
 
         {/* Right Sidebar */}
-        <div className="hidden lg:block w-[340px] flex-shrink-0 font-fontsm">
+        <div className="hidden lg:block w-[300px] flex-shrink-0 font-fontsm">
           <div className="sticky top-[calc(theme(spacing.24)+1px)] space-y-4">
             {/* Explore Videos */}
             <div className="px-4 py-4 bg-fillc bg-opacity-10 rounded-xl">

@@ -12,7 +12,7 @@ const VerifyForm: React.FC<VerifyFormProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 font-fontsm">
-      <div className="bg-white rounded-xl w-full max-w-md px-20 py-8 relative">
+      <div className="bg-white rounded-xl max-w-[560px] lg:px-20 px-12 py-8 relative">
         {/* Close Button */}
         <button
           onClick={onClose}

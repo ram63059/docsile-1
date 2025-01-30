@@ -113,10 +113,10 @@ export const QuestionFeed: React.FC = () => {
 
         
       {/* Main Content Area */}
-      <div className="flex flex-1 px-4 lg:px-16 max-w-7xl mx-auto w-full gap-8 pt-2">
+      <div className="flex flex-1 px-4 lg:px-14 max-w-7xl mx-auto w-full gap-8 pt-2">
 
          {/* Left Sidebar */}
-         <div className="hidden lg:block w-[300px] flex-shrink-0 font-fontsm">
+         <div className="hidden lg:block w-[270px] flex-shrink-0 font-fontsm">
           <div className="top-[calc(theme(spacing.24)+1px)] space-y-6">
             {/* Profile Card */}
             <div className="bg-fillc bg-opacity-10 rounded-2xl p-6 shadow-sm">
@@ -124,12 +124,12 @@ export const QuestionFeed: React.FC = () => {
                 <img
                   src={profileData.avatar}
                   alt={profileData.name}
-                  className="w-20 h-20 rounded-full mb-3"
+                  className="w-18 h-18 rounded-full mb-3"
                 />
-                <h2 className="text-base font-semibold text-gray-900 mb-0.5"><span className="text-fillc font-semibold bg-fillc bg-opacity-30 px-2 mr-1 rounded-lg">Dr.</span>
+                <h2 className="text-sm font-semibold text-gray-900 mb-0.5"><span className="text-fillc font-semibold bg-fillc bg-opacity-30 px-2 mr-1 rounded-lg">Dr.</span>
                   {profileData.name}
                 </h2>
-                <p className="text-sm text-gray-600 mb-1">{profileData.title}</p>
+                <p className="text-xs text-gray-600 mb-1">{profileData.title}</p>
                 <p className="text-xs text-gray-500 text-center mb-5">
                   {profileData.bio}
                 </p>
@@ -156,7 +156,7 @@ export const QuestionFeed: React.FC = () => {
 
 
 
-        <div className="flex-1 max-w-[480px] mx- w-full ">
+        <div className="flex-1 max-w-[560px] mx- w-full ">
            <div className=" bg-white font-fontsm flex justify-around  rounded-xl">
                <div className="lg:hidden w-full">
                   <SearchBar onSearch={handleSearch} onAddPost={handleAskQuestion} />
@@ -228,7 +228,7 @@ export const QuestionFeed: React.FC = () => {
 
 
                     {/* Right Sidebar */}
-        <div className="hidden lg:block w-[340px] flex-shrink-0 font-fontsm">
+        <div className="hidden lg:block w-[300px] flex-shrink-0 font-fontsm">
           <div className="sticky top-[calc(theme(spacing.24)+1px)] space-y-4">
             {/* Explore Videos */}
             <div className="px-4 py-4 bg-fillc bg-opacity-10 rounded-xl">
