@@ -155,7 +155,7 @@ export const SocialFeed: React.FC = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex flex-1 px-4 lg:px-14 max-w-7xl mx-auto w-full gap-6 pt-2">
+      <div className="flex flex-1 px-4 lg:px-16 max-w-7xl mx-auto w-full gap-8 pt-2">
         {/* Left Sidebar */}
         <div className="hidden lg:block w-[270px] flex-shrink-0 font-fontsm">
           <div className="top-[calc(theme(spacing.24)+1px)] space-y-6">
@@ -196,7 +196,7 @@ export const SocialFeed: React.FC = () => {
         </div>
 
         {/* Main Feed */}
-        <div className="flex-1 max-w-[590px] mx- w-full ">
+        <div className="flex-1 max-w-[560px] mx- w-full ">
           {/* Stories Section */}
           <div className="bg-white rounded-2xl  mb-2  relative">
             {/* Left Arrow */}

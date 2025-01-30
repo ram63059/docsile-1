@@ -6,6 +6,7 @@ import { SearchBar } from "./SearchBar";
 import { Navigation } from "./Navigation";
 import { QuestionPost } from "./questionPost";
 import FilterButtons from "./FilterButtons";
+import JobFilterStatic from "./JobFilterCard";
 
 interface ProfileData {
   name: string;
@@ -74,18 +75,7 @@ export const QuestionFeed: React.FC = () => {
     console.log("Asking new question");
   };
 
-  const StatItem: React.FC<{
-    value: number;
-    label: string;
-    className?: string;
-  }> = ({ value, label, className = "" }) => (
-    <div className={className}>
-      <div className="font-semibold text-fillc">
-        {value.toLocaleString()}
-      </div>
-      <div className="text-xs text-gray-800">{label}</div>
-    </div>
-  );
+ 
 
   const onAskQuestion= ()=>{
     console.log("asking a Question")
@@ -113,50 +103,29 @@ export const QuestionFeed: React.FC = () => {
 
         
       {/* Main Content Area */}
-      <div className="flex flex-1 px-4 lg:px-14 max-w-7xl mx-auto w-full gap-8 pt-2">
+      <div className="flex flex-1 px-4 lg:pl-16 max-w-7xl mx-auto w-full gap-8 pt-2">
 
          {/* Left Sidebar */}
-         <div className="hidden lg:block w-[270px] flex-shrink-0 font-fontsm">
-          <div className="top-[calc(theme(spacing.24)+1px)] space-y-6">
-            {/* Profile Card */}
-            <div className="bg-fillc bg-opacity-10 rounded-2xl p-6 shadow-sm">
-              <div className="flex flex-col items-center">
-                <img
-                  src={profileData.avatar}
-                  alt={profileData.name}
-                  className="w-18 h-18 rounded-full mb-3"
-                />
-                <h2 className="text-sm font-semibold text-gray-900 mb-0.5"><span className="text-fillc font-semibold bg-fillc bg-opacity-30 px-2 mr-1 rounded-lg">Dr.</span>
-                  {profileData.name}
-                </h2>
-                <p className="text-xs text-gray-600 mb-1">{profileData.title}</p>
-                <p className="text-xs text-gray-500 text-center mb-5">
-                  {profileData.bio}
-                </p>
+         <div className="hidden lg:block w-[300px] flex-shrink-0 font-fontsm">
 
-                <div className="grid grid-cols-3 w-full gap-4 text-center  border-t pt-4">
-                  <StatItem 
-                    value={profileData.stats.followers} 
-                    label="Followers" 
-                  />
-                  <StatItem 
-                    value={profileData.stats.posts} 
-                    label="Posts" 
-                    className="border-x px-4" 
-                  />
-                  <StatItem 
-                    value={profileData.stats.questions} 
-                    label="Questions" 
-                  />
-                </div>
-              </div>
-            </div>
+          <div className="top-[calc(theme(spacing.24)+1px)] space-y-6">
+          
+              <JobFilterStatic/>
+              <div className='flex cursor-pointer mt-7 px-6 py-3 gap-5 items-center border border-gray-200 shadow-sm rounded-xl'>
+                <img src={profileData.avatar} alt="" className='w-10 h-10' />
+                <button 
+                
+                  className='bg-maincl text-white text-xs rounded-3xl py-1.5 px-8'
+                > 
+                  <span className='font-bold rounded-full px-1.5 text-white bg-fillc'>+</span> Ask Question 
+                </button>
+          </div>
           </div>
         </div>
 
 
 
-        <div className="flex-1 max-w-[560px] mx- w-full ">
+        <div className="flex-1 max-w-[560px]  w-full ">
            <div className=" bg-white font-fontsm flex justify-around  rounded-xl">
                <div className="lg:hidden w-full">
                   <SearchBar onSearch={handleSearch} onAddPost={handleAskQuestion} />
@@ -227,7 +196,7 @@ export const QuestionFeed: React.FC = () => {
         </div>
 
 
-                    {/* Right Sidebar */}
+        {/* Right Sidebar */}
         <div className="hidden lg:block w-[300px] flex-shrink-0 font-fontsm">
           <div className="sticky top-[calc(theme(spacing.24)+1px)] space-y-4">
             {/* Explore Videos */}
@@ -254,7 +223,6 @@ export const QuestionFeed: React.FC = () => {
           </svg>
         </button>
       </div>
-
       {/* Scrollable Video Cards */}
       <div
         ref={scrollContainerRef}

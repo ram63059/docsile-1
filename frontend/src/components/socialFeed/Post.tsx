@@ -2,13 +2,14 @@ import * as React from "react";
 import { PostProps } from "./types";
 import save1 from "../../assets/icon/save1.svg";
 import save2 from "../../assets/icon/save2.svg";
-import more from "../../assets/icon/more.svg";
+import more1 from "../../assets/icon/more1.svg";
+import more2 from "../../assets/icon/more2.svg";
 import comment from "../../assets/icon/comment1.svg";
 import repost from "../../assets/icon/repost.svg";
 import share from "../../assets/icon/share.svg";
 import like from "../../assets/icon/like1.svg";
 import liked from "../../assets/icon/liked.svg";
-import { useRef, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { IoIosArrowDroprightCircle, IoIosArrowDropleftCircle } from "react-icons/io";
 import PostExpandedView from "./PostExpandedView";
 import sharev from "../../assets/icon/sharev.svg";
@@ -173,6 +174,26 @@ export const Post: React.FC<PostProps> = ({
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const moreMenuRef = useRef<HTMLDivElement>(null);
+  const moreButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isMoreOpen &&
+        moreMenuRef.current &&
+        !moreMenuRef.current.contains(event.target as Node) &&
+        !moreButtonRef.current?.contains(event.target as Node)
+      ) {
+        setIsMoreOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMoreOpen]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     startXRef.current = e.touches[0].clientX;
@@ -213,7 +234,8 @@ export const Post: React.FC<PostProps> = ({
     });
   };
 
-  const toggleMore = () => {
+  const toggleMore = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event from bubbling up
     setIsMoreOpen(!isMoreOpen);
   };
 
@@ -282,11 +304,18 @@ export const Post: React.FC<PostProps> = ({
             </div>
             <div className="flex items-center">
               <img src={isSaved ? save2 :save1} onClick={()=>setIsSaved(!isSaved)} className="w-6 h-6" alt="" />
-              <button onClick={toggleMore} aria-label="More options" className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-                <img src={more} className="w-6 h-6" alt="" />
+              <button 
+                ref={moreButtonRef}
+                onClick={(e) => toggleMore(e)} 
+                aria-label="More options" 
+                className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+              >
+                <img src={isMoreOpen?more2:more1} className="w-6 h-6" alt="" />
               </button>
               {isMoreOpen && (
                 <div
+                  ref={moreMenuRef}
+                  onClick={(e) => e.stopPropagation()}
                   className="rounded-md shadow-md flex flex-col w-40 text-xs p-3 z-20 absolute top-7 right-0 mt-2"
                   style={{
                     background: "rgba(255, 255, 255, 0.4)",
@@ -335,8 +364,8 @@ export const Post: React.FC<PostProps> = ({
             )}
           </div>
           {/* Image slider section */}
-          <div className="relative w-full mb-4 group" onMouseEnter={() => setShowArrows(true)} onMouseLeave={() => setShowArrows(false)}>
-            <div className="absolute top-2 right-4 z-10 bg-gray-400 bg-opacity-50 text-white text-xs py-1 px-2 rounded-full">
+          <div  className="relative w-full mb-4 group" onMouseEnter={() => setShowArrows(true)} onMouseLeave={() => setShowArrows(false)}>
+            <div  className="absolute top-2 right-4 z-10 bg-gray-400 bg-opacity-50 text-white text-xs py-1 px-2 rounded-full">
               {currentIndex + 1}/{images.length}
             </div>
             {showArrows && currentIndex > 0 && (
@@ -359,7 +388,7 @@ export const Post: React.FC<PostProps> = ({
               <div className="flex transition-transform duration-300" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
                 {images.map((image, index) => (
                   <div key={index} className="flex-none w-full lg:h-60 rounded-lg bg-gray-200">
-                    <img src={image} alt={`Post image ${index + 1}`} className="w-full h-full object-cover rounded-lg" />
+                    <img onClick={() => setIsExpanded(!isExpanded)} src={image} alt={`Post image ${index + 1}`} className="w-full h-full object-cover rounded-lg" />
                   </div>
                 ))}
               </div>

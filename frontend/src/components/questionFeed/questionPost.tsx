@@ -1,9 +1,10 @@
 import * as React from "react";
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
 import save1 from "../../assets/icon/save1.svg";
 import save2 from "../../assets/icon/save2.svg";
-import more from "../../assets/icon/more.svg";
+import more from "../../assets/icon/more1.svg";
 import agree1 from "../../assets/icon/agree1.svg";
 import agree2 from "../../assets/icon/agree2.svg";
 import disagree2 from "../../assets/icon/disagree2.svg";
@@ -166,6 +167,12 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
   onReply,
   onAnswer,
 }) => {
+  const navigate = useNavigate();
+
+  const handleQuestionClick = () => {
+    navigate(`/question/${postId}`);
+  };
+
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showArrows, setShowArrows] = useState(false);
@@ -319,21 +326,23 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
 
         <div className="mt-4 mb-3">
           <h4 className="text-sm font-medium text-neutral-700">{title}</h4>
-          <p
-            className={`mt-1 text-sm font-light text-neutral-500 ${
-              isExpanded ? "" : "line-clamp-1"
-            }`}
-          >
-            {content}
-          </p>
-          {content.length > 150 && (
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="mt-1 text-xs text-slate-500 hover:text-slate-700"
+          <div className="flex flex-col gap-2 cursor-pointer" onClick={handleQuestionClick}>
+            <p
+              className={`mt-1 text-sm font-light text-neutral-500 ${
+                isExpanded ? "" : "line-clamp-1"
+              }`}
             >
-              {isExpanded ? "Show less" : "Show more"}
-            </button>
-          )}
+              {content}
+            </p>
+            {content.length > 150 && (
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="mt-1 text-xs text-slate-500 hover:text-slate-700"
+              >
+                {isExpanded ? "Show less" : "Show more"}
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="relative w-full mb-4 group" onMouseEnter={() => setShowArrows(true)} onMouseLeave={() => setShowArrows(false)}>

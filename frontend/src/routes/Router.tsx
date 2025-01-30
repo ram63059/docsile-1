@@ -55,6 +55,7 @@ import { JobPostingForm } from "@/components/jobPosting/JobPostingForm";
 import StoriesSection from "@/components/socialFeed/StoriesPopup";
 import EducationPage from "@/components/education/EducationPage";
 // import Grpsafety from "@/pages/socketsafe/grpsafety";
+import QuestionDetail from "../pages/QuestionDetail";
 
 
 
@@ -134,5 +135,8 @@ export const router = createBrowserRouter([
   {path: "/jobposting",element:<JobPostingForm/>},
   {path: "/stories",element:<StoriesSection/>},
   {path: "/addEducation",element:<EducationPage/>},
-  
+  {
+    path: "/question/:questionId",
+    element: <QuestionDetail />,
+  },
 ]);

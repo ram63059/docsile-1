@@ -1,6 +1,6 @@
 import * as React from "react";
 import backbutton from "../../assets/icon/backbutton.svg"
-import more from "../../assets/icon/more.svg"
+import more from "../../assets/icon/more1.svg"
 interface InputFieldProps {
   label: string;
   placeholder: string;
