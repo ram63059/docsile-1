@@ -174,7 +174,7 @@ const Networkpage = () => {
           {/* Left Arrow Button */}
           <button 
             onClick={() => handleScroll('left', title)}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition-all duration-200 hidden lg:flex items-center justify-center"
+            className={`absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition-all duration-200 hidden ${showAll ? 'lg:flex' : ''} items-center justify-center`}
           >
             <ChevronLeft className="w-5 h-5 text-gray-600" />
           </button>
@@ -185,7 +185,7 @@ const Networkpage = () => {
               scrollContainerRefs.current[title] = el;
               if (el) handleTouchScroll(el);
             }}
-            className="flex space-x-3 overflow-x-auto scrollbar-hide relative scroll-smooth px-2"
+            className={`flex space-x-3 overflow-x-auto scrollbar-hide relative scroll-smooth ${showAll ? 'px-2' : ''}`}
           >
             {peopleData
               .filter((person) => person[filterKey] === filterValue)
@@ -222,7 +222,7 @@ const Networkpage = () => {
           {/* Right Arrow Button */}
           <button 
             onClick={() => handleScroll('right', title)}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition-all duration-200 hidden lg:flex items-center justify-center"
+            className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition-all duration-200 hidden ${showAll ? 'lg:flex' : ''} items-center justify-center`}
           >
             <ChevronRight className="w-5 h-5 text-gray-600" />
           </button>

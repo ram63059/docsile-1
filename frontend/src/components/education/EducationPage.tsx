@@ -4,6 +4,7 @@ import { AiOutlinePlus } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 import AddEducationForm, { EducationFormData } from './AddEducationForm';
 import AddExperienceForm, { ExperienceFormData } from '../experience/AddExperienceForm';
+import VerifyForm from './VerifyForm';
 
 interface Education {
   schoolName: string;
@@ -15,6 +16,7 @@ const EducationPage: React.FC = () => {
   const navigate = useNavigate();
   const [isEducationFormOpen, setIsEducationFormOpen] = useState(false);
   const [isExperienceFormOpen, setIsExperienceFormOpen] = useState(false);
+  const [isVerifyFormOpen, setIsVerifyFormOpen] = useState(false);
   
   const educations: Education[] = [
     {
@@ -54,6 +56,12 @@ const EducationPage: React.FC = () => {
         </div>
         <div className="flex gap-4">
           <button 
+            className="text-blue-600 hover:text-blue-700 px-4 py-2 border border-blue-600 rounded-lg"
+            onClick={() => setIsVerifyFormOpen(true)}
+          >
+            Verify
+          </button>
+          <button 
             className="text-blue-600 hover:text-blue-700"
             onClick={() => setIsExperienceFormOpen(true)}
           >
@@ -91,6 +99,12 @@ const EducationPage: React.FC = () => {
         isOpen={isExperienceFormOpen}
         onClose={() => setIsExperienceFormOpen(false)}
         onSave={handleSaveExperience}
+      />
+
+      {/* Verify Form */}
+      <VerifyForm
+        isOpen={isVerifyFormOpen}
+        onClose={() => setIsVerifyFormOpen(false)}
       />
     </div>
   );
