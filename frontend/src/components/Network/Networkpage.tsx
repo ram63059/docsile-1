@@ -1,12 +1,9 @@
 import { useState, useRef } from 'react';
 import { Header } from './Header';
-import { X } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 // import seemore from "../../assets/icon/seemore.svg";
 import { Navigation } from './Navigation';
 import cancel from "../../assets/icon/cancel.svg"
-
-import { ChevronDown, ChevronUp } from 'lucide-react';
-
 
 interface Person {
   id: string;
@@ -87,6 +84,21 @@ const Networkpage = () => {
     };
   };
 
+  const handleScroll = (direction: 'left' | 'right', containerId: string) => {
+    const container = scrollContainerRefs.current[containerId];
+    if (container) {
+      const scrollAmount = 300; // Adjust this value to control scroll distance
+      const newScrollPosition = direction === 'left' 
+        ? container.scrollLeft - scrollAmount 
+        : container.scrollLeft + scrollAmount;
+      
+      container.scrollTo({
+        left: newScrollPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   const toggleShowAll = (type: 'region' | 'organization'|'institute' |'speciality'  ) => {
     if (type === 'region') {
       setShowAllRegions((prev) => !prev);
@@ -158,46 +170,62 @@ const Networkpage = () => {
           </button>
         </div>
 
-        <div
-          ref={(el) => {
-            scrollContainerRefs.current[title] = el;
-            if (el) handleTouchScroll(el);
-          }}
-          className="flex space-x-3 overflow-x-auto scrollbar-hide relative scroll-smooth"
-        >
-          {peopleData
-            .filter((person) => person[filterKey] === filterValue)
-            .slice(0, showAll ? undefined : 5 )
-            .map((person) => (
-              <div key={person.id} className="min-w-[150px] relative flex-shrink-0 shadow-lg border border-gray-100 rounded-2xl">
-                <button
-                  className="absolute right-1 top-1 bg-white rounded-full p-1 hover:bg-gray-100 transition-colors"
-                  aria-label="Remove suggestion"
-                >
-                  <X className="w-3 h-3 text-gray-400" />
-                </button>
+        <div className="relative">
+          {/* Left Arrow Button */}
+          <button 
+            onClick={() => handleScroll('left', title)}
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition-all duration-200 hidden lg:flex items-center justify-center"
+          >
+            <ChevronLeft className="w-5 h-5 text-gray-600" />
+          </button>
 
+          {/* Scrollable Container */}
+          <div
+            ref={(el) => {
+              scrollContainerRefs.current[title] = el;
+              if (el) handleTouchScroll(el);
+            }}
+            className="flex space-x-3 overflow-x-auto scrollbar-hide relative scroll-smooth px-2"
+          >
+            {peopleData
+              .filter((person) => person[filterKey] === filterValue)
+              .slice(0, showAll ? undefined : 5)
+              .map((person) => (
+                <div key={person.id} className="min-w-[150px] relative flex-shrink-0 shadow-lg border border-gray-100 rounded-2xl">
+                  <button
+                    className="absolute right-1 top-1 bg-white rounded-full p-1 hover:bg-gray-100 transition-colors"
+                    aria-label="Remove suggestion"
+                  >
+                    <X className="w-3 h-3 text-gray-400" />
+                  </button>
 
-                <div className="w-40  text-center   rounded-2xl flex flex-col justify-center items-center mb-2 px-2 py-3">
-                  <div>
-                  <img src={person.avatar} alt="" className='w-16 h-16' />
-                  </div>
-                <div className="text-xs font-medium pt-4">{person.name}</div>
-                <div className="text-fontlit text-gray-500 mb-1">{person.title}</div>
-                <div className="flex flex-row items-center  mb-2 pt-3">
-                  <div className="w-7 h-7 rounded-full"><img src={person.avatar} alt="" /></div>
-                  <div className="text-fontvlit text-gray-400  ">
-                    {person.mutualConnection} and {person.mutualCount} mutual connections
+                  <div className="w-40  text-center   rounded-2xl flex flex-col justify-center items-center mb-2 px-2 py-3">
+                    <div>
+                      <img src={person.avatar} alt="" className='w-16 h-16' />
+                    </div>
+                    <div className="text-xs font-medium pt-4">{person.name}</div>
+                    <div className="text-fontlit text-gray-500 mb-1">{person.title}</div>
+                    <div className="flex flex-row items-center  mb-2 pt-3">
+                      <div className="w-7 h-7 rounded-full"><img src={person.avatar} alt="" /></div>
+                      <div className="text-fontvlit text-gray-400  ">
+                        {person.mutualConnection} and {person.mutualCount} mutual connections
+                      </div>
+                    </div>
+                    <button className=" py-1.5 px-3 text-xs text-white  bg-maincl rounded-3xl transition-colors">
+                      Follow
+                    </button>
                   </div>
                 </div>
-                <button className=" py-1.5 px-3 text-xs text-white  bg-maincl rounded-3xl transition-colors">
-                  Follow
-                </button>
-                  </div>
-               
-               
-              </div>
-            ))}
+              ))}
+          </div>
+
+          {/* Right Arrow Button */}
+          <button 
+            onClick={() => handleScroll('right', title)}
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 transition-all duration-200 hidden lg:flex items-center justify-center"
+          >
+            <ChevronRight className="w-5 h-5 text-gray-600" />
+          </button>
         </div>
       </div>
     );
