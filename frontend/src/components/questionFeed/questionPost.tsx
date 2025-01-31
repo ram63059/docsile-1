@@ -431,9 +431,8 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
                 <AnswerComponent answer={postAnswers[0]} />
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center border-t border-neutral-200 mt-3 pt-5 pb-4">
-                <p className="text-neutral-500 text-sm">No answers yet</p>
-                <p className="text-xs text-neutral-400">Be the first one to answer this question</p>
+              <div className="">
+                
               </div>
             )}
 
@@ -500,22 +499,7 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
             </div>
           </div>
 
-          {/* Answers section */}
-          {showAnswers && (
-            <div className="mt-4 border-t border-gray-200 pt-4">
-              {postAnswers && postAnswers.length > 0 ? (
-                <div className="mt-4 space-y-4">
-                  {postAnswers.map((answer) => (
-                    <AnswerComponent key={answer.id} answer={answer} />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <p className="text-sm">No answers yet. Be the first to answer!</p>
-                </div>
-              )}
-            </div>
-          )}
+        
         </div>
       </article>
     </div>

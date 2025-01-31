@@ -9,7 +9,7 @@ import JoinNow from "../pages/JoinNow";
 import Login from "../pages/Login";
 import SignUp from "../pages/SignUp";
 import VerifyOTP from "../pages/VerifyOTP";
-import Profile from "../pages/Profile";
+// import Profile from "../pages/Profile";
 import Questions from "../pages/Questions";
 import StudentProfile_Profile from "../pages/StudentProfile_Profile";
 import StudentProfile_Profile_2 from "../pages/StudentProfile_Profile_2";
@@ -54,6 +54,7 @@ import ReelPlayerPage from "@/components/videos/ReelplayerPage";
 import { JobPostingForm } from "@/components/jobPosting/JobPostingForm";
 import StoriesSection from "@/components/socialFeed/StoriesPopup";
 import EducationPage from "@/components/education/EducationPage";
+import Profile from "@/components/profile/Profile";
 // import Grpsafety from "@/pages/socketsafe/grpsafety";
 import QuestionDetail from "../pages/QuestionDetail";
 
@@ -135,6 +136,7 @@ export const router = createBrowserRouter([
   {path: "/jobposting",element:<JobPostingForm/>},
   {path: "/stories",element:<StoriesSection/>},
   {path: "/addEducation",element:<EducationPage/>},
+  {path: "/profile",element:<Profile/>},
   {
     path: "/question/:questionId",
     element: <QuestionDetail />,
