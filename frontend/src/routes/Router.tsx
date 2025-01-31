@@ -57,6 +57,7 @@ import EducationPage from "@/components/education/EducationPage";
 import Profile from "@/components/profile/Profile";
 // import Grpsafety from "@/pages/socketsafe/grpsafety";
 import QuestionDetail from "../pages/QuestionDetail";
+import Verifying from "@/pages/Verifying";
 
 
 
@@ -137,6 +138,7 @@ export const router = createBrowserRouter([
   {path: "/stories",element:<StoriesSection/>},
   {path: "/addEducation",element:<EducationPage/>},
   {path: "/profile",element:<Profile/>},
+  {path: "/verifying",element:<Verifying/>},
   {
     path: "/question/:questionId",
     element: <QuestionDetail />,

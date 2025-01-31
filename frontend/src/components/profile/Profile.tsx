@@ -3,7 +3,7 @@ import add from "../../assets/icon/add.svg";
 import backbutton from "../../assets/icon/backbutton.svg";
 import more1 from "../../assets/icon/more1.svg";
 import pmessage from "../../assets/icon/pmessage.svg";
-
+import add2 from "../../assets/icon/add2.svg";
 import { FaLink } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import { Header } from './Header';
@@ -19,7 +19,7 @@ const Profile: React.FC = () => {
   return (
     <div className="min-h-screen font-fontsm mx-auto ">
       {/* Mobile Header - Only visible on mobile */}
-      <div className="lg:hidden flex items-center justify-between p-4 bg-white ">
+      <div className="lg:hidden flex items-center justify-between p-4  bg-white ">
         <div className="flex items-center gap-3">
           <img src={backbutton} alt="" className="w-5" />
           <span className="text-xl font-medium text-maincl ">Profile</span>
@@ -45,12 +45,13 @@ const Profile: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-">
+      <div className="max-w-7xl mx-auto px-4   lg:py-4">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Sidebar - Profile Info */}
-          <div className="lg:col-span-3">
-            <div className="bg-white  p-1 ">
+          <div className="lg:col-span-3 py-2  ">
+            <div className="bg-white   ">
               <div className="flex flex-col  items-center text-center">
+                  <div className='lg:border p-3 lg:py-8 shadow-sm rounded-xl border-gray-200'>
                 <div className='flex lg:flex-col  items-center' >
 
                 <div className="relative ">
@@ -65,61 +66,103 @@ const Profile: React.FC = () => {
                 </div>
                 <div>
 
-                <h1 className="text-xl font-medium text-gray-800   mt-4">Seelam Vamshidhar Goud</h1>
-                <p className="text-gray-600 mt-1 mx-2">Ophthalmologist | AIIMS Delhi |Aspiring Medical Professional</p>
-                <p className="text-gray-500 text-sm mt-2 flex items-center justify-center gap-1">
+                <h1 className="text-lg font-medium text-gray-700   mt-4">Seelam Vamshidhar Goud</h1>
+                <p className="text-gray-600 text-sm mt-1 lg:mx-2 px-4 ">Ophthalmologist | AIIMS Delhi |Aspiring Medical Professional</p>
+                <p className="text-gray-500 text-sm mt-4 flex items-center justify-center gap-1">
                   <img src={location} alt="" className='w-4' />
                   Mumbai, Maharashtra, India
                 </p>
                 </div>
                     </div>
+                  <div className='hidden lg:block'>
 
-                <div className="flex justify-between  mt-6">
+                <div className="flex justify-between  mt-6 mx-3">
                   <div className="text-center">
-                    <div className="font-semibold">546</div>
-                    <div className="text-sm text-gray-500">Followers</div>
+                    <div className="font-semibold text-sm text-fillc">546</div>
+                    <div className="text-sm text-gray-700">Followers</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-semibold">478</div>
-                    <div className="text-sm text-gray-500">Following</div>
+                    <div className="font-semibold text-sm text-fillc">478</div>
+                    <div className="text-sm text-gray-700">Following</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-semibold">5</div>
-                    <div className="text-sm text-gray-500">Questions</div>
+                    <div className="font-semibold text-sm text-fillc">5</div>
+                    <div className="text-sm text-gray-700">Questions</div>
                   </div>
                 </div>
+                  </div>
 
-                <div className="flex gap-4 mt-6 w-full">
-                  <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                <div className="flex gap-4 mt-6 w-full text-sm font-normal">
+                  <button className="flex-1 px-3 py-1 bg-maincl text-white rounded-3xl hover:bg-fillc">
                     Edit Profile
                   </button>
-                  <button className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50">
+                  <button className="flex px-3 py-1 border rounded-3xl hover:bg-gray-50">
+                    <img src={add2} alt="" />
                     Be Mentor
                   </button>
                 </div>
 
+
+
+                </div>
+
+                {/* Profile Completion */}
+                <div className="w-full mt-6 border border-gray-200 p-4 rounded-lg">
+                  
+                  <div className="flex   justify-between items-start mb-4">
+                    <div className='mr-4'>
+                    <h2 className="text-sm flex items-start font-medium text-gray-800">Profile Completion</h2>
+                    <div className="space-y-1 grid grid-cols-2 ">
+                    <button className=" flex  items-center  bg-gray-50 rounded-full py-2 px-2">
+                      <span className="text-xs text-gray-700">Education</span>
+                      <span className="text-sm">+</span>
+                    </button>
+                    <button className=" flex items-center justify-between bg-gray-50 rounded-full py-2 px-4">
+                      <span className="text-xs text-gray-700">Experience</span>
+                      <span className="text-sm">+</span>
+                    </button>
+                    <button className=" flex items-center justify-between bg-gray-50 rounded-full py-2 px-4">
+                      <span className="text-xs text-gray-700">Skills</span>
+                      <span className="text-sm">+</span>
+                    </button>
+                    <button className=" flex items-center justify-between bg-gray-50 rounded-full py-2 px-4">
+                      <span className="text-xs text-gray-700">Awards</span>
+                      <span className="text-sm">+</span>
+                    </button>
+                  </div>
+                  </div> 
+                    <div className="relative mt-4">
+                      <div className="w-14 h-14 rounded-full border-2 border-gray-100 flex items-center justify-center">
+                        <span className="text-sm font-medium text-maincl">75%</span>
+                      </div>
+                      <svg className="absolute top-0 left-0 w-14 h-14 -rotate-90">
+                        <circle
+                          cx="28"
+                          cy="28"
+                          r="26"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          fill="none"
+                          className="text-maincl"
+                          strokeDasharray="163.36"
+                          strokeDashoffset="40.84"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  
+                </div>
+
                 {/* Profile Link */}
-                <div className="mt-6 w-full text-left">
+                <div className="mt-6 w-full text-left border border-gray-200 p-4 rounded-lg">
                   <p className="text-sm text-gray-500 flex items-center gap-2">
                     <FaLink className="text-gray-400" />
                     Profile Link
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">profile.docsile.com/seelam.vamshidhar.goud</p>
+                  <p className="text-xs text-gray-600 mt-1 cursor-pointer">profile.seelam.vamshidhar.goud</p>
                 </div>
 
-                {/* Profile Completion */}
-                <div className="w-full mt-6">
-                  <div className="flex justify-between items-center mb-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium">Profile Completion</span>
-                      <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded">1</span>
-                    </div>
-                    <span className="text-sm text-gray-500">75%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-blue-600 h-2 rounded-full" style={{ width: '75%' }}></div>
-                  </div>
-                </div>
+                
               </div>
             </div>
           </div>
