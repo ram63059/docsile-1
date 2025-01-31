@@ -5,7 +5,6 @@ import { SearchBar } from "./SearchBar";
 
 import { Navigation } from "./Navigation";
 import { QuestionPost } from "./questionPost";
-import FilterButtons from "./FilterButtons";
 import JobFilterStatic from "./JobFilterCard";
 
 interface ProfileData {
@@ -103,23 +102,15 @@ export const QuestionFeed: React.FC = () => {
 
         
       {/* Main Content Area */}
-      <div className="flex flex-1 px-4 lg:pl-16 max-w-7xl mx-auto w-full gap-8 pt-2">
+      <div className="flex flex-1 px-4 lg:pl-16 max-w-7xl mx-auto w-full gap-6 pt-4">
 
          {/* Left Sidebar */}
          <div className="hidden lg:block w-[300px] flex-shrink-0 font-fontsm">
 
-          <div className="top-[calc(theme(spacing.24)+1px)] space-y-6">
+          <div className=" sticky top-[calc(theme(spacing.20)+1px)] space-y-4">
           
               <JobFilterStatic/>
-              <div className='flex cursor-pointer mt-7 px-6 py-3 gap-5 items-center border border-gray-200 shadow-sm rounded-xl'>
-                <img src={profileData.avatar} alt="" className='w-10 h-10' />
-                <button 
-                
-                  className='bg-maincl text-white text-xs rounded-3xl py-1.5 px-8'
-                > 
-                  <span className='font-bold rounded-full px-1.5 text-white bg-fillc'>+</span> Ask Question 
-                </button>
-          </div>
+             
           </div>
         </div>
 
@@ -134,14 +125,18 @@ export const QuestionFeed: React.FC = () => {
 
 
                <div className="hidden lg:block w-full">
-              <div className="border border-gray-100 flex  px-5 items-center py-5 rounded-xl shadow-sm gap-4  "  onClick={onAskQuestion}>
+              <div className="border border-gray-100  flex justify-between px-5 items-center py-5 rounded-xl shadow-sm gap-4  "  onClick={onAskQuestion}>
+                <div className="flex items-center gap-3">
+
                   <img src={profileData.avatar} className="w-8" alt="" />
                   <p className="text-gray-400"> what would you like to ask?</p>
+                  </div>
+                  
                   <button
                       
-                       className="flex gap-2 justify-center items-center self-stretch py-1.5 pr-3 pl-1.5 my-auto text-xs text-white rounded-2xl bg-maincl min-h-[29px] hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400"
-                        aria-label="Add post"
-                    >
+                      className="flex gap-2 justify-center items-center self-stretch py-1.5 pr-3 pl-1.5 my-auto text-xs text-white rounded-2xl bg-maincl min-h-[29px] hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400"
+                      aria-label="Add post"
+                      >
                    <img
                     loading="lazy"
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/2ee2fecfef7edf0f14d1ab33f1ada2f9d06a0c54e3ab3d353dc2c647c253134f?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
@@ -155,10 +150,7 @@ export const QuestionFeed: React.FC = () => {
               
 
            </div>
-           <div className="w-full">
-              <FilterButtons/>
-
-           </div>
+           
 
            <QuestionPost  
                   postId="sample-post-1"
@@ -198,7 +190,7 @@ export const QuestionFeed: React.FC = () => {
 
         {/* Right Sidebar */}
         <div className="hidden lg:block w-[300px] flex-shrink-0 font-fontsm">
-          <div className="sticky top-[calc(theme(spacing.24)+1px)] space-y-4">
+          <div className=" top-[calc(theme(spacing.20)+1px)] space-y-4">
             {/* Explore Videos */}
             <div className="px-4 py-4 bg-fillc bg-opacity-10 rounded-xl">
       {/* Heading Section */}

@@ -5,8 +5,7 @@ import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons
 import save1 from "../../assets/icon/save1.svg";
 import save2 from "../../assets/icon/save2.svg";
 import more from "../../assets/icon/more1.svg";
-import agree1 from "../../assets/icon/agree1.svg";
-import agree2 from "../../assets/icon/agree2.svg";
+
 import disagree2 from "../../assets/icon/disagree2.svg";
 import disagree1 from "../../assets/icon/disagree1.svg";
 import comment1 from "../../assets/icon/comment1.svg";
@@ -31,6 +30,9 @@ interface Answer {
   content: string;
   timeAgo: string;
   likes: number;
+  dislikes?: number;
+  isLiked?: boolean;
+  isDisliked?: boolean;
   replies?: Answer[];
 }
 
@@ -69,9 +71,38 @@ const formatAnswer = (text: string) => {
 };
 
 const AnswerComponent: React.FC<{ answer: Answer }> = ({ answer }) => {
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(answer.isLiked || false);
+  const [isDisliked, setIsDisliked] = useState(answer.isDisliked || false);
+  const [likesCount, setLikesCount] = useState(answer.likes);
+  const [dislikesCount, setDislikesCount] = useState(answer.dislikes || 0);
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [replyText, setReplyText] = useState('');
+
+  const handleLike = () => {
+    if (isDisliked) {
+      setIsDisliked(false);
+      setDislikesCount(prev => prev - 1);
+    }
+    if (!isLiked) {
+      setLikesCount(prev => prev + 1);
+    } else {
+      setLikesCount(prev => prev - 1);
+    }
+    setIsLiked(!isLiked);
+  };
+
+  const handleDislike = () => {
+    if (isLiked) {
+      setIsLiked(false);
+      setLikesCount(prev => prev - 1);
+    }
+    if (!isDisliked) {
+      setDislikesCount(prev => prev + 1);
+    } else {
+      setDislikesCount(prev => prev - 1);
+    }
+    setIsDisliked(!isDisliked);
+  };
 
   return (
     <div className="px-4 mt-3 font-fontsm">
@@ -94,11 +125,18 @@ const AnswerComponent: React.FC<{ answer: Answer }> = ({ answer }) => {
           </div>
           <div className="flex items-center gap-4 mt-1 ml-2">
             <button
-              onClick={() => setIsLiked(!isLiked)}
+              onClick={handleLike}
               className="flex items-center gap-1 text-xs text-neutral-500 hover:text-neutral-700"
             >
               <img src={isLiked ? liked : like} alt="" className="w-4 h-4" />
-              <span>{answer.likes}</span>
+              <span>{likesCount}</span>
+            </button>
+            <button
+              onClick={handleDislike}
+              className="flex items-center gap-1 text-xs text-neutral-500 hover:text-neutral-700"
+            >
+              <img src={isDisliked ? disagree2 : disagree1} alt="" className="w-4 h-4" />
+              <span>{dislikesCount}</span>
             </button>
             <button
               onClick={() => setShowReplyInput(!showReplyInput)}
@@ -152,19 +190,15 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
   name,
   bio,
   timeAgo,
-  date,
   title,
   content,
   images,
   isUrgent,
-  agrees,
-  disagrees,
   shares,
   answers,
   postId,
   postAnswers,
   onShare,
-  onReply,
   onAnswer,
 }) => {
   const navigate = useNavigate();
@@ -179,8 +213,7 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
   const [showAnswers, setShowAnswers] = useState(false);
   const [answerText, setAnswerText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isAgreeActive, setIsAgreeActive] = useState(false);
-  const [isDisagreeActive, setIsDisagreeActive] = useState(false);
+ 
   const [isSaved, setIsSaved] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
 
@@ -337,13 +370,17 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
             {content.length > 150 && (
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
-                className="mt-1 text-xs text-slate-500 hover:text-slate-700"
+                className="mt-1 text-xs flex justify-start text-slate-500 hover:text-slate-700"
               >
                 {isExpanded ? "Show less" : "Show more"}
               </button>
             )}
           </div>
         </div>
+
+
+
+        
 
         <div className="relative w-full mb-4 group" onMouseEnter={() => setShowArrows(true)} onMouseLeave={() => setShowArrows(false)}>
           <div className="absolute top-2 right-4 z-10 bg-gray-400 bg-opacity-50 text-white text-xs py-1 px-2 rounded-full">
@@ -368,7 +405,7 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
           <div className="relative overflow-hidden" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
             <div className="flex transition-transform duration-300" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
               {images.map((image, index) => (
-                <div key={index} className="flex-none w-full lg:h-64 rounded-lg bg-gray-200">
+                <div onClick={handleQuestionClick} key={index} className="flex-none w-full lg:h-64 rounded-lg bg-gray-200">
                   <img src={image} alt={`Post image ${index + 1}`} className="w-full h-full object-cover rounded-lg" />
                 </div>
               ))}
@@ -385,87 +422,20 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
           </div>
         </div>
 
-        <div className="flex flex-row gap-3 border-t border-neutral-200 mt-3 pt-5">
-          <div className="flex-none pr-2">
-            <img
-              src={avatar}
-              alt={`${name}'s profile`}
-              className="w-[46px] h-[46px] rounded-full"
-            />
-          </div>
 
-          <div>
-            <h3 className="text-sm font-sm text-neutral-700">{name} <span className="text-fontlit text-neutral-500 pl-2">{date}</span></h3>
-            <p className="text-fontlit text-neutral-500 pb-1">{bio}</p>
 
-            <p
-              className={`mt-1 text-sm font-light text-neutral-500 ${
-                isExpanded ? "" : "line-clamp-4"
-              }`}
-            >
-              {content}
-            </p>
-            {content.length > 150 && (
-              <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="mt-1 text-xs text-slate-500 hover:text-slate-700"
-              >
-                {isExpanded ? "Show less" : "Show more"}
-              </button>
+
+            {/* First answer section */}
+        {postAnswers && postAnswers.length > 0 ? (
+              <div className="border-t border-neutral-200 mt-3 pt-5">
+                <AnswerComponent answer={postAnswers[0]} />
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center border-t border-neutral-200 mt-3 pt-5 pb-4">
+                <p className="text-neutral-500 text-sm">No answers yet</p>
+                <p className="text-xs text-neutral-400">Be the first one to answer this question</p>
+              </div>
             )}
-            <div className="flex justify-start pt-4 pb-3">
-              <div className="flex pr-3">
-                <div className="flex pr-1">
-                  <button
-                    onClick={() => setIsAgreeActive(!isAgreeActive)}
-                    className="flex items-center gap-1 text-xs text-neutral-500 hover:text-slate-700"
-                  >
-                    <img
-                      src={isAgreeActive ? agree2 : agree1}
-                      alt=""
-                      className="w-5 h-5"
-                    />
-                  </button>
-                </div>
-                <div className="flex flex-col justify-start text-xs pl-1">
-                  <span>{agrees}</span>
-                </div>
-              </div>
-
-              <div className="flex pr-3">
-                <div className="flex pr-1">
-                  <button
-                    onClick={() => setIsDisagreeActive(!isDisagreeActive)}
-                    className="flex items-center gap-1 text-xs text-neutral-500 hover:text-slate-700"
-                  >
-                    <img
-                      src={isDisagreeActive ? disagree2 : disagree1}
-                      alt=""
-                      className="w-5 h-5"
-                    />
-                  </button>
-                </div>
-                <div className="flex flex-col justify-start text-xs pl-1">
-                  <span>{disagrees}</span>
-                </div>
-              </div>
-
-              <div className="flex pr-3">
-                <div className="flex pr-1">
-                  <button
-                    onClick={onReply}
-                    className="flex items-center gap-1 text-xs text-neutral-500 hover:text-slate-700"
-                  >
-                    <img src={comment1} alt="" className="w-5 h-5" />
-                  </button>
-                </div>
-                <div className="flex flex-col justify-start text-xs pl-1">
-                  <p className="text-neutral-500 hover:text-slate-700">Reply</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <div className="flex justify-between mt-4 pt-4 pb-3 px-3 border-t border-neutral-200">
           <div
@@ -501,7 +471,7 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
 
         <div className="mt-1 w-full pt-4 border-t border-neutral-200">
           {/* Answer Input */}
-          <div className="mt-4">
+          <div className="mt-4" onClick={handleQuestionClick}>
             <div className="flex gap-3 items-center">
               <img
                 src={avatar}

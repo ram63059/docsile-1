@@ -41,7 +41,7 @@ const JobFilterStatic: React.FC = () => {
   };
 
   return (
-    <div className="w-full flex items-start justify-center pt-2">
+    <div className="w-full flex items-start justify-center">
       <Card className="w-full max-w-md bg-buttonclr p-4 rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-md font-medium text-maincl">Filters</h2>
@@ -49,7 +49,7 @@ const JobFilterStatic: React.FC = () => {
 
         {/* Specialty Filter */}
         <div className="mb-4">
-          <label className="text-fontlit  mb-2">Specialty</label>
+          <label className="text-xs  mb-2">Specialty</label>
           <div className="flex flex-wrap gap-2 mb-2">
             {specialties.map((specialty, index) => (
               <div
@@ -59,7 +59,7 @@ const JobFilterStatic: React.FC = () => {
                 {specialty}
                 <button
                   onClick={() => handleRemoveSpecialty(specialty)}
-                  className="ml-2 text-fontlit text-white hover:text-gray-300 focus:outline-none"
+                  className="ml-2 text-xs text-white hover:text-gray-300 focus:outline-none"
                 >
                   ✕
                 </button>
@@ -72,7 +72,7 @@ const JobFilterStatic: React.FC = () => {
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleAddSpecialty}
             placeholder="Type and press Enter to add a specialty"
-            className="w-full px-3 py-2 border text-fontlit border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-fillc"
+            className="w-full px-3 py-2 border text-xs border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-fillc"
           />
         </div>
 
@@ -81,13 +81,13 @@ const JobFilterStatic: React.FC = () => {
 
             {/* Sort by Date Posted Filter */}
         <div className="mb-6">
-        <label className="block text-fontlit  mb-2"> Sort by </label>
+        <label className="block text-xs  mb-2"> Sort by </label>
 
           <button
             onClick={() => setIsDatePostedOpen(!isDatePostedOpen)}
             className="w-full flex justify-between items-center py-2 px-3 border rounded-lg focus:outline-none"
           >
-            <span className="text-fontlit text-fillc">{selectedDatePosted || 'Most recent'}</span>
+            <span className="text-xs text-fillc">{selectedDatePosted || 'Most recent'}</span>
             {isDatePostedOpen ? <ChevronUp  size={16}/> : <ChevronDown size={16} />}
           </button>
           {isDatePostedOpen && (
@@ -99,7 +99,7 @@ const JobFilterStatic: React.FC = () => {
                     setSelectedDatePosted(date);
                     setIsDatePostedOpen(false);
                   }}
-                  className="block w-full text-left  text-fontlit px-3 py-2 hover:bg-gray-200"
+                  className="block w-full text-left  text-xs px-3 py-2 hover:bg-gray-200"
                 >
                   {date}
                 </button>
@@ -112,12 +112,12 @@ const JobFilterStatic: React.FC = () => {
           {/* Filter by user type section */}
 
         <div className="mb-6">
-          <label className="block text-fontlit mb-2">Filter by User Type</label>
+          <label className="block text-xs mb-2">Filter by User Type</label>
           <button
             onClick={() => setIsUserTypeOpen(!isUserTypeOpen)}
             className="w-full flex justify-between items-center py-2 px-3 border rounded-lg focus:outline-none"
           >
-            <span className="text-fontlit text-fillc">{selectedUserType || "Select User Type"}</span>
+            <span className="text-xs text-fillc">{selectedUserType || "Select User Type"}</span>
             {isUserTypeOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </button>
           {isUserTypeOpen && (
@@ -129,7 +129,7 @@ const JobFilterStatic: React.FC = () => {
                     setSelectedUserType(type);
                     setIsUserTypeOpen(false);
                   }}
-                  className="block w-full text-fontlit text-left px-3 py-2 hover:bg-gray-200"
+                  className="block w-full text-xs text-left px-3 py-2 hover:bg-gray-200"
                 >
                   {type}
                 </button>
