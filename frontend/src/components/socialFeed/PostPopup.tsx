@@ -345,9 +345,7 @@ const PostPopup: React.FC<PostPopupProps> = ({
             type="text"
             placeholder="Write your post title here..."
             value={postTitle}
-            onChange={(e) => {
-              setPostTitle(e.target.value);
-            }}
+            onChange={handleTitleChange}
             className="w-full outline-none text-sm"
           />
         </div>
