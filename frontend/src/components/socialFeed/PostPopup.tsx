@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
-import { X, Image, Plus, ChevronDown } from 'lucide-react';
-import publicIcon from "../../assets/icon/public.svg"
-import privateIcon from "../../assets/icon/private.svg"
+import React, { useCallback, useMemo, useState, useRef, useEffect } from "react";
+import { X, Image, ChevronDown } from "lucide-react";
+import {
+  IoIosArrowDropleftCircle,
+  IoIosArrowDroprightCircle,
+} from "react-icons/io";
 import { FaCaretRight } from "react-icons/fa";
+import publicIcon from "../../assets/icon/public.svg";
+import privateIcon from "../../assets/icon/private.svg";
+import { Document, Page, pdfjs } from "react-pdf";
+import add from "../../assets/icon/add2.svg";
+import media from "../../assets/icon/media.svg";
 
-
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 interface PostPopupProps {
   isOpen: boolean;
@@ -12,33 +19,510 @@ interface PostPopupProps {
   userAvatar: string;
 }
 
-type Visibility = 'Public' | 'Private(Followers Only)';
-type PostType = 'Post' | 'Question' | 'Resource' | 'Video';
+type Visibility = "Public" | "Private(Followers Only)";
+type PostType = "Post" | "Question" | "Resource" | "Video";
 
-const PostPopup: React.FC<PostPopupProps> = ({ isOpen, onClose, userAvatar }) => {
-  const [postContent, setPostContent] = useState('');
-  const [visibility, setVisibility] = useState<Visibility>('Public');
+const PostPopup: React.FC<PostPopupProps> = ({
+  isOpen,
+  onClose,
+  userAvatar,
+}) => {
+  const [postContent, setPostContent] = useState("");
+  const [postTitle, setPostTitle] = useState("");
+  const [visibility, setVisibility] = useState<Visibility>("Public");
   const [isVisibilityOpen, setIsVisibilityOpen] = useState(false);
-  const [postType, setPostType] = useState<PostType>('Post');
+  const [postType, setPostType] = useState<PostType>("Post");
   const [isTypeOpen, setIsTypeOpen] = useState(false);
-  const [selectedMedia, setSelectedMedia] = useState<File | null>(null);
+  const [selectedMedia, setSelectedMedia] = useState<File[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [showArrows, setShowArrows] = useState(false);
+  const [titleCount, setTitleCount] = useState(100);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [currVideoStep, setCurrVideoStep] = useState(1);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [thumbnail, setThumbnail] = useState<string | null>(null);
+  const [videothumbnail, setVideoThumbnail] = useState<string | null>(null);
+  const [showUpload, setShowUpload] = useState(true);
+  const startXRef = useRef<number | null>(null);
+  const currentTranslate = useRef(0);
 
-  const handleMediaSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const files = Array.from(e.dataTransfer.files);
+    handleFileSelection(files);
+  };
+
+  const handleFileSelection = (files: File[]) => {
+    if (postType === "Resource") {
+      const file = files[0];
+
+      if (file?.type === "application/pdf") {
+        setPdfFile(file);
+      } else {
+        alert("Please upload a PDF file for resources");
+      }
+      return;
+    }
+
+    const validFiles = files.filter((file) => {
+      const isImage = file.type.startsWith("image/");
+      const isVideo = file.type.startsWith("video/");
+
+      return (
+        (postType === "Video" ? isVideo : isImage) &&
+        selectedMedia.length + files.length <= 4
+      );
+    });
+
+    setSelectedMedia((prev) => [...prev, ...validFiles]);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    startXRef.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (startXRef.current !== null) {
+      const currentX = e.touches[0].clientX;
+      currentTranslate.current = currentX - startXRef.current;
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (currentTranslate.current > 50 && currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+    } else if (
+      currentTranslate.current < -50 &&
+      currentIndex < selectedMedia.length - 1
+    ) {
+      setCurrentIndex(currentIndex + 1);
+    }
+    startXRef.current = null;
+    currentTranslate.current = 0;
+  };
+
+  const handlePrev = () => {
+    if (currentIndex > 0) setCurrentIndex((prev) => prev - 1);
+  };
+
+  const handleNext = () => {
+    if (currentIndex < selectedMedia.length - 1)
+      setCurrentIndex((prev) => prev + 1);
+  };
+
+  const getVisibleDots = () => {
+    const maxVisibleDots = 5;
+    const half = Math.floor(maxVisibleDots / 2);
+    return selectedMedia.map((_, index) => {
+      const diff = Math.abs(index - currentIndex);
+      if (diff <= half) return 1;
+      return Math.max(0.3, 1 - (diff - half) * 0.2);
+    });
+  };
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const text = e.target.value;
+    console.log(text);
+    if (text.length <= 100) {
+      setPostTitle(text);
+      setTitleCount(100 - text.length);
+    }
+  };
+
+  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const text = e.target.value;
+    const words = text
+      .trim()
+      .split(/\s+/)
+      .filter((word) => word.length > 0);
+    if (words.length <= 500) {
+      setPostContent(text);
+    }
+  };
+
+  const handleThumbnailUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setSelectedMedia(file);
+      const objectURL = URL.createObjectURL(file);
+      setThumbnail(objectURL); // Store URL instead of File
     }
+  };
+
+
+  const renderMediaUpload = () => {
+    if (postType === "Resource") {
+      return (
+        <div
+          className=" rounded-lg px-4 pt-4 h-[180px] flex flex-col justify-end "
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={handleDrop}
+        >
+          {pdfFile && (
+            <div className="flex items-center justify-between mt-4 p-2 border border-gray-100 shadow-sm bg-gray-100 rounded">
+              <p className="text-sm px-3    text-gray-600">{pdfFile.name}</p>
+              <button
+                onClick={() => setPdfFile(null)}
+                className="p-1 hover:bg-gray-200 rounded-full"
+              >
+                {" "}
+                <X size={20} />
+              </button>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (postType === "Video") {
+      return (
+        <div className="flex h-full  flex-col gap- items-center justify-center">
+          {!selectedMedia.length ? (
+            <div
+              onClick={() => document.getElementById("mediaInput")?.click()}
+              className="bg-buttonclr h-full w-[40%] border  flex flex-col  items-center justify-center border-dashed border-gray-700 rounded-xl  "
+            >
+              <Image className="w-8 h-8 text-gray-400 mb-4" />
+              <p className="text-gray-600 mb-2">Add Video</p>
+              <p className="text-sm text-gray-500">MP4, WebM or Ogg</p>
+              <p className="text-xs text-gray-400 mt-1">
+                Maximum file size: 100MB
+              </p>
+              <input
+                id="mediaInput"
+                type="file"
+                accept="video/*"
+                onChange={(e) =>
+                  handleFileSelection(Array.from(e.target.files || []))
+                }
+                className="hidden"
+              />
+            </div>
+          ) : (
+            <div className="relative  h-full  w-[40%]   bg-gray-50 rounded-lg overflow-hidden">
+              <video
+                src={URL.createObjectURL(selectedMedia[0])}
+                className="w-full h-full object-cover"
+              />
+              <button
+                onClick={() => setSelectedMedia([])}
+                className="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-md hover:bg-gray-100"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-4">
+        {selectedMedia.length > 0 && (
+          <div
+            className="relative w-full h-[450px] group bg-gray-50 rounded-lg overflow-hidden"
+            onMouseEnter={() => setShowArrows(true)}
+            onMouseLeave={() => setShowArrows(false)}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <div className="absolute top-2 left-4 z-10 bg-gray-400 bg-opacity-50 text-white text-xs py-1 px-2 rounded-full">
+              {currentIndex + 1}/{selectedMedia.length}
+            </div>
+
+            <div className="relative h-full flex justify-center items-center">
+              <img
+                src={URL.createObjectURL(selectedMedia[currentIndex])}
+                alt={`Upload ${currentIndex + 1}`}
+                className="max-h-[450px] w-full object-contain"
+              />
+              <button
+                onClick={() => {
+                  setSelectedMedia((prev) =>
+                    prev.filter((_, i) => i !== currentIndex)
+                  );
+                  if (currentIndex === selectedMedia.length - 1) {
+                    setCurrentIndex(Math.max(0, currentIndex - 1));
+                  }
+                }}
+                className="absolute top-2 right-2 p-1 bg-white rounded-full shadow-md hover:bg-gray-100"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {showArrows && selectedMedia.length > 1 && (
+              <>
+                {currentIndex > 0 && (
+                  <button
+                    className="absolute top-1/2 left-2 z-10 transform -translate-y-1/2 bg-gray-400 bg-opacity-50 text-white p-1.5 rounded-full hover:bg-opacity-70"
+                    onClick={handlePrev}
+                  >
+                    <IoIosArrowDropleftCircle size={24} />
+                  </button>
+                )}
+                {currentIndex < selectedMedia.length - 1 && (
+                  <button
+                    className="absolute top-1/2 right-2 z-10 transform -translate-y-1/2 bg-gray-400 bg-opacity-50 text-white p-1.5 rounded-full hover:bg-opacity-70"
+                    onClick={handleNext}
+                  >
+                    <IoIosArrowDroprightCircle size={24} />
+                  </button>
+                )}
+              </>
+            )}
+
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-1">
+              {selectedMedia.map((_, index) => (
+                <button
+                  key={index}
+                  className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                    index === currentIndex
+                      ? "bg-white"
+                      : "bg-white bg-opacity-50"
+                  }`}
+                  style={{ opacity: getVisibleDots()[index] }}
+                  onClick={() => setCurrentIndex(index)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const firstMedia = selectedMedia[0];
+  const videoUrl = useMemo(() => {
+    if (firstMedia) {
+      return URL.createObjectURL(firstMedia);
+    }
+    return '';
+  }, [firstMedia]);
+
+  const renderVideoPreview = useCallback(() => {
+    return (
+      <div className="flex  flex-col ">
+            <div className="flex justify-center">
+        <div className="relative h-[230px] w-[130px] bg-gray-50 rounded-lg overflow-hidden">
+        {videothumbnail ? (
+            <div className="relative w-full h-full">
+              <img 
+                src={videothumbnail} 
+                alt="Video thumbnail"
+                className="w-full h-full object-fill"
+              />
+              <button
+                onClick={() => setVideoThumbnail(null)}
+                className="absolute top-2 right-2 p-1 bg-gray-800 bg-opacity-50 rounded-full hover:bg-opacity-70"
+              >
+                <X className="w-4 h-4 text-white" />
+              </button>
+            </div>
+          ) : (
+            <video
+              ref={videoRef}
+              src={videoUrl}
+              className="w-full h-full object-cover"
+            />
+          )}
+        </div>
+      </div>
+
+        {/* Title Input */}
+        <div className="border border-gray-100 shadow-sm  rounded-lg p-3 mb-4">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm text-maincl">Post Title</p>
+            <span className="text-xs text-gray-500">
+              {titleCount} characters left
+            </span>
+          </div>
+          <input
+            type="text"
+            placeholder="Write your post title here..."
+            value={postTitle}
+            onChange={(e) => {
+              setPostTitle(e.target.value);
+            }}
+            className="w-full outline-none text-sm"
+          />
+        </div>
+
+        {/* Description */}
+        <div className="space-y-4">
+          <textarea
+            placeholder="What do you want to talk about?"
+            value={postContent}
+            onChange={handleContentChange}
+            className="w-full p-3 min-h-[20px] resize-none outline-none  text-gray-700 placeholder-gray-400"
+          />
+        </div>
+
+        {/* Thumbnail Upload Section */}
+        <div className="mt-auto">
+          <button
+            onClick={() => document.getElementById("thumbnailInput")?.click()}
+            className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50"
+          >
+            <Image className="w-5 h-5 text-gray-400" />
+            <span className="text-gray-600">Upload Thumbnail</span>
+          </button>
+          <input
+            id="thumbnailInput"
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                const imageUrl = URL.createObjectURL(file);
+                setVideoThumbnail(imageUrl);
+              }
+            }}
+            className="hidden"
+          />
+          {videothumbnail && (
+            <div className="mt-2 p-2 bg-gray-50 rounded-lg flex items-center justify-between">
+              <span className="text-sm text-gray-600">Thumbnail uploaded</span>
+              <button
+                onClick={() => setVideoThumbnail(null)}
+                className="p-1 hover:bg-gray-100 rounded-full"
+              >
+                <X className="w-4 h-4 text-gray-500" />
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }, [ videoRef, titleCount, postTitle, postContent, videothumbnail, videoUrl]);
+
+
+
+  useEffect(() => {
+    return () => {
+      if (thumbnail) {
+        URL.revokeObjectURL(thumbnail);
+      }
+    };
+  }, [thumbnail]);
+
+
+
+
+
+  const renderResourcePreview = () => {
+    return (
+      <div className="flex flex-col h-full">
+        {/* PDF Preview Section */}
+        <div className="bg-gray-50 rounded-lg mb-4 h-[450px]  flex items-center justify-center">
+          {thumbnail ? (
+            <img
+              src={thumbnail}
+              alt="Thumbnail preview"
+              className="w-full h-full object-contain rounded-lg"
+            />
+          ) : pdfFile ? (
+            <Document file={pdfFile}>
+              <Page pageNumber={1} width={300} className="rounded-lg" />
+            </Document>
+          ) : (
+            <p className="text-gray-400">No PDF uploaded</p>
+          )}
+        </div>
+
+        {/* Content Section */}
+        <div className="bg-white rounded-lg p-4 mb-4">
+          <h2 className="text-lg font-medium mb-2">{postTitle}</h2>
+          <p className="text-sm text-gray-600">{postContent}</p>
+        </div>
+
+        {/* Thumbnail Upload Section */}
+        <div className="mt-auto">
+          <button
+            onClick={() => document.getElementById("thumbnailInput")?.click()}
+            className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50"
+          >
+            <Image className="w-5 h-5 text-gray-400" />
+            <span className="text-gray-600">Upload Thumbnail</span>
+          </button>
+          <input
+            id="thumbnailInput"
+            type="file"
+            accept="image/*"
+            onChange={handleThumbnailUpload}
+            className="hidden"
+          />
+          {thumbnail && (
+            <div className="mt-2 p-2 bg-gray-50 rounded-lg flex items-center justify-between">
+              <span className="text-sm text-gray-600">Thumbnail uploaded</span>
+              <button
+                onClick={() => setThumbnail(null)}
+                className="p-1 hover:bg-gray-100 rounded-full"
+              >
+                <X className="w-4 h-4 text-gray-500" />
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderMainContent = () => {
+    if (currentStep === 2 && postType === "Resource") {
+      return renderResourcePreview();
+    }
+    if (currVideoStep === 2 && postType === "Video") {
+      return renderVideoPreview();
+    }
+    return (
+      <>
+        {postType !== "Video" && (
+          <div>
+            {/* Title Input */}
+            <div className="border border-gray-100 shadow-sm rounded-lg p-3 mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm text-maincl">Post Title</p>
+                <span className="text-xs text-gray-500">
+                  {titleCount} characters left
+                </span>
+              </div>
+              <input
+                type="text"
+                placeholder="Write your post title here..."
+                value={postTitle}
+                onChange={handleTitleChange}
+                className="w-full outline-none text-sm"
+              />
+            </div>
+
+            {/* Description */}
+            <div className="space-y-4">
+              <textarea
+                placeholder="What do you want to talk about?"
+                value={postContent}
+                onChange={handleContentChange}
+                className="w-full p-3 min-h-[150px] resize-none outline-none  text-gray-700 placeholder-gray-400"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Media Upload Section */}
+        {renderMediaUpload()}
+      </>
+    );
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl w-[700px] h-[600px] shadow-lg mx-auto flex flex-col justify-between  ">
-
-        <div>
-
-        
+      <div className="bg-white rounded-xl w-[700px] h-[600px] shadow-lg mx-auto flex flex-col justify-between">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b">
           <div className="flex items-center gap-2">
@@ -56,12 +540,12 @@ const PostPopup: React.FC<PostPopupProps> = ({ isOpen, onClose, userAvatar }) =>
                 <span className="font-medium">{visibility}</span>
                 <ChevronDown className="w-4 h-4" />
               </button>
-              
+
               {isVisibilityOpen && (
                 <div className="absolute top-full left-0 mt-1 w-auto bg-buttonclr border rounded-lg shadow-lg py-4 z-10">
                   {[
-                    { value: 'Public', icon: publicIcon },
-                    { value: 'Private(Followers Only)', icon: privateIcon }
+                    { value: "Public", icon: publicIcon },
+                    { value: "Private(Followers Only)", icon: privateIcon },
                   ].map((option) => (
                     <button
                       key={option.value}
@@ -69,11 +553,13 @@ const PostPopup: React.FC<PostPopupProps> = ({ isOpen, onClose, userAvatar }) =>
                         setVisibility(option.value as Visibility);
                         setIsVisibilityOpen(false);
                       }}
-                      className="flex items-center justify-between w-full px-5 py-1  hover:bg-gray-100 text-left"
+                      className="flex items-center justify-between w-full px-5 py-1 hover:bg-gray-100 text-left"
                     >
                       <div className="flex items-center gap-3">
                         <img src={option.icon} alt="" className="w-4 h-4" />
-                        <span className="whitespace-nowrap text-gray-800">{option.value}</span>
+                        <span className="whitespace-nowrap text-gray-800">
+                          {option.value}
+                        </span>
                       </div>
                       <input
                         type="radio"
@@ -84,14 +570,13 @@ const PostPopup: React.FC<PostPopupProps> = ({ isOpen, onClose, userAvatar }) =>
                     </button>
                   ))}
 
-                  <div className='mx-5 my-3 flex justify-between items-center border-t'>
-                    <div className=''>
-                    <p className='text-md text-gray-800 ' >comment settings</p>
-                    <p className='text-xs text-gray-500'> Public</p>
+                  <div className="mx-5 my-3 flex justify-between items-center border-t">
+                    <div>
+                      <p className="text-md text-gray-800">comment settings</p>
+                      <p className="text-xs text-gray-500">Public</p>
                     </div>
                     <button>
-                    <FaCaretRight className='text-gray-600' />
-
+                      <FaCaretRight className="text-gray-600" />
                     </button>
                   </div>
                 </div>
@@ -104,20 +589,30 @@ const PostPopup: React.FC<PostPopupProps> = ({ isOpen, onClose, userAvatar }) =>
             <div className="relative">
               <button
                 onClick={() => setIsTypeOpen(!isTypeOpen)}
-                className="flex items-center gap-1 px-3 py-1 bg-buttonclr  rounded-2xl"
+                className="flex items-center gap-1 px-3 py-1 bg-buttonclr rounded-2xl"
               >
                 <span className="font-medium">{postType}</span>
                 <ChevronDown className="w-4 h-4" />
               </button>
-              
+
               {isTypeOpen && (
-                <div className="absolute top-full right-0 mt-1 w-36 bg-white border rounded-lg shadow-lg py-1">
-                  {['Post', 'Question', 'Resource', 'Video'].map((type) => (
+                <div className="absolute top-full right-0 mt-1 w-36 z-10 bg-white border rounded-lg shadow-lg py-1">
+                  {["Post", "Question", "Resource", "Video"].map((type) => (
                     <button
                       key={type}
                       onClick={() => {
                         setPostType(type as PostType);
                         setIsTypeOpen(false);
+                        // Reset media when changing type
+                        setSelectedMedia([]);
+                        setPdfFile(null);
+                        setShowUpload(true);
+                        setPostTitle("");
+                        setPostContent("");
+                        setTitleCount(100);
+                        setThumbnail(null);
+                        setVideoThumbnail(null);
+                        setCurrentStep(1);
                       }}
                       className="flex items-center w-full px-3 py-2 hover:bg-gray-100 text-left"
                     >
@@ -127,7 +622,7 @@ const PostPopup: React.FC<PostPopupProps> = ({ isOpen, onClose, userAvatar }) =>
                 </div>
               )}
             </div>
-            
+
             <button
               onClick={onClose}
               className="p-1 hover:bg-gray-100 rounded-full"
@@ -137,92 +632,110 @@ const PostPopup: React.FC<PostPopupProps> = ({ isOpen, onClose, userAvatar }) =>
           </div>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 p-4">
-          {postType === 'Video' ? (
-            <div className="h-full flex flex-col">
-              {!selectedMedia ? (
-                <div 
-                  className="flex-1 border-2 bg-buttonclr border-dashed border-gray-300 rounded-lg py-6 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50"
-                  onClick={() => document.getElementById('mediaInput')?.click()}
-                >
-                  <Image className="w-8 h-8   text-gray-400 mb-4" />
-                  <p className="text-gray-600 mb-2">Add Media</p>
-                  <p className="text-sm text-gray-500">or drag and drop</p>
-                  <input
-                    id="mediaInput"
-                    type="file"
-                    accept="video/*"
-                    onChange={handleMediaSelect}
-                    className="hidden"
-                  />
-                </div>
-              ) : (
-                <div className="flex-1 relative">
-                  <video
-                    src={URL.createObjectURL(selectedMedia)}
-                    className="w-full h-full object-contain"
-                    controls
-                  />
-                  <button
-                    onClick={() => setSelectedMedia(null)}
-                    className="absolute top-2 right-2 p-1 bg-white rounded-full shadow-md hover:bg-gray-100"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
-              <textarea
-                placeholder="Write a caption..."
-                value={postContent}
-                onChange={(e) => setPostContent(e.target.value)}
-                className="mt-4 w-full h-20 resize-none outline-none border rounded-lg p-2"
-              />
-            </div>
-          ) : (
-            <textarea
-              placeholder="What's on your mind?"
-              value={postContent}
-              onChange={(e) => setPostContent(e.target.value)}
-              className="w-full min-h-[150px] resize-none outline-none text-gray-700 placeholder-gray-500"
-            />
-          )}
-        </div>
-        </div>
-       <div>
-
-       
+        {/* Main Content */}
+        <div className="flex-1 p-4 overflow-y-auto">{renderMainContent()}</div>
 
         {/* Footer */}
-        <div className="p-4 border-t flex justify-between items-center ">
-          {postType !== 'Video' && (
+        <div className="p-4 sticky bottom-0 flex justify-between items-center gap-4">
+          <div className=" flex justify-between items-center gap-4">
             <div className="flex items-center gap-2">
-              <button className="flex items-center gap-2 text-gray-600 hover:bg-gray-100 p-2 rounded-lg">
-                <Image className="w-5 h-5" />
-                <span>Add Media</span>
-              </button>
-              <Plus className="w-4 h-4" />
-            </div>
-          )}
-          <div className='flex flex-row  items-end '
-          >
-          <button
-            className={`px-3 py-1 rounded-lg  font-medium ${
-              (postContent.trim() || selectedMedia)
-                ? 'bg-maincl text-white hover:bg-fillc'
-                : 'bg-buttonclr text-gray-400 cursor-not-allowed'
-            }`}
-            disabled={!postContent.trim() && !selectedMedia}
-          >
-            {postType}
-          </button>
-          </div>
-        </div>
+              <input
+                type="file"
+                id="universalMediaInput"
+                className="hidden"
+                accept={
+                  postType === "Resource"
+                    ? "application/pdf"
+                    : postType === "Video"
+                    ? "video/*"
+                    : "image/*"
+                }
+                multiple={postType !== "Video"}
+                onChange={(e) =>
+                  handleFileSelection(Array.from(e.target.files || []))
+                }
+              />
 
+              {showUpload ? (
+                <label
+                  htmlFor="universalMediaInput"
+                  className="flex items-center   cursor-pointer "
+                >
+                  <span className=" flex border border-gray-200 rounded-3xl gap-2 text-gray-700 p-1 px-3">
+                    <img src={media} alt="" />
+                    {postType === "Resource" ? "Upload PDF" : "Add Media"}
+                  </span>
+                  <img src={add} alt="" />
+                </label>
+              ) : (
+                <div></div>
+              )}
+            </div>
+
+            {/* Post button remains unchanged */}
+          </div>
+          <div>
+            {((postType === "Resource" && currentStep === 2) ||
+              (postType === "Video" && currVideoStep === 2)) && (
+              <button
+                onClick={() => {
+                  return (
+                    setShowUpload(true), setCurrentStep(1), setCurrVideoStep(1)
+                  );
+                }}
+                className="px-4 py-1.5 border rounded-3xl hover:bg-gray-50"
+              >
+                Back
+              </button>
+            )}
+            <button
+              className="px-6 py-1.5 bg-maincl text-white rounded-3xl hover:bg-opacity-90 transition-all disabled:opacity-50"
+              disabled={
+                (!postTitle.trim() && postType !== "Video") ||
+                (!postContent.trim() && postType !== "Video") ||
+                (postType === "Resource" && !pdfFile) ||
+                (postType === "Video" && selectedMedia.length === 0)
+              }
+              onClick={() => {
+                if (postType === "Resource" && currentStep === 1) {
+                  setCurrentStep(2);
+                  setShowUpload(false);
+                } else {
+                  // Handle post submission
+                  console.log({
+                    type: postType,
+                    title: postTitle,
+                    content: postContent,
+                    visibility,
+                    media: selectedMedia,
+                    pdf: pdfFile,
+                  });
+                }
+                if (postType === "Video" && currVideoStep === 1) {
+                  setCurrVideoStep(2);
+                } else {
+                  // Handle post submission
+                  console.log({
+                    type: postType,
+                    title: postTitle,
+                    content: postContent,
+                    visibility,
+                    media: selectedMedia,
+                    pdf: pdfFile,
+                  });
+                }
+              }}
+            >
+              {(postType === "Resource" || postType === "Video") &&
+              currentStep === 1
+                ? "Continue"
+                : "Post"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default PostPopup; 
+export default PostPopup;

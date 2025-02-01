@@ -188,8 +188,8 @@ const VerifyForm: React.FC<VerifyFormProps> = ({ isOpen, onClose }) => {
             {filePreview ? (
               <div className="relative">
                 <img src={filePreview} alt="ID Preview" className="max-h-40 mx-auto rounded" />
-                <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all flex items-center justify-center">
-                  <Upload className="text-transparent hover:text-white" size={24} />
+                <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 hover:-inset-x-1 hover:text-white transition-all flex items-center justify-center">
+                  <Upload className="text-transparent hover:text-white" size={32} />
                 </div>
               </div>
             ) : (
