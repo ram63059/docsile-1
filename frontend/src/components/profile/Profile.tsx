@@ -1,20 +1,343 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import add from "../../assets/icon/add.svg";
 import backbutton from "../../assets/icon/backbutton.svg";
 import more1 from "../../assets/icon/more1.svg";
 import pmessage from "../../assets/icon/pmessage.svg";
 import add2 from "../../assets/icon/add2.svg";
 import { FaLink } from "react-icons/fa";
-import { MdEdit } from "react-icons/md";
 import { Header } from './Header';
 import location from "../../assets/icon/location.svg";
+import edit from "../../assets/icon/edit.svg";
+import arrowright from "../../assets/icon/arrowright.svg";
+import PostCard from './PostCard';
+
+
+
+
+interface ExperienceItem {
+  title: string;
+  company: string;
+  date: string;
+  description?: string;
+  img:string;
+}
+
+
+interface Education {
+  institution: string;
+  degree: string;
+  year: string;
+  logo: string;
+}
+
+interface Interest {
+  id: string;
+  name: string;
+}
+interface Certification {
+  id: string;
+  title: string;
+  organization: string;
+  issueDate: string;
+  logo: string;
+}
+
+
+interface Membership {
+  id: number;
+  name: string;
+  category: string;
+  image: string;
+}
+
+
+interface Award {
+  id: number;
+  title: string;
+  organization: string;
+  year: string;
+  description: string;
+  credentialLink?: string;
+}
+
+interface Workplace {
+  id: number;
+  organization: string;
+  img: string;
+}
+
+interface Post {
+  id: number;
+  content: string;
+  likes: number;
+  shares:number;
+  reposts:number;
+  comments: number;
+  time: string;
+  images: string[];
+  userImage: string;
+  userName: string;
+  userTitle: string;
+  postImage: string;
+}
+
+interface Question {
+  id: number;
+  title: string;
+  answers: number;
+  views: number;
+  time: string;
+  tags: string[];
+}
+
+
+
+
 
 const Profile: React.FC = () => {
   const [activeTab, setActiveTab] = useState('about');
+  const [expanded, setExpanded] = useState(false);
+  const [showAllPosts, setShowAllPosts] = useState(false);
+  const [showAllQuestions, setShowAllQuestions] = useState(false);
 
   const tabs = ['About', 'Activity', 'Events', 'Memberships', 'Saved', 'Draft'];
+  const Desktoptabs = [ 'Activity', 'Jobs', 'Events', 'Saved', 'Draft'];
+
+  // Sample data for posts and questions
+  const posts: Post[] = [
+    {
+      id: 1,
+      content: "Just completed a successful cataract surgery using the latest minimally invasive technique. The patient's vision improved significantly...",
+      likes: 45,
+      comments: 12,
+      userTitle:'Opthomology the future of eye care',
+      shares :12,
+      reposts:12,
+      time: "2 hours ago",
+      images: [
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/3179d893d2c64d78a71042d4bbe19d82929393a4cc746e57df0407426f7a4992?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/bacdf5b5cd530c209ad1b1cdb72874c3b55ba49a818704cd3a277725a590f529?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/6939df2c7edaf176e0907ced793a5e28a1df342e59d4610b8999ddc4aed782a9?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+      ],
+      userImage: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c",
+      userName: "Seelam Vamshidhar Goud",
+      postImage: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c"
+    },
+    {
+      id: 2,
+      content: "Excited to share my research findings on advanced IOL technologies at the upcoming ophthalmology conference...",
+      likes: 32,
+      comments: 8,
+      userTitle:'Opthomology the future of eye care',
+      shares :12,
+      reposts:12,
+      time: "5 hours ago",
+      images: [
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/3179d893d2c64d78a71042d4bbe19d82929393a4cc746e57df0407426f7a4992?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/bacdf5b5cd530c209ad1b1cdb72874c3b55ba49a818704cd3a277725a590f529?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/6939df2c7edaf176e0907ced793a5e28a1df342e59d4610b8999ddc4aed782a9?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+      ],
+      userImage: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c",
+      userName: "Seelam Vamshidhar Goud",
+      postImage: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c"
+    }
+  ];
+
+  const questions: Question[] = [
+    {
+      id: 1,
+      title: "What are the latest developments in glaucoma treatment?",
+      answers: 8,
+      views: 234,
+      time: "1 day ago",
+      tags: ["Glaucoma", "Treatment", "Research"]
+    },
+    {
+      id: 2,
+      title: "Best practices for post-operative care in LASIK surgery?",
+      answers: 12,
+      views: 456,
+      time: "2 days ago",
+      tags: ["LASIK", "Post-op Care"]
+    }
+  ];
 
   const aboutText = "An experienced ophthalmologist passionate about advancing care through sustainable eye care. Specializing in cataract and refractive surgery with a focus on advanced surgical ophthalmology. I combine cutting-edge technology with a patient-centered approach...";
+
+
+  const experiences: ExperienceItem[] = [
+    {
+      title: 'Ophthalmology Clinical Intern',
+      company: 'Aravind Eye Hospital, Madurai, Tamil Nadu',
+      date: 'Jun 2023 - Present',
+      description: '',
+      img:'https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08'
+    },
+    {
+      title: 'Ophthalmology Clinical Intern',
+      company: 'Sankara Nethralaya, Chennai, Tamil Nadu',
+      date: 'Jun 2023 - Present',
+      description: 'Clinical rotations in various ophthalmology departments',
+      img:'https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08'
+    },
+    {
+      title: 'Ophthalmology Clinical Intern',
+      company: 'AIIMS',
+      date: 'Jun 2023 - Present',
+      description: 'Clinical rotations in various ophthalmology departments',
+      img:'https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08'
+    },
+    // Add more experiences...
+  ];
+
+  const educationData: Education[] = [
+    {
+      institution: "All India Institute of Medical Sciences (AIIMS), New Delhi",
+      degree: "Bachelor of Medicine, Bachelor of Surgery (MBBS)",
+      year: "2020 - 2023",
+      logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
+    },
+    {
+      institution: "St. Xavier’s High School, Mumbai",
+      degree: "Higher Secondary Education (Class 12)",
+      year: "2020 - 2023",
+      logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
+    },
+    // Add more education...
+  ];
+
+  const interestData: Interest[] = [
+    {
+      id: '1',
+      name: "Cataract Surgery",
+    },
+    {
+      id: '2',
+      name: "Corneal Disorders and Treatment",
+    },
+    {
+      id: '3',
+      name: "Pediatric Ophthalmology",
+    },
+    {
+      id: '4',
+      name: "Retinal Surgery",
+    }
+  ];
+
+  const certificationData: Certification[] = [
+    {
+      id: '1',
+      title: "Ophthalmology Clinical Skills Workshop",
+      organization: "Sankara Nethralaya, Chennai",
+      issueDate: "March 2023",
+      logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
+    },
+    {
+      id: '2',
+      title: "Advanced Cataract Surgery Certification",
+      organization: "AIIMS Delhi",
+      issueDate: "January 2023",
+      logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
+    }
+  ];
+
+
+  const memberships: Membership[] = [
+    { id: 1, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
+    { id: 2, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
+    { id: 3, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
+    { id: 4, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
+  ];
+
+
+  const awards: Award[] = [
+  {
+    id: 1,
+    title: "Best Student Research Project Award",
+    organization: "Indian Medical Research Council (IMRC)",
+    year: "2021",
+    description:
+      'For research on "Prevalence of Diabetic Retinopathy in Urban Slum Populations in Mumbai."',
+    credentialLink: "#",
+  },
+  {
+    id: 2,
+    title: "Best Student Research Project Award",
+    organization: "Indian Medical Research Council (IMRC)",
+    year: "2021",
+    description:
+      'For research on "Prevalence of Diabetic Retinopathy in Urban Slum Populations in Mumbai."',
+    credentialLink: "#",
+  },
+  {
+    id: 3,
+    title: "Best Paper Presentation Award",
+    organization: "National Conference on Biomedical Research",
+    year: "2022",
+    description: "Recognized for outstanding contribution in biomedical innovations.",
+    credentialLink: "#",
+  },
+];
+
+
+
+const workplaces: Workplace[] = [
+  { id: 1, organization: "Aravind Eye Hospital, Madurai, Tamil Nadu", img: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
+  { id: 2, organization: "All India Institute of Medical Sciences, Delhi", img: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
+];
+
+const q: Question[] = [
+  {
+    id: '1',
+    title: "Latest advancements in cataract surgery techniques?",
+    content: "I'm interested in learning about the newest developments in cataract surgery. What are the most promising techniques being used or researched currently?",
+    images: [
+      'https://cdn.builder.io/api/v1/image/assets/TEMP/sample1.jpg',
+      'https://cdn.builder.io/api/v1/image/assets/TEMP/sample2.jpg'
+    ],
+    likes: 45,
+    comments: 12,
+    shares: 8,
+    reposts: 3,
+    author: {
+      image: "https://cdn.builder.io/api/v1/image/assets/TEMP/profileimg1.jpg",
+      name: "Dr. Seelam Vamshidhar",
+      title: "Ophthalmologist | AIIMS Delhi"
+    },
+    timeAgo: "2 days ago"
+  },
+  {
+    id: '2',
+    title: "Best practices for post-LASIK care?",
+    content: "Looking for recommendations on post-LASIK patient care protocols. What has been your experience with different approaches?",
+    images: [
+      'https://cdn.builder.io/api/v1/image/assets/TEMP/sample3.jpg'
+    ],
+    likes: 32,
+    comments: 8,
+    shares: 5,
+    reposts: 2,
+    author: {
+      image: "https://cdn.builder.io/api/v1/image/assets/TEMP/profileimg1.jpg",
+      name: "Dr. Seelam Vamshidhar",
+      title: "Ophthalmologist | AIIMS Delhi"
+    },
+    timeAgo: "5 days ago"
+  }
+];
+
+const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % 3);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
+
 
   return (
     <div className="min-h-screen font-fontsm mx-auto ">
@@ -74,7 +397,26 @@ const Profile: React.FC = () => {
                 </p>
                 </div>
                     </div>
+
+                  
+
+
+
                   <div className='hidden lg:block'>
+                    <div className='p-3 px-4 '>
+                      {/* recent positions */}
+                      <div className="flex flex-col items-center gap-2 mt-6 border-b pb-1">
+                        
+                       
+                      {workplaces.map((work) => (
+                            <div key={work.id} className="flex items-center gap-3 mb-2">
+                              <img src={work.img} alt={work.organization} className="w-6 h-6 rounded-full" />
+                              <p className="text-xs text-left">{work.organization}</p>
+                            </div>
+                          ))}
+                       </div>
+
+                    </div>
 
                 <div className="flex justify-between  mt-6 mx-3">
                   <div className="text-center">
@@ -102,12 +444,182 @@ const Profile: React.FC = () => {
                   </button>
                 </div>
 
+                <div className="w-full lg:hidden sm:block max-w-4xl mx-auto relative mt-4 h-[180px] overflow-hidden ">
+                    {/* First Custom Section */}
+                    <div
+                      className={`absolute border rounded-lg   p-4 w-full h-full transform transition-transform duration-700 ease-in-out ${
+                        activeIndex === 0 
+                          ? 'translate-x-0' 
+                          : '-translate-x-full'
+                      }`}
+                    >
+                      <div className=''> 
+                     <div className="flex justify-between items-start mb-2">
+                      <h2 className="text-xl font-semibold">About</h2>
+                      <button className="text-gray-500">
+                        <img src={edit} alt="edit" className="w-5 h-5" />
+                      </button>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600 ">
+                        Aspiring ophthalmologist with a keen interest in surgical techniques and patient care.  Currently pursuing MBBS at AIIMS Delhi with a focus on ophthalmology.  Passionate about leveraging technology in healthcare and contributing to medical research.
+                      </p>
+                    </div>
+
+                      </div>
+                    </div>
+
+                    {/* Second Custom Section */}
+                    <div
+                      className={`absolute w-full h-full transform transition-transform duration-700 ease-in-out ${
+                        activeIndex === 1 
+                          ? 'translate-x-0' 
+                          : activeIndex < 1 
+                            ? 'translate-x-full' 
+                            : '-translate-x-full'
+                      }`}
+                    >
+                     <div className="w-full  h-[200px] border border-gray-200 p-4 rounded-lg">
+                          
+                          <div className="flex   justify-between items-start mb-4">
+                            <div className='mr-4'>
+                            <h2 className="text-sm flex items-start font-medium text-gray-800">Profile Completion</h2>
+                            <div className="space-y-1 grid grid-cols-2 ">
+                            <button className=" flex  items-center  bg-gray-50 rounded-full py-2 px-2">
+                              <span className="text-xs text-gray-700">Education</span>
+                              <span className="text-sm">+</span>
+                            </button>
+                            <button className=" flex items-center justify-between bg-gray-50 rounded-full py-2 px-4">
+                              <span className="text-xs text-gray-700">Experience</span>
+                              <span className="text-sm">+</span>
+                            </button>
+                            <button className=" flex items-center justify-between bg-gray-50 rounded-full py-2 px-4">
+                              <span className="text-xs text-gray-700">Skills</span>
+                              <span className="text-sm">+</span>
+                            </button>
+                            <button className=" flex items-center justify-between bg-gray-50 rounded-full py-2 px-4">
+                              <span className="text-xs text-gray-700">Awards</span>
+                              <span className="text-sm">+</span>
+                            </button>
+                          </div>
+                          </div> 
+                            <div className="relative mt-4">
+                              <div className="w-14 h-14 rounded-full border-2 border-gray-100 flex items-center justify-center">
+                                <span className="text-sm font-medium text-maincl">75%</span>
+                              </div>
+                              <svg className="absolute top-0 left-0 w-14 h-14 -rotate-90">
+                                <circle
+                                  cx="28"
+                                  cy="28"
+                                  r="26"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  fill="none"
+                                  className="text-maincl"
+                                  strokeDasharray="163.36"
+                                  strokeDashoffset="40.84"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                          
+                        </div>
+                      
+                    </div>
+
+                    {/* Third Custom Section */}
+                    <div
+                      className={`absolute  w-full h-full transform transition-transform duration-700 ease-in-out ${
+                        activeIndex === 2 
+                          ? 'translate-x-0' 
+                          : activeIndex < 2 
+                            ? 'translate-x-full' 
+                            : '-translate-x-full'
+                      }`}
+                    > 
+                     <div className='p-4 border h-[200px] border-gray-200 rounded-lg'>
+                      {/* recent positions */}
+                      <div className="flex flex-col items-center  gap-2 pt-2 border-b last:border-none  pb-">
+                        <div className='flex items-center justify-between w-full'>
+                          <p className='text-sm' >Recent positions</p>
+                          <img src={edit} alt="" />
+                        </div>
+                       
+                      {workplaces.map((work) => (
+                            <div key={work.id} className="flex justify-start items-center  gap-3 mb-2">
+                              <img src={work.img} alt={work.organization} className="w-8 h-8 rounded-full" />
+                              <p className="text-sm text-left">{work.organization}</p>
+                            </div>
+                          ))}
+                       </div>
+
+                    </div>
+                      
+                    </div>
+
+                    {/* Navigation Dots */}
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                      {[0, 1, 2].map((index) => (
+                        <button
+                          key={index}
+                          onClick={() => setActiveIndex(index)}
+                          className={`w-2 h-2 rounded-full transition-colors duration-300 ${
+                            index === activeIndex ? 'bg-maincl' : 'bg-gray-300'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>            
+
 
 
                 </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 {/* Profile Completion */}
-                <div className="w-full mt-6 border border-gray-200 p-4 rounded-lg">
+                <div className="w-full mt-6 hidden lg:block border border-gray-200 p-4 rounded-lg">
                   
                   <div className="flex   justify-between items-start mb-4">
                     <div className='mr-4'>
@@ -154,7 +666,7 @@ const Profile: React.FC = () => {
                 </div>
 
                 {/* Profile Link */}
-                <div className="mt-6 w-full text-left border border-gray-200 p-4 rounded-lg">
+                <div className="mt-6 w-full text-left border border-gray-200 p-4 rounded-lg hidden lg:block">
                   <p className="text-sm text-gray-500 flex items-center gap-2">
                     <FaLink className="text-gray-400" />
                     Profile Link
@@ -190,157 +702,390 @@ const Profile: React.FC = () => {
 
             <div className="bg-white rounded-lg shadow-sm">
               {/* Post Input */}
-              <div className="p-4 border-b">
+              <div className="p-4 border border-gray-100 rounded-xl hidden lg:block">
                 <div className="flex items-center gap-3">
-                  <img src="/profile-pic.jpg" alt="" className="w-10 h-10 rounded-full" />
+                  <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c" alt="" className="w-10 h-10 rounded-full" />
                   <input
                     type="text"
                     placeholder="What's on your mind?"
-                    className="flex-1 bg-gray-100 rounded-full px-4 py-2"
+                    className="flex-1  px-4 py-2"
                   />
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded-lg">
+                  <button className="px-4 py-1.5 flex items-center text-sm text-nowrap bg-maincl text-white rounded-3xl">
+                    <img src={add} alt="" className='w-5 ' />
                     Add Post
                   </button>
                 </div>
               </div>
 
               {/* Content Sections */}
-              <div className="divide-y">
-                {/* About Section */}
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold">About</h2>
-                    <button className="text-gray-500">
-                      <MdEdit size={20} />
-                    </button>
+              <div className="divide-">
+                {/* About Section - Only visible when About tab is active on mobile */}
+                <div className={`${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
+                  <div className="p-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <h2 className="text-xl font-medium">About</h2>
+                      <button className="text-gray-500">
+                        <img src={edit} alt="" />
+                      </button>
+                    </div>
+                    <p className="text-gray-600">{aboutText}</p>
                   </div>
-                  <p className="text-gray-600">{aboutText}</p>
                 </div>
 
                 {/* Experience Section */}
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold">Experience</h2>
-                    <button className="text-gray-500">
-                      <MdEdit size={20} />
-                    </button>
-                  </div>
-                  <div className="space-y-6">
-                    {[
-                      {
-                        title: 'Ophthalmology Clinical Intern',
-                        company: 'AIIMS',
-                        date: 'Jun 2023 - Present'
-                      },
-                      {
-                        title: 'Research Assistant - Ophthalmology Department',
-                        company: 'AIIMS',
-                        date: 'Jan 2023 - May 2023'
-                      }
-                    ].map((exp, index) => (
-                      <div key={index} className="flex gap-4">
-                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex-shrink-0"></div>
-                        <div>
-                          <h3 className="font-medium">{exp.title}</h3>
-                          <p className="text-gray-500 text-sm">{exp.date}</p>
-                          <p className="text-gray-600 text-sm mt-1">{exp.company}</p>
+                <div className={`p-6 border border-gray-100 rounded-xl my-3 ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
+                      <div className="flex justify-between items-center mb-6">
+                        <div className='flex gap-3' >
+
+                        <h2 className="text-xl font-medium">Experience</h2>
+                        <button className="text-gray-500">
+                         <img src={edit} alt="" />
+                        </button>
                         </div>
+                        <button  className='flex gap-1 items-center'>
+                          <p className='text-fillc'>see all</p>
+                          <img src={arrowright} alt="" />
+                        </button>
                       </div>
-                    ))}
-                  </div>
-                  <button className="text-blue-600 text-sm mt-4">See all →</button>
-                </div>
+                      
+                      <ol className="items-start sm:flex">
+                        {experiences.map((exp, index) => (
+                          <li key={index} className="relative mb-6 sm:mb-0 flex-1">
+                            <div className="flex items-center">
+                              <div className="z-10 flex items-center rounded-full justify-center w-10 h-10 bg-blue-100  ring-0 ring-white sm:ring-8 shrink-0">
+                              <img 
+                                  src={exp.img} 
+                                  alt={`${exp.company} logo`}
+                                  className="w-10 h-10 rounded-full  "
+                                />
+                              </div>
+                              {index < experiences.length - 1 && (
+                                <div className="hidden sm:flex w-full bg-gray-200 h-0.5"></div>
+                              )}
+                            </div>
+                            <div className="mt-3 sm:pe-8">
+                              <h3 className="text-sm font-normal text-gray-900 line-clamp-1">{exp.title}</h3>
+                              <p className="text-xs font-light text-gray-600 line-clamp-1">{exp.company}</p>
+                              <time className="block mb-2 text-xs font-normal text-gray-500">{exp.date}</time>
+                              {exp.description && (
+                                <p className="text-sm font-normal text-gray-500 line-clamp-2">{exp.description}</p>
+                              )}
+                            </div>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
 
                 {/* Education Section */}
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold">Education</h2>
-                    <button className="text-gray-500">
-                      <MdEdit size={20} />
-                    </button>
+                <div className={`p-6 border border-gray-100 rounded-xl my-5 ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
+                    <div className="flex gap-2 items-center mb-6">
+                      <h2 className="text-xl font-medium">Education</h2>
+                      <button className="text-gray-500">
+                        <img src={edit} alt="" />
+                      </button>
+                    </div>
+
+                    <ol className="items-start sm:flex">
+                      {educationData.map((edu, index) => (
+                        <li key={index} className="relative mb-6 sm:mb-0 flex-1">
+                          <div className="flex items-center">
+                            <div className="z-10 flex items-center justify-center w-12 h-12 bg-white rounded-full ring-0 ring-white sm:ring-8 shrink-0 overflow-hidden border-2 border-gray-100">
+                              <img 
+                                src={edu.logo} 
+                                alt={`${edu.institution} logo`}
+                                className="w-12 h-12 object-cover"
+                              />
+                            </div>
+                            {index < educationData.length - 1 && (
+                              <div className="hidden sm:flex w-full bg-gray-200 h-0.5"></div>
+                            )}
+                          </div>
+                          <div className="mt-3 sm:pe-8">
+                            <h3 className="text-sm w-72 overflow-hidden text-ellipsis whitespace-wrap font-normal text-gray-900">{edu.institution}</h3>
+                            <p className="text-xs font-light text-gray-600">{edu.degree}</p>
+                            <time className="block mb-2 text-xs font-normal text-gray-500">{edu.year}</time>
+                          </div>
+                        </li>
+                      ))}
+                    </ol>
                   </div>
-                  <div className="space-y-6">
-                    <div className="flex gap-4">
-                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex-shrink-0"></div>
+
+
+
+                  <div className={`flex flex-col lg:flex-row gap-6 ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
+
+                  {/* Areas of Interest Card */}
+                  <div className="w-full lg:w-1/2 flex flex-col justify-between  bg-white shadow-md rounded-xl p-6">
                       <div>
-                        <h3 className="font-medium">All India Institute of Medical Sciences (AIIMS), New Delhi</h3>
-                        <p className="text-gray-500 text-sm">2020 - 2023</p>
-                      </div>
+
+                      
+                    <div className="flex justify-between items-center mb-4">
+                      <h2 className="text-lg font-medium">Areas of Interest</h2>
+                      <button className="text-gray-500 hover:text-blue-500">
+                       <img src={edit} alt="" /> {/* Edit Icon */}
+                      </button>
+                    </div>
+
+
+                    {/* Interest List */}
+                    
+                    <ul className="space-y-3">
+                      {interestData.map((interest, index) => (
+                        <li key={index} className="border-b py-2 last:border-none">
+                          <p className="text-sm text-gray-600">{interest.name}</p>
+                         
+                        </li>
+                      ))}
+                    </ul>
+                    </div>
+
+                    {/* Footer Link */}
+                    <div className="mt-4 text-blue-600 text-sm font-medium cursor-pointer flex items-center gap-1">
+                      See all Areas of Interest →
+                    </div>
+                  </div>
+
+
+
+
+                  {/* Licenses and Certification Card */}
+                  <div className={`w-full lg:w-1/2 bg-white shadow-md rounded-xl p-6 ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
+                    <div className="flex justify-between items-center mb-4">
+                      <h2 className="text-lg font-medium">Licenses and Certification</h2>
+                      <button className="text-gray-500 hover:text-blue-500">
+                        <img src={edit} alt="" /> {/* Edit Icon */}
+                      </button>
+                    </div>
+
+                    {/* Certification List */}
+                    <ul className="space-y-4">
+                      {certificationData.map((cert, index) => (
+                        <li key={index} className="border-b pb-2 last:border-none">
+                          <div className="flex items-start gap-4">
+                            {/* Image Placeholder */}
+                            <div className="w-12 h-12 bg-gray-200 rounded-full">
+                              <img src={cert.logo} alt={cert.title} className="w-full h-full rounded-full" />
+                            </div>
+                            <div>
+                              <p className="font-normal text-sm line-clamp-1">{cert.title}</p>
+                              <p className="text-sm text-gray-400 line-clamp-1">{cert.organization}</p>
+                              <p className="text-xs text-gray-700">Issued: {cert.issueDate}</p>
+                              <button className="mt-2 px-2 py-1 border text-xs rounded-3xl text-maincl border-gray-200 hover:bg-blue-50">
+                                Show Credential
+                              </button>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+
+                    {/* Footer Link */}
+                    <div className="mt-4 text-blue-600 text-sm font-medium cursor-pointer flex items-center gap-1">
+                      See all Licenses and Certification →
                     </div>
                   </div>
                 </div>
 
-                {/* Areas of Interest */}
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold">Areas of Interest</h2>
-                    <button className="text-gray-500">
-                      <MdEdit size={20} />
-                    </button>
-                  </div>
-                  <div className="space-y-3">
-                    {[
-                      'Cataract Surgery',
-                      'Corneal Disorders and Treatment',
-                      'Pediatric Ophthalmology'
-                    ].map((area, index) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">
-                          {area}
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          at All India Institute of Medical Sciences, Delhi
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  <button className="text-blue-600 text-sm mt-4">See All Areas of Interest →</button>
-                </div>
+
+
 
                 {/* Memberships */}
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold">Memberships</h2>
-                    <button className="text-gray-500">
-                      <MdEdit size={20} />
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {[
-                      'Visionary Care Society',
-                      'Visionary Care Society',
-                      'Visionary Care Society',
-                      'Visionary Care Society'
-                    ].map((society, index) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <div className="w-10 h-10 bg-gray-100 rounded-lg flex-shrink-0"></div>
-                        <span className="text-sm">{society}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <button className="text-blue-600 text-sm mt-4">See all Memberships →</button>
-                </div>
+                <div className={`bg-white shadow-md rounded-xl py-8 lg:px-6 px-4 my-4 ${activeTab === 'memberships' || activeTab === 'Memberships' ? 'block' : 'hidden lg:block'}`}>
+                     
+                      <div className="flex justify-between items-center mb-6">
+                        <div className='flex gap-3' >
+                        <h2 className="text-lg font-medium">Memberships </h2>
+                        <button className="text-gray-500 hover:text-blue-500">
+                            <img src={edit} alt="" /> {/* Edit Icon */}
+                            </button>
+                        
+                        </div>
+                       
 
-                {/* Languages */}
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold">Languages</h2>
-                    <button className="text-gray-500">
-                      <MdEdit size={20} />
-                    </button>
-                  </div>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span>English</span>
-                      <span className="text-gray-500">Professional working proficiency</span>
+                        {memberships.length > 4 && (
+                          <button
+                            onClick={() => setExpanded(!expanded)}
+                            className="text-fillc text-sm font-medium flex items-center gap-1"
+                          >
+                            {expanded ? "Show Less" : "See all Memberships"} <img src={arrowright} alt="" />
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Membership List */}
+                      <div
+                          className={`transition-all duration-300 ${
+                            expanded ? "overflow-visible" : "overflow-hidden"
+                          }`}
+                        >
+                          <div
+                            className={`grid gap-9  ${
+                              expanded ? "grid-cols-1 sm:grid-cols-4 lg:flex lg:flex-row" : "grid-cols-1 sm:grid-cols-1 lg:grid-cols-4"
+                            }`}
+                          >
+                            {memberships.slice(0, expanded ? memberships.length : 4).map((membership) => (
+                          <div key={membership.id} className="flex items-center gap-3   ">
+                            <img
+                              src={membership.image}
+                              alt={membership.name}
+                              className="w-10 h-10 rounded-full"
+                            />
+                            <div>
+                              <p className="font text-xs">{membership.name}</p>
+                              <p className="text-fontlit  text-gray-500">{membership.category}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      </div>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Hindi</span>
-                      <span className="text-gray-500">Native or bilingual proficiency</span>
+
+
+
+                  {/* Awards and Achievements */}
+                    <div className={`bg-white shadow-md rounded-xl p-6 ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
+                    <div className="flex justify-between items-center mb-4">
+                      <h2 className="text-lg font-medium">Awards and Achievements</h2>
+                      <button className="text-gray-400 hover:text-gray-600">
+                        <img src={edit} alt="" /> {/* Edit Icon */}
+                      </button>
                     </div>
+
+                    {/* Awards List */}
+                    <div>
+                      {awards.slice(0, expanded ? awards.length : 2).map((award) => (
+                        <div key={award.id} className="border-b pb-4 mb-4 last:border-none">
+                          <h3 className="text-sm font-medium">{award.title}</h3>
+                          <p className="text-gray-600 font-light text-sm">
+                            {award.organization} ({award.year})
+                          </p>
+                          <p className="text-gray-700 text-normal text-sm">{award.description}</p>
+                          {award.credentialLink && (
+                            <a
+                              href={award.credentialLink}
+                              className="mt-2 inline-block text-maincl border border-gray-200 rounded-3xl px-3 py-1 text-xs"
+                            >
+                              Show Credential
+                            </a>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Expand Button */}
+                    {awards.length > 2 && (
+                      <button
+                        onClick={() => setExpanded(!expanded)}
+                        className="w-full text-blue-600 text-sm font-medium flex  items-center mt-2"
+                      >
+                        {expanded ? "Show Less" : "See all Awards and Achievements"} →
+                      </button>
+                    )}
                   </div>
-                  <button className="text-blue-600 text-sm mt-4">See all Languages →</button>
-                </div>
+
+
+                      {/* tabs for the desktop */}
+                      <div className="hidden lg:block mt-6">
+                        <div className="border-b">
+                          <div className="flex space-x-8">
+                            {Desktoptabs.map((tab) => (
+                              <button
+                                key={tab}
+                                onClick={() => setActiveTab(tab.toLowerCase())}
+                                className={`px-4 py-4 text-sm font-medium border-b-2 whitespace-nowrap ${
+                                  activeTab === tab.toLowerCase()
+                                    ? 'border-blue-500 text-blue-500'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                }`}
+                              >
+                                {tab}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        
+                        {/* Tab content sections will be added here later */}
+                        <div className="mt-6">
+                          {activeTab === 'activity' && (
+                            <div className="space-y-1">
+                              {/* Posts Section */}
+                              <div>
+                                <div className="flex justify-between items-center">
+                                  <h2 className="text-xl font-medium">Posts</h2>
+                                  <button 
+                                    onClick={() => setShowAllPosts(!showAllPosts)}
+                                    className="text-fillc text-sm font-medium flex items-center gap-1"
+                                  >
+                                    {showAllPosts ? "Show Less" : "See all Posts"} 
+                                    <img src={arrowright} alt="" className={`transform ${showAllPosts ? 'rotate-180' : ''} w-4 h-4`} />
+                                  </button>
+                                </div>
+                                
+                                <div className="grid grid-cols-2 gap-1 transition-all duration-300">
+                                  {posts.slice(0, showAllPosts ? posts.length : 2).map((post) => (
+                                    <PostCard
+                                      key={post.id}
+                                      userTitle={post.userTitle}
+                                      userImage={post.userImage}
+                                      userName={post.userName}
+                                      timeAgo ={post.time}
+                                      content={post.content}
+                                      likes={post.likes}
+                                      comments={post.comments}
+                                      images={post.images}
+                                      shares={post.shares}
+                                      reposts={post.reposts}
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+
+                              {/* Questions Section */}
+                              <div className="mt-8">
+                                <div className="flex justify-between items-center mb-4">
+                                  <h2 className="text-xl font-medium">Questions</h2>
+                                  <button 
+                                    onClick={() => setShowAllQuestions(!showAllQuestions)}
+                                    className="text-fillc text-sm font-medium flex items-center gap-1"
+                                  >
+                                    {showAllQuestions ? "Show Less" : "See all Questions"}
+                                    <img src={arrowright} alt="" className={`transform ${showAllQuestions ? 'rotate-180' : ''} w-4 h-4`} />
+                                  </button>
+                                </div>
+                                <div className="grid grid-cols-1 gap-4 transition-all duration-300">
+                                  {questions.slice(0, showAllQuestions ? questions.length : 2).map((question) => (
+                                    <QuestionCard
+                                      userImage={userImage}
+                                      userName={userName}
+                                      userTitle={userTitle}
+                                      timeAgo={timeAgo}
+                                      questionTitle="Your question title here"
+                                      questionContent="Your question content here"
+                                      images={images}
+                                      likes={likes}
+                                      comments={comments}
+                                      shares={shares}
+                                      reposts={reposts}
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          {activeTab === 'events' && (
+                            <div>Events content will go here</div>
+                          )}
+                          {activeTab === 'jobs' && (
+                            <div>Jobs content will go here</div>
+                          )}
+                          {activeTab === 'saved' && (
+                            <div>Saved content will go here</div>
+                          )}
+                          {activeTab === 'drafts' && (
+                            <div>Drafts content will go here</div>
+                          )}
+                        </div>
+                      </div>
               </div>
             </div>
           </div>
