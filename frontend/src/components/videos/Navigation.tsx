@@ -8,8 +8,7 @@ import videos1 from "../../assets/icon/videos1.svg";
 import videos2 from "../../assets/icon/videos2.svg";
 import connect1 from "../../assets/icon/connect1.svg";
 import connect2 from "../../assets/icon/connect2.svg";
-import cme1 from "../../assets/icon/cme1.svg";
-import cme2 from "../../assets/icon/cme2.svg";
+
 import jobs1 from "../../assets/icon/jobs1.svg";
 import jobs2 from "../../assets/icon/jobs2.svg";
 
@@ -52,13 +51,7 @@ const defaultNavItems: NavItemProps[] = [
     path: "/connect",
     isActive: false,
   },
-  {
-    activeIcon: <img src={cme2} className="w-12 h-12" alt="" />,
-    inactiveIcon: <img src={cme1} className="w-12 h-12" alt="" />,
-    label: "CME",
-    path: "/cme",
-    isActive: false,
-  },
+ 
   {
     activeIcon: <img src={jobs2} className="w-12 h-12" alt="" />,
     inactiveIcon: <img src={jobs1} className="w-12 h-12" alt="" />,
@@ -86,8 +79,8 @@ export const Navigation: React.FC<NavigationProps> = ({
   };
 
   return (
-    <nav className="fixed  bottom-0 left-0 right-0  mx-auto bg-gray-900  bg-opacity-80 shadow-lg max-w-md">
-      <div className="flex justify-between items-center max-w-[480px] mx-auto px-5 py-2">
+    <nav className="fixed  bottom-0 left-0 right-0 max-w-[360px]  mx-auto bg-gray-900  bg-opacity-80 shadow-lg ">
+      <div className="flex justify-between  items-center mx-auto px-5 py-2">
         {navItems.map((item, index) => (
           <button
             key={index}

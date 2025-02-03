@@ -206,6 +206,7 @@ const PostPopup: React.FC<PostPopupProps> = ({
               <video
                 src={URL.createObjectURL(selectedMedia[0])}
                 className="w-full h-full object-cover"
+                controls
               />
               <button
                 onClick={() => setSelectedMedia([])}
