@@ -1,9 +1,7 @@
 import React from 'react';
 import save1 from "../../assets/icon/save1.svg";
 import share from "../../assets/icon/share.svg";
-import like from "../../assets/icon/like1.svg";
 import comment from "../../assets/icon/comment1.svg";
-import repost from "../../assets/icon/repost.svg";
 import more1 from "../../assets/icon/more1.svg";
 
 interface QuestionCardProps {
@@ -14,10 +12,8 @@ interface QuestionCardProps {
   questionTitle: string;
   questionContent: string;
   images: string[];
-  likes: number;
-  comments: number;
+  answers: number;
   shares: number;
-  reposts: number;
 }
 
 const QuestionCard: React.FC<QuestionCardProps> = ({
@@ -28,10 +24,8 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
   questionTitle,
   questionContent,
   images,
-  likes,
-  comments,
+  answers,
   shares,
-  reposts
 }) => {
   return (
     <div className="bg-white rounded-lg p-3 max-w-xl">
@@ -82,17 +76,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
 
         {/* Interaction buttons section */}
         <div className="flex justify-between mt-4 pt-4 border-t border-neutral-300">
-          <div className="flex">
-            <div className="flex">
-              <button className="flex items-center gap-1 text-xs text-neutral-500 hover:text-slate-700">
-                <img src={like} alt="" className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="flex flex-col justify-start text-xs pl-1">
-              <p className="text-neutral-500 hover:text-slate-700">likes</p>
-              <span>{likes}</span>
-            </div>
-          </div>
+          
 
           <div className="flex">
             <div className="flex">
@@ -101,8 +85,8 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
               </button>
             </div>
             <div className="flex flex-col justify-start text-xs pl-1">
-              <p className="text-neutral-500 hover:text-slate-700">comments</p>
-              <span>{comments}</span>
+              <p className="text-neutral-500 hover:text-slate-700">Answers</p>
+              <span>{answers}</span>
             </div>
           </div>
 
@@ -118,17 +102,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
             </div>
           </div>
 
-          <div className="flex">
-            <div className="flex">
-              <button className="flex items-center gap-1 text-xs text-neutral-500 hover:text-slate-700">
-                <img src={repost} alt="" className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="flex flex-col justify-start text-xs pl-1">
-              <p className="text-neutral-500 hover:text-slate-700">reposts</p>
-              <span>{reposts}</span>
-            </div>
-          </div>
+          
         </div>
       </article>
     </div>

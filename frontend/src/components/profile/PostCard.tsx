@@ -35,7 +35,7 @@ const PostCard: React.FC<PostCardProps> = ({
 
 
   return (
-    <div className="bg-white rounded-lg p-3 max-w-xl">
+    <div className="bg-white rounded-lg p-3  max-w-xl">
      <article className="flex flex-col p-4 bg-white rounded-xl border border-gray-200 mt-2 shadow-lg font-fontsm">
           {/* Existing header section */}
           <div className="flex justify-between items-start relative">

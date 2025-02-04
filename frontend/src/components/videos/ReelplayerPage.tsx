@@ -433,7 +433,7 @@ const ReelsFeed = () => {
             {reelsData.map((reel, index) => (
               <div
                 key={reel.id}
-                className={`absolute w-full h-full transition-transform duration-300 lg:pt-16 ${
+                className={`absolute w-full h-full transition-transform duration-300 lg:pt-3 ${
                   index === currentReelIndex ? 'translate-y-0' : 
                   index < currentReelIndex ? '-translate-y-full' : 'translate-y-full'
                 }`}
@@ -489,7 +489,7 @@ const ReelsFeed = () => {
                   )}
 
                   {/* Options Menu */}
-                  <div className="absolute top-4 right-4 z-50" ref={el => el && (optionsRefs.current[reel.id] = el)}>
+                  <div className="absolute top-1 right-4 z-50" ref={el => el && (optionsRefs.current[reel.id] = el)}>
                     <button
                       onClick={() => setReelsState(prev => ({
                         ...prev,

@@ -55,7 +55,23 @@ export const JobsCard: React.FC<JobCardProps> = ({ job }) => {
                 <img src={money} alt="" className="w-3 mr-1" /> {job.amount}
               </div>
             </div>
+            <div className="flex gap-2 ">
+                        <button 
+                          onClick={() => {
 
+                          }}
+                          className="px-4 py-1 text-xs text-white bg-maincl rounded-xl hover:bg-blue-700"
+                        >
+                          Apply
+                        </button>
+                        <button 
+                          onClick={() => {
+                          }}
+                          className="px-4 py-1 text-xs text-maincl border border-gray-200 rounded-xl hover:bg-gray-50"
+                        >
+                          View Details
+                        </button>
+                      </div>
            
           </div>
         </div>
