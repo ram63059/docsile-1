@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from '../../common/Modal';
 
 interface InterestFormProps {
@@ -10,6 +10,7 @@ interface InterestFormProps {
 }
 
 export interface InterestFormData {
+  id?: string;
   name: string;
 }
 
@@ -26,6 +27,14 @@ const InterestForm: React.FC<InterestFormProps> = ({
     }
   );
 
+  useEffect(() => {
+    if (!isEditing) {
+      setFormData({ name: '' });
+    } else if (initialData) {
+      setFormData(initialData);
+    }
+  }, [isOpen, isEditing, initialData]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
@@ -40,7 +49,7 @@ const InterestForm: React.FC<InterestFormProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={`${isEditing ? 'Edit' : 'Add'} Interest`}>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
+        <div className='pt-4 pb-8'>
           <label htmlFor="name" className="block text-sm font-medium text-gray-700">
             Interest Name
           </label>
@@ -51,7 +60,7 @@ const InterestForm: React.FC<InterestFormProps> = ({
             value={formData.name}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full p-3 rounded-lg border  border-gray-300 shadow-sm focus:outline-none focus:border-fillc"
             placeholder="e.g., Ophthalmology Research"
           />
         </div>
@@ -60,13 +69,13 @@ const InterestForm: React.FC<InterestFormProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+            className="px-5 py-2 text-sm font-medium text-maincl  bg-gray-100 border border-gray-300 rounded-3xl hover:bg-gray-50"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
+            className="px-4 py-2 text-sm font-medium text-white bg-maincl border border-transparent rounded-3xl hover:bg-fillc"
           >
             {isEditing ? 'Save Changes' : 'Add Interest'}
           </button>

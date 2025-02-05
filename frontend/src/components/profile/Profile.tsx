@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import MembershipForm from './forms/MembershipForm';
 import add from "../../assets/icon/add.svg";
 import backbutton from "../../assets/icon/backbutton.svg";
 import more1 from "../../assets/icon/more1.svg";
@@ -17,6 +18,9 @@ import { Link } from 'react-router-dom';
 import { JobsCard } from '../jobs/JobCard';
 import ConferenceCard from './ConferenceCard';
 import EventCalendar from './EventCalendar';
+import AwardForm, { AwardFormData } from './forms/AwardForm';
+import InterestForm, { InterestFormData } from './forms/InterestForm';
+import EducationForm from './forms/EducationForm';
 
 
 
@@ -41,6 +45,7 @@ interface Interest {
   id: string;
   name: string;
 }
+
 interface Certification {
   id: string;
   title: string;
@@ -155,9 +160,24 @@ interface MentionedPost {
     speciality: string;
   }
   
+interface MembershipFormData {
+  name: string;
+  category: string;
+  image: File | null;
+}
+
+interface EducationFormData {
+  institution: string;
+  degree: string;
+  year: string;
+  logo: string;
+}
 
 const Profile: React.FC = () => {
   const [activeTab, setActiveTab] = useState('about');
+  const [isAddMembershipFormOpen, setIsAddMembershipFormOpen] = useState(false);
+  const [editingMembership, setEditingMembership] = useState<Membership | null>(null);
+  
   const [expanded, setExpanded] = useState(false);
   const [interestsexpanded, setInterestsExpanded] = useState(false);
   const [showAllPosts, setShowAllPosts] = useState(false);
@@ -169,8 +189,17 @@ const Profile: React.FC = () => {
   const [showAllJobs, setShowAllJobs] = useState(false);
   const [activeDesktopTab, setActiveDesktopTab] = useState<string>('activity');
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+  const [isAwardFormOpen, setIsAwardFormOpen] = useState(false);
   
-
+  const [editingAward, setEditingAward] = useState<Award | null>(null);
+ 
+  const [isAddInterestFormOpen, setIsAddInterestFormOpen] = useState(false);
+  const [editingInterest, setEditingInterest] = useState<{ id: string; name: string } | null>(null);
+  const [showInterestEditButtons, setShowInterestEditButtons] = useState(false);
+  
+  const [isEducationFormOpen, setIsEducationFormOpen] = useState(false);
+  const [editingEducation, setEditingEducation] = useState<Education | null>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   useEffect(() => {
     setActiveDesktopTab('activity');
@@ -259,7 +288,7 @@ const Profile: React.FC = () => {
     // Add more experiences...
   ];
 
-  const educationData: Education[] = [
+  const [educationData, setEducationData] = useState<Education[]>([
     {
       institution: "All India Institute of Medical Sciences (AIIMS), New Delhi",
       degree: "Bachelor of Medicine, Bachelor of Surgery (MBBS)",
@@ -285,9 +314,8 @@ const Profile: React.FC = () => {
       logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
     },
     // Add more education...
-  ];
-
-  const interestData: Interest[] = [
+  ]);
+  const [interestsData, setInterestsData] = useState<Interest[]>([
     {
       id: '1',
       name: "Cataract Surgery",
@@ -316,7 +344,8 @@ const Profile: React.FC = () => {
       id: '7',
       name: "Retinal Surgery",
     }
-  ];
+  ]);
+
 
   const certificationData: Certification[] = [
     {
@@ -349,18 +378,26 @@ const Profile: React.FC = () => {
     }
   ];
 
-
-  const memberships: Membership[] = [
+  const [memberships, setMemberships] = useState<Membership[]>([
     { id: 1, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
     { id: 2, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
     { id: 3, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
     { id: 4, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
     { id: 5, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
     { id: 6, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
-  ];
+   ]);
+  // const memberships: Membership[] = [
+  //   { id: 1, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
+  //   { id: 2, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
+  //   { id: 3, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
+  //   { id: 4, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
+  //   { id: 5, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
+  //   { id: 6, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
+  // ];
+  const [awards, setAwards] = useState<Award[]>(
 
 
-  const awards: Award[] = [
+   [
   {
     id: 1,
     title: "Best Student Research Project Award",
@@ -387,9 +424,9 @@ const Profile: React.FC = () => {
     description: "Recognized for outstanding contribution in biomedical innovations.",
     credentialLink: "#",
   },
-];
+]
 
-
+);
 
 const workplaces: Workplace[] = [
   { id: 1, organization: "Aravind Eye Hospital, Madurai, Tamil Nadu", img: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
@@ -826,6 +863,7 @@ const [activeIndex, setActiveIndex] = useState(0);
   
 
 
+  const [showEditButtons, setShowEditButtons] = useState(false);
   return (
     <div className="min-h-screen font-fontsm mx-auto ">
       {/* Mobile Header - Only visible on mobile */}
@@ -1532,10 +1570,19 @@ const [activeIndex, setActiveIndex] = useState(0);
                   <div className={`p-6 border border-gray-100 rounded-xl overflow-hidden my-5 group relative ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
                     <div className="flex gap-4 items-center mb-6">
                       <h2 className="text-xl font-medium">Education</h2>
-                      <button className="text-gray-500">
+                      <button 
+                        className="text-gray-500"
+                        onClick={() => setIsEditMode(!isEditMode)}
+                      >
                         <img src={edit} alt="" />
                       </button>
-                      <button className="flex items-center space-x-1 bg-maincl text-white px-2 py-2 rounded-full hover:bg-fillc text-sm">
+                      <button 
+                        className="flex items-center space-x-1 bg-maincl text-white px-2 py-2 rounded-full hover:bg-fillc text-sm"
+                        onClick={() => {
+                          setEditingEducation(null);
+                          setIsEducationFormOpen(true);
+                        }}
+                      >
                         <FaPlus className="w-3 h-3" />
                       </button>
                     </div>
@@ -1579,7 +1626,7 @@ const [activeIndex, setActiveIndex] = useState(0);
 
                             <ol id="education-scroll" className="flex overflow-x-auto scrollbar-hide scroll-smooth">
                               {educationData.map((edu, index) => (
-                                <li key={index} className="relative flex-none w-72 mb-6   mr-8 last:mr-0">
+                                <li key={index} className="relative flex-none w-72 mb-6 mr-8 last:mr-0">
                                   <div className="flex items-center">
                                     <div className="z-10 flex items-center justify-center w-12 h-12 bg-white rounded-full ring-0 ring-white sm:ring-8 shrink-0 overflow-hidden border-2 border-gray-100">
                                       <img src={edu.logo} alt={`${edu.institution} logo`} className="w-12 h-12 object-cover" />
@@ -1588,7 +1635,18 @@ const [activeIndex, setActiveIndex] = useState(0);
                                       <div className="hidden sm:flex w-full bg-gray-200 h-0.5"></div>
                                     )}
                                   </div>
-                                  <div className="mt-3  sm:pe-8">
+                                  <div className="mt-3 sm:pe-8 relative">
+                                    {isEditMode && (
+                                      <button
+                                        onClick={() => {
+                                          setEditingEducation(edu);
+                                          setIsEducationFormOpen(true);
+                                        }}
+                                        className="absolute right-0 top-0 p-1 bg-gray-100 rounded-full hover:bg-gray-200"
+                                      >
+                                        <img src={edit} alt="Edit" className="w-3 h-3" />
+                                      </button>
+                                    )}
                                     <h3 className="text-sm w-72 overflow-hidden text-ellipsis whitespace-wrap font-normal text-gray-900">{edu.institution}</h3>
                                     <p className="text-xs font-light text-gray-600">{edu.degree}</p>
                                     <time className="block mb-2 text-xs font-normal text-gray-500">{edu.year}</time>
@@ -1605,7 +1663,18 @@ const [activeIndex, setActiveIndex] = useState(0);
                                 <div className="flex-shrink-0">
                                   <img src={edu.logo} alt={`${edu.institution} logo`} className="w-12 h-12 rounded-full border-2 border-gray-100" />
                                 </div>
-                                <div>
+                                <div className="flex-grow relative">
+                                  {isEditMode && (
+                                    <button
+                                      onClick={() => {
+                                        setEditingEducation(edu);
+                                        setIsEducationFormOpen(true);
+                                      }}
+                                      className="absolute right-0 top-0 p-1 bg-gray-100 rounded-full hover:bg-gray-200"
+                                    >
+                                      <img src={edit} alt="Edit" className="w-3 h-3" />
+                                    </button>
+                                  )}
                                   <h3 className="text-sm font-normal text-gray-900">{edu.institution}</h3>
                                   <p className="text-xs font-light text-gray-600">{edu.degree}</p>
                                   <time className="block text-xs font-normal text-gray-500">{edu.year}</time>
@@ -1625,9 +1694,48 @@ const [activeIndex, setActiveIndex] = useState(0);
                             )}
                           </div>
                         </>
+                      
                       )}
                     </div>
                   </div>
+                 
+                        <EducationForm
+                          isOpen={isEducationFormOpen}
+                          onClose={() => {
+                            setIsEducationFormOpen(false);
+                            setEditingEducation(null);
+                          }}
+                          
+                          onSubmit={(data: EducationFormData) => {
+                            if (editingEducation) {
+                              // Update existing education
+                              const updatedEducation = educationData.map(edu =>
+                                edu.institution === editingEducation.institution
+                                  ? { ...edu, ...data }
+                                  : edu
+                              );
+                              setEducationData(updatedEducation);
+                            } else {
+                              // Add new education
+                              const newEducation = {
+                                institution: data.institution,
+                                degree: data.degree,
+                                year: data.year,
+                                logo: data.logo || "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372"
+                              };
+                              setEducationData([...educationData, newEducation]);
+                            }
+                            setIsEducationFormOpen(false);
+                            setEditingEducation(null);
+                          }}
+                          initialData={editingEducation ? {
+                            institution: editingEducation.institution,
+                            degree: editingEducation.degree,
+                            year: editingEducation.year,
+                            logo: editingEducation.logo
+                          } : undefined}
+                          isEditing={!!editingEducation}
+                        />
 
 
                   <div className={`flex flex-col lg:flex-row gap-6 ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
@@ -1635,48 +1743,106 @@ const [activeIndex, setActiveIndex] = useState(0);
                     {/* Areas of Interest Card */}
                     <div className="w-full lg:w-1/2 flex flex-col justify-between bg-white shadow-md rounded-xl p-6">
                       <div>
-                        <div className="flex justify-between items-center mb-4">
-                          <h2 className="text-lg font-medium">Areas of Interest</h2>
-                          <div className='flex gap-4'>
-                            <button className="text-gray-500 hover:text-blue-500">
-                              <img src={edit} alt="" />
-                            </button>
-                            <button
-                              className="flex items-center space-x-1 bg-maincl text-white px-1 py-1 rounded-full hover:bg-fillc text-sm"
-                            >
-                              <FaPlus className="w-3 h-3" />
-                            </button>
-                          </div>
+                      <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-lg font-medium">Areas of Interest</h2>
+                        <div className='flex gap-4'>
+                        <button onClick={() => setShowInterestEditButtons(!showInterestEditButtons)} className="text-gray-500 hover:text-blue-500">
+                          <img src={edit} alt="" />
+                        </button>
+                        <button
+                        onClick={() => {
+                          setEditingInterest(null); // Clear any existing editing interest
+                          setIsAddInterestFormOpen(true);
+                          }}
+                          className="flex items-center space-x-1 bg-maincl text-white px-1 py-1 rounded-full hover:bg-fillc text-sm"
+                        >
+                          <FaPlus className="w-3 h-3" />
+                        </button>
                         </div>
+                      </div>
 
-                        {/* Interest List */}
-                        {interestData.length === 0 ? (
-                          <div className="text-center py-8">
-                            <p className="text-gray-600 text-sm">
-                              Adding your areas of interest will help showcase your passions and strengths, making your profile more personalized and impactful!
-                            </p>
+                      {/* Interest List */}
+                      {interestsData.length === 0 ? (
+                        <div className="text-center py-8">
+                        <p className="text-gray-600 text-sm">
+                          Adding your areas of interest will help showcase your passions and strengths, making your profile more personalized and impactful!
+                        </p>
+                        </div>
+                      ) : (
+                        <ul className="space-y-3">
+                        {interestsData.slice(0, interestsexpanded ? interestsData.length : 4).map((interest, index) => (
+                          <li key={index} className="border-b py-2 last:border-none">
+                          <div className="flex justify-between items-center">
+                            <p className="text-sm text-gray-600">{interest.name}</p>
+                            {showInterestEditButtons && (
+                            <button
+                              onClick={() => {
+                              setEditingInterest({
+                                id: interest.id,
+                                name: interest.name,
+                              });
+                              setIsAddInterestFormOpen(true);
+                              }}
+                              className="text-gray-400 hover:text-gray-600"
+                            >
+                              <img src={edit} alt="Edit" className="w-4 h-4" />
+                            </button>
+                            )}
                           </div>
-                        ) : (
-                          <ul className="space-y-3">
-                            {interestData.slice(0, interestsexpanded ? interestData.length : 4).map((interest, index) => (
-                              <li key={index} className="border-b py-2 last:border-none">
-                                <p className="text-sm text-gray-600">{interest.name}</p>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
+                          </li>
+                        ))}
+                        </ul>
+                      )}  
                       </div>
 
                       {/* Footer Link - Only show if there are more than 4 interests */}
-                      {interestData.length > 4 && (
-                        <button
-                          onClick={() => setInterestsExpanded(!interestsexpanded)}
-                          className="mt-4 text-blue-600 text-sm font-medium cursor-pointer flex items-center gap-1"
-                        >
-                          {interestsexpanded ? "Show Less" : "See all Areas of Interest"} →
-                        </button>
+                      {interestsData.length > 4 && (
+                      <button
+                        onClick={() => setInterestsExpanded(!interestsexpanded)}
+                        className="mt-4 text-blue-600 text-sm font-medium cursor-pointer flex items-center gap-1"
+                      >
+                        {interestsexpanded ? "Show Less" : "See all Areas of Interest"} →
+                      </button>
                       )}
                     </div>
+                    <InterestForm
+                      isOpen={isAddInterestFormOpen}
+                      onClose={() => {
+                        setIsAddInterestFormOpen(false);
+                        setEditingInterest(null);
+                      }}
+                      onSubmit={(data: InterestFormData) => {
+                        if (editingInterest) {
+                          // Update existing interest
+                          const updatedInterests = interestsData.map(interest =>
+                            interest.id === editingInterest.id
+                              ? { ...interest, name: data.name }
+                              : interest
+                          );
+                          setInterestsData(updatedInterests);
+                        } else {
+                          // Add new interest
+                          const newInterest = {
+                            id: String(Date.now()),
+                            name: data.name
+                          };
+                          setInterestsData(prevInterests => [...prevInterests, newInterest]);
+                        }
+                        setIsAddInterestFormOpen(false);
+                        setEditingInterest(null);
+                      }}
+                      initialData={{
+                        name: editingInterest ? editingInterest.name : ''
+                      }}
+                      isEditing={!!editingInterest}
+                      key={editingInterest ? editingInterest.id : 'new'}
+                    />
+
+
+
+
+
+
 
                     {/* Licenses and Certification Card */}
                     <div className={`w-full lg:w-1/2 bg-white shadow-md rounded-xl p-6 ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
@@ -1743,17 +1909,24 @@ const [activeIndex, setActiveIndex] = useState(0);
                 <div className={`bg-white shadow-md rounded-xl py-8 lg:px-6 px-4 my-4 ${activeTab === 'memberships' || activeTab === 'Memberships' ? 'block' : 'hidden lg:block'}`}>
                    
                   <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-lg font-medium">Memberships</h2>
                   <div className='flex gap-4'>
-                    <h2 className="text-lg font-medium">Memberships</h2>
-                    <button className="text-gray-500 hover:text-blue-500">
+                    <button 
+                    onClick={() => setShowEditButtons(!showEditButtons)} 
+                    className="text-gray-400 hover:text-gray-600"
+                    >
                     <img src={edit} alt="" />
                     </button>
-                    <button className="flex items-center space-x-1 bg-maincl text-white px-2 py-1 rounded-full hover:bg-fillc text-sm">
+                    <button
+                    onClick={() => {
+                      setEditingMembership(null); // Clear any existing editing membership
+                      setIsAddMembershipFormOpen(true);
+                    }}
+                    className="flex items-center space-x-1 bg-maincl text-white px-1 py-1 rounded-full hover:bg-fillc text-sm"
+                    >
                     <FaPlus className="w-3 h-3" />
                     </button>
                   </div>
-
-                
                   </div>
 
                   {/* Membership List */}
@@ -1803,26 +1976,83 @@ const [activeIndex, setActiveIndex] = useState(0);
                       {memberships.map((membership) => (
                       <div 
                         key={membership.id} 
-                        className={`flex items-center gap-3 ${!isMobile && 'min-w-[200px]'}`}
+                        className={`flex items-center justify-between ${!isMobile && 'min-w-[200px]'}`}
                       >
+                        <div className="flex items-center gap-3">
                         <img
-                        src={membership.image}
-                        alt={membership.name}
-                        className="w-10 h-10 rounded-full"
+                          src={membership.image}
+                          alt={membership.name}
+                          className="w-10 h-10 rounded-full"
                         />
                         <div>
-                        <p className="font text-xs">{membership.name}</p>
-                        <p className="text-fontlit text-gray-500">{membership.category}</p>
+                          <p className="font text-xs">{membership.name}</p>
+                          <p className="text-fontlit text-gray-500">{membership.category}</p>
                         </div>
+                        </div>
+                        {showEditButtons && (
+                        <button
+                          onClick={() => {
+                          setEditingMembership(membership);
+                          setIsAddMembershipFormOpen(true);
+                          }}
+                          className="text-gray-400 hover:text-gray-600"
+                        >
+                          <img src={edit} alt="Edit" className="w-4 h-4" />
+                        </button>
+                        )}
                       </div>
                       ))}
                     </div>
                     </div>
-
-                    
                   </div>
                   )}
                 </div>
+                  {/* Membership Form Modal */}
+                  {isAddMembershipFormOpen && (
+                    <MembershipForm
+                    isOpen={isAddMembershipFormOpen}
+                    onClose={() => {
+                      setIsAddMembershipFormOpen(false);
+                      setEditingMembership(null);
+                    }}
+                    onSubmit={(data: MembershipFormData) => {
+                      if (editingMembership) {
+                      // Update existing membership
+                      const updatedMemberships = memberships.map(membership =>
+                        membership.id === editingMembership.id
+                        ? { 
+                          ...membership, 
+                          name: data.name,
+                          category: data.category,
+                          // Keep the existing image if no new file is provided
+                          image: data.image ? URL.createObjectURL(data.image) : membership.image
+                          }
+                        : membership
+                      );
+                      setMemberships(updatedMemberships);
+                      } else {
+                      // Add new membership
+                      const newMembership: Membership = {
+                        id: Date.now(),
+                        name: data.name,
+                        category: data.category,
+                        image: data.image 
+                        ? URL.createObjectURL(data.image)
+                        : "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372"
+                      };
+                      setMemberships([...memberships, newMembership]);
+                      }
+                      setIsAddMembershipFormOpen(false);
+                      setEditingMembership(null);
+                    }}
+                    initialData={editingMembership ? {
+                      name: editingMembership.name ,
+                      category: editingMembership.category || '',
+                      image: null
+                    } : undefined}
+                    isEditing={!!editingMembership}
+                    />
+                  )}
                     
 
                     {/* Awards and Achievements */}
@@ -1831,10 +2061,14 @@ const [activeIndex, setActiveIndex] = useState(0);
                       <h2 className="text-lg font-medium">Awards and Achievements</h2>
                       <div className='flex gap-4'>
 
-                      <button className="text-gray-400 hover:text-gray-600">
+                      <button onClick={() => setShowEditButtons(!showEditButtons)} className="text-gray-400 hover:text-gray-600">
                       <img src={edit} alt="" /> {/* Edit Icon */}
                       </button>
                       <button
+                       onClick={() => {
+                      setEditingAward(null); // Clear any existing editing award
+                      setIsAwardFormOpen(true);
+                      }}
                       className="flex items-center space-x-1 bg-maincl text-white px-1 py-1 rounded-full hover:bg-fillc text-sm"
                       >
                        <FaPlus className="w-3 h-3" />
@@ -1846,43 +2080,102 @@ const [activeIndex, setActiveIndex] = useState(0);
                     <div>
                       {awards.length === 0 ? (
                       <div className="text-center py-8">
-                        <p className="text-gray-600 text-sm">
-                        Adding your awards and achievements highlights your accomplishments and sets you apart, making your profile more impressive and memorable.
-                        </p>
+                      <p className="text-gray-600 text-sm">
+                      Adding your awards and achievements highlights your accomplishments and sets you apart, making your profile more impressive and memorable.
+                      </p>
                       </div>
                       ) : (
                       <>
-                        {awards.slice(0, expanded ? awards.length : 2).map((award) => (
-                        <div key={award.id} className="border-b pb-4 mb-4 last:border-none">
-                          <h3 className="text-sm font-medium">{award.title}</h3>
-                          <p className="text-gray-600 font-light text-sm">
+                      {awards.slice(0, expanded ? awards.length : 2).map((award) => (
+                      <div key={award.id} className="border-b pb-4 mb-4 last:border-none">
+                      <div className="flex justify-between">
+                        <div>
+                        <h3 className="text-sm font-medium">{award.title}</h3>
+                        <p className="text-gray-600 font-light text-sm">
                           {award.organization} ({award.year})
-                          </p>
-                          <p className="text-gray-700 text-normal text-sm">{award.description}</p>
-                          {award.credentialLink && (
+                        </p>
+                        <p className="text-gray-700 text-normal text-sm">{award.description}</p>
+                        {award.credentialLink && (
                           <a
-                            href={award.credentialLink}
-                            className="mt-2 inline-block text-maincl border border-gray-200 rounded-3xl px-3 py-1 text-xs"
+                          href={award.credentialLink}
+                          className="mt-2 inline-block text-maincl border border-gray-200 rounded-3xl px-3 py-1 text-xs"
                           >
-                            Show Credential
+                          Show Credential
                           </a>
-                          )}
+                        )}
                         </div>
-                        ))}
-
-                        {/* Expand Button - Only show if there are more than 2 awards */}
-                        {awards.length > 2 && (
+                        {showEditButtons && (
                         <button
-                          onClick={() => setExpanded(!expanded)}
-                          className="w-full text-blue-600 text-sm font-medium flex items-center mt-2"
+                          onClick={() => {
+                          // Set the award data to edit
+                          setEditingAward({
+                            id: award.id,
+                            title: award.title,
+                            organization: award.organization,
+                            year: award.year,
+                            description: award.description,
+                            credentialLink: award.credentialLink || ''
+                          });
+                          setIsAwardFormOpen(true);
+                          }}
+                          className="text-gray-400 hover:text-gray-600"
                         >
-                          {expanded ? "Show Less" : "See all Awards and Achievements"} →
+                          <img src={edit} alt="Edit" className="w-4 h-4" />
                         </button>
                         )}
+                      </div>
+                      </div>
+                      ))}
+
+                      {/* Expand Button - Only show if there are more than 2 awards */}
+                      {awards.length > 2 && (
+                      <button
+                      onClick={() => setExpanded(!expanded)}
+                      className="w-full text-blue-600 text-sm font-medium flex items-center mt-2"
+                      >
+                      {expanded ? "Show Less" : "See all Awards and Achievements"} →
+                      </button>
+                      )}
                       </>
                       )}
                     </div>
                     </div>
+                     {/* Award Form Modal */}
+                     <AwardForm
+                      isOpen={isAwardFormOpen}
+                      onClose={() => {
+                      setIsAwardFormOpen(false);
+                      setEditingAward(null);
+                      }}
+                      onSubmit={(data: AwardFormData) => {
+                      if (editingAward) {
+                        // Update existing award
+                        const updatedAwards = awards.map(award =>
+                        award.id === editingAward.id
+                          ? { ...award, ...data }
+                          : award
+                        );
+                        setAwards(updatedAwards);
+                      } else {
+                        // Add new award
+                        const newAward = {
+                        id: Date.now(),
+                        ...data
+                        };
+                        setAwards([...awards, newAward]);
+                      }
+                      setIsAwardFormOpen(false);
+                      setEditingAward(null);
+                      }}
+                      initialData={editingAward ? {
+                        title: editingAward.title,
+                        organization: editingAward.organization,
+                        year: editingAward.year,
+                        description: editingAward.description,
+                        credentialLink: editingAward.credentialLink || ''
+                      } : undefined} // Transform Award to AwardFormData
+                      isEditing={!!editingAward}
+                    />
 
 
                       {/* tabs for the desktop */}
