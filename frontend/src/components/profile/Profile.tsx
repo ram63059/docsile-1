@@ -21,6 +21,8 @@ import EventCalendar from './EventCalendar';
 import AwardForm, { AwardFormData } from './forms/AwardForm';
 import InterestForm, { InterestFormData } from './forms/InterestForm';
 import EducationForm from './forms/EducationForm';
+import ExperienceForm from './forms/ExperienceForm';
+import CertificationForm, { CertificationFormData } from './forms/CertificationForm';
 
 
 
@@ -70,6 +72,7 @@ interface Award {
   year: string;
   description: string;
   credentialLink?: string;
+
 }
 
 interface Workplace {
@@ -170,13 +173,25 @@ interface EducationFormData {
   institution: string;
   degree: string;
   year: string;
-  logo: string;
+  logo: string | File;
+}
+
+interface ExperienceFormData {
+  title: string;
+  company: string;
+  date: string;
+  description?: string;
+  img?: string | File;
 }
 
 const Profile: React.FC = () => {
   const [activeTab, setActiveTab] = useState('about');
   const [isAddMembershipFormOpen, setIsAddMembershipFormOpen] = useState(false);
   const [editingMembership, setEditingMembership] = useState<Membership | null>(null);
+  const [showEditExperience, setShowEditExperience] = useState(false);
+  const [isExperienceFormOpen, setIsExperienceFormOpen] = useState(false);
+  const [editingExperience, setEditingExperience] = useState<ExperienceItem | null>(null);
+  
   
   const [expanded, setExpanded] = useState(false);
   const [interestsexpanded, setInterestsExpanded] = useState(false);
@@ -263,7 +278,9 @@ const Profile: React.FC = () => {
   const aboutText = "An experienced ophthalmologist passionate about advancing care through sustainable eye care. Specializing in cataract and refractive surgery with a focus on advanced surgical ophthalmology. I combine cutting-edge technology with a patient-centered approach...";
 
 
-  const experiences: ExperienceItem[] = [
+  
+
+  const [experiences, setExperiences] = useState<ExperienceItem[]>([
     {
       title: 'Ophthalmology Clinical Intern',
       company: 'Aravind Eye Hospital, Madurai, Tamil Nadu',
@@ -286,7 +303,7 @@ const Profile: React.FC = () => {
       img:'https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08'
     },
     // Add more experiences...
-  ];
+  ]);
 
   const [educationData, setEducationData] = useState<Education[]>([
     {
@@ -346,8 +363,8 @@ const Profile: React.FC = () => {
     }
   ]);
 
+  const [certificationData, setCertificationData] = useState<Certification[]>([
 
-  const certificationData: Certification[] = [
     {
       id: '1',
       title: "Ophthalmology Clinical Skills Workshop",
@@ -376,7 +393,7 @@ const Profile: React.FC = () => {
       issueDate: "January 2023",
       logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
     }
-  ];
+  ]);
 
   const [memberships, setMemberships] = useState<Membership[]>([
     { id: 1, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
@@ -864,6 +881,9 @@ const [activeIndex, setActiveIndex] = useState(0);
 
 
   const [showEditButtons, setShowEditButtons] = useState(false);
+  const [showCertEditButtons, setShowCertEditButtons] = useState(false);
+  const [editingCertification, setEditingCertification] = useState<Certification | null>(null);
+  const [isCertificationFormOpen, setIsCertificationFormOpen] = useState(false);
   return (
     <div className="min-h-screen font-fontsm mx-auto ">
       {/* Mobile Header - Only visible on mobile */}
@@ -1450,18 +1470,30 @@ const [activeIndex, setActiveIndex] = useState(0);
                   </div>
                 </div>
 
+               
                 {/* Experience Section */}
                 <div className={`p-6 border border-gray-100 rounded-xl my-3 group relative ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
-                  <div className="flex justify-between items-center mb-6">
-                    <div className='flex gap-4'>
-                      <h2 className="text-xl font-medium">Experience</h2>
-                      <button className="text-gray-500">
-                        <img src={edit} alt="" />
-                      </button>
-                      <button className="flex items-center space-x-1 bg-maincl text-white px-2 py-2 rounded-full hover:bg-fillc text-sm">
-                        <FaPlus className="w-3 h-3" />
-                      </button>
-                    </div>
+                  <div className="flex gap-4 justify-between items-center mb-6">
+
+                    <h2 className="text-xl font-medium">Experience</h2>
+                    <div className='flex items-center gap-4'>
+
+                    <button 
+                      className="text-gray-500"
+                      onClick={() => setShowEditExperience(!showEditExperience)}
+                      >
+                      <img src={edit} alt="" />
+                    </button>
+                    <button 
+                      className="flex items-center space-x-1 bg-maincl text-white px-2 py-2 rounded-full hover:bg-fillc text-sm"
+                      onClick={() => {
+                        setEditingExperience(null);
+                        setIsExperienceFormOpen(true);
+                      }}
+                      >
+                      <FaPlus className="w-3 h-3" />
+                    </button>
+                      </div>
                   </div>
 
                   <div className="relative">
@@ -1474,7 +1506,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                     ) : (
                       <>
                         {/* Desktop View */}
-                        <div className="hidden lg:block relative">
+                        <div className="hidden lg:block">
                           {experiences.length > 3 && (
                             <>
                               <button 
@@ -1486,7 +1518,6 @@ const [activeIndex, setActiveIndex] = useState(0);
                               >
                                 <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
                               </button>
-
                               <button 
                                 className="absolute right-0 top-1/3 -translate-y-1/2 z-10 bg-gray-200 p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-30"
                                 onClick={() => {
@@ -1498,28 +1529,35 @@ const [activeIndex, setActiveIndex] = useState(0);
                               </button>
                             </>
                           )}
-                          
+
                           <ol id="experience-scroll" className="flex overflow-x-auto scrollbar-hide scroll-smooth">
                             {experiences.map((exp, index) => (
                               <li key={index} className="relative flex-none w-72 mb-6 mr-8 last:mr-0">
                                 <div className="flex items-center">
-                                  <div className="z-10 flex items-center justify-center w-12 h-12 bg-white rounded-full ring-0 ring-white sm:ring-8 shrink-0 overflow-hidden">
-                                    <img 
-                                      src={exp.img} 
-                                      alt={`${exp.company} logo`}
-                                      className="w-12 h-12 object-cover rounded-full"
-                                    />
+                                  <div className="z-10 flex items-center justify-center w-12 h-12 bg-white rounded-full ring-0 ring-white sm:ring-8 shrink-0 overflow-hidden border-2 border-gray-100">
+                                    <img src={exp.img} alt={`${exp.company} logo`} className="w-12 h-12 object-cover" />
                                   </div>
                                   {index < experiences.length - 1 && (
                                     <div className="hidden sm:flex w-full bg-gray-200 h-0.5"></div>
                                   )}
                                 </div>
-                                <div className="mt-3 sm:pe-8">
-                                  <h3 className="text-sm font-normal text-gray-900 line-clamp-1">{exp.title}</h3>
-                                  <p className="text-xs font-light text-gray-600 line-clamp-1">{exp.company}</p>
+                                <div className="mt-3 sm:pe-8 relative">
+                                  {showEditExperience && (
+                                    <button
+                                      onClick={() => {
+                                        setEditingExperience(exp);
+                                        setIsExperienceFormOpen(true);
+                                      }}
+                                      className="absolute right-0 top-0 p-1 bg-gray-100 rounded-full hover:bg-gray-200"
+                                    >
+                                      <img src={edit} alt="Edit" className="w-3 h-3" />
+                                    </button>
+                                  )}
+                                  <h3 className="text-sm w-72 overflow-hidden text-ellipsis whitespace-wrap font-normal text-gray-900">{exp.title}</h3>
+                                  <p className="text-xs font-light text-gray-600">{exp.company}</p>
                                   <time className="block mb-2 text-xs font-normal text-gray-500">{exp.date}</time>
                                   {exp.description && (
-                                    <p className="text-sm font-normal text-gray-500 line-clamp-2">{exp.description}</p>
+                                    <p className="text-sm font-normal text-gray-500">{exp.description}</p>
                                   )}
                                 </div>
                               </li>
@@ -1532,28 +1570,34 @@ const [activeIndex, setActiveIndex] = useState(0);
                           {experiences.slice(0, expanded ? experiences.length : 3).map((exp, index) => (
                             <div key={index} className="flex items-start gap-4">
                               <div className="flex-shrink-0">
-                                <img 
-                                  src={exp.img} 
-                                  alt={`${exp.company} logo`}
-                                  className="w-12 h-12 object-cover rounded-full"
-                                />
+                                <img src={exp.img} alt={`${exp.company} logo`} className="w-12 h-12 rounded-full border-2 border-gray-100" />
                               </div>
-                              <div>
+                              <div className="flex-grow relative">
+                                {showEditExperience && (
+                                  <button
+                                    onClick={() => {
+                                      setEditingExperience(exp);
+                                      setIsExperienceFormOpen(true);
+                                    }}
+                                    className="absolute right-0 top-0 p-1 bg-gray-100 rounded-full hover:bg-gray-200"
+                                  >
+                                    <img src={edit} alt="Edit" className="w-3 h-3" />
+                                  </button>
+                                )}
                                 <h3 className="text-sm font-normal text-gray-900">{exp.title}</h3>
                                 <p className="text-xs font-light text-gray-600">{exp.company}</p>
                                 <time className="block text-xs font-normal text-gray-500">{exp.date}</time>
                                 {exp.description && (
-                                  <p className="text-sm font-normal text-gray-500 mt-1">{exp.description}</p>
+                                  <p className="text-sm font-normal text-gray-500">{exp.description}</p>
                                 )}
                               </div>
                             </div>
                           ))}
-                          
-                          {/* Show "See all" button only on mobile if more than 3 experiences */}
+
                           {experiences.length > 3 && (
                             <button
                               onClick={() => setExpanded(!expanded)}
-                              className="text-fillc text-sm font-medium flex items-center gap-1"
+                              className="text-fillc text-sm font-medium flex items-center gap-1 lg:hidden"
                             >
                               {expanded ? "Show Less" : "See all Experience"} 
                               <img src={arrowright} alt="" className={`transform ${expanded ? 'rotate-180' : ''} w-4 h-4`} />
@@ -1565,177 +1609,235 @@ const [activeIndex, setActiveIndex] = useState(0);
                   </div>
                 </div>
 
+                {/* Experience Form Modal */}
+                {isExperienceFormOpen && (
+                  <ExperienceForm
+                    isOpen={isExperienceFormOpen}
+                    onClose={() => {
+                      setIsExperienceFormOpen(false);
+                      setEditingExperience(null);
+                    }}
+                    onSubmit={(data: ExperienceFormData) => {
+                      if (editingExperience) {
+                        const updatedExperiences = experiences.map(exp =>
+                          exp === editingExperience ? {
+                            ...exp,
+                            title: data.title,
+                            company: data.company,
+                            date: data.date,
+                            description: data.description,
+                            img: data.img instanceof File ? URL.createObjectURL(data.img) : exp.img
+                          } : exp
+                        );
+                        setExperiences(updatedExperiences);
+                      } else {
+                        const newExperience: ExperienceItem = {
+                          title: data.title,
+                          company: data.company,
+                          date: data.date,
+                          description: data.description,
+                          img: data.img instanceof File 
+                            ? URL.createObjectURL(data.img)
+                            : "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372"
+                        };
+                        setExperiences([...experiences, newExperience]);
+                      }
+                      setIsExperienceFormOpen(false);
+                      setEditingExperience(null);
+                    }}
+                    initialData={editingExperience ? {
+                      title: editingExperience.title,
+                      company: editingExperience.company,
+                      date: editingExperience.date,
+                      description: editingExperience.description || '',
+                      img: editingExperience.img,
+                      notifyFollowers: false
+                    } : undefined}
+                    isEditing={!!editingExperience}
+                  />
+                )}
 
-                  {/* Education Section */}
-                  <div className={`p-6 border border-gray-100 rounded-xl overflow-hidden my-5 group relative ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
-                    <div className="flex gap-4 items-center mb-6">
-                      <h2 className="text-xl font-medium">Education</h2>
+
+                    {/* Education Section */}
+                    <div className={`p-6 border border-gray-100 rounded-xl overflow-hidden my-5 group relative ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
+                    <div className="flex gap-4  justify-between items-center mb-6">
+                      <h2 className="text-xl  font-medium">Education</h2>
+                      <div className='flex items-center gap-4'>
+
                       <button 
-                        className="text-gray-500"
-                        onClick={() => setIsEditMode(!isEditMode)}
+                      className="text-gray-500"
+                      onClick={() => setIsEditMode(!isEditMode)}
                       >
-                        <img src={edit} alt="" />
+                      <img src={edit} alt="" />
                       </button>
                       <button 
-                        className="flex items-center space-x-1 bg-maincl text-white px-2 py-2 rounded-full hover:bg-fillc text-sm"
-                        onClick={() => {
-                          setEditingEducation(null);
-                          setIsEducationFormOpen(true);
-                        }}
+                      className="flex items-center space-x-1 bg-maincl text-white px-2 py-2 rounded-full hover:bg-fillc text-sm"
+                      onClick={() => {
+                        setEditingEducation(null);
+                        setIsEducationFormOpen(true);
+                      }}
                       >
-                        <FaPlus className="w-3 h-3" />
+                      <FaPlus className="w-3 h-3" />
                       </button>
+                        </div>
                     </div>
 
                     <div className="relative">
                       {educationData.length === 0 ? (
-                        <div className="text-center py-8">
-                          <p className="text-gray-600 text-sm">
-                            Adding your educational background will help demonstrate your qualifications and expertise, making your profile more well-rounded and informative!
-                          </p>
-                        </div>
+                      <div className="text-center py-8">
+                        <p className="text-gray-600 text-sm">
+                        Adding your educational background will help demonstrate your qualifications and expertise, making your profile more well-rounded and informative!
+                        </p>
+                      </div>
                       ) : (
-                        <>
-                          {/* Desktop View */}
-                          <div className="hidden lg:block">
-                            {/* Left scroll button - Only show if more than 3 items */}
-                            {educationData.length > 3 && (
-                              <button 
-                                className="absolute left-0 top-1/3 z-50 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-30"
-                                onClick={() => {
-                                  const container = document.getElementById('education-scroll');
-                                  if (container) container.scrollLeft -= 300;
-                                }}
-                              >
-                                <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
-                              </button>
+                      <>
+                        {/* Desktop View */}
+                        <div className="hidden lg:block">
+                        {/* Left scroll button - Only show if more than 3 items */}
+                        {educationData.length > 3 && (
+                          <button 
+                          className="absolute left-0 top-1/3 z-50 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-30"
+                          onClick={() => {
+                            const container = document.getElementById('education-scroll');
+                            if (container) container.scrollLeft -= 300;
+                          }}
+                          >
+                          <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
+                          </button>
+                        )}
+
+                        {/* Right scroll button - Only show if more than 3 items */}
+                        {educationData.length > 3 && (
+                          <button 
+                          className="absolute right-0 top-1/3 -translate-y-1/2 z-10 bg-gray-200 p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-30"
+                          onClick={() => {
+                            const container = document.getElementById('education-scroll');
+                            if (container) container.scrollLeft += 300;
+                          }}
+                          >
+                          <img src={arrowright} alt="Next" className="w-4 h-4" />
+                          </button>
+                        )}
+
+                        <ol id="education-scroll" className="flex overflow-x-auto scrollbar-hide scroll-smooth">
+                          {educationData.map((edu, index) => (
+                          <li key={index} className="relative flex-none w-72 mb-6 mr-8 last:mr-0">
+                            <div className="flex items-center">
+                            <div className="z-10 flex items-center justify-center w-12 h-12 bg-white rounded-full ring-0 ring-white sm:ring-8 shrink-0 overflow-hidden border-2 border-gray-100">
+                              <img src={edu.logo} alt={`${edu.institution} logo`} className="w-12 h-12 object-cover" />
+                            </div>
+                            {index < educationData.length - 1 && (
+                              <div className="hidden sm:flex w-full bg-gray-200 h-0.5"></div>
                             )}
-
-                            {/* Right scroll button - Only show if more than 3 items */}
-                            {educationData.length > 3 && (
-                              <button 
-                                className="absolute right-0 top-1/3 -translate-y-1/2 z-10 bg-gray-200 p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-30"
-                                onClick={() => {
-                                  const container = document.getElementById('education-scroll');
-                                  if (container) container.scrollLeft += 300;
-                                }}
-                              >
-                                <img src={arrowright} alt="Next" className="w-4 h-4" />
-                              </button>
-                            )}
-
-                            <ol id="education-scroll" className="flex overflow-x-auto scrollbar-hide scroll-smooth">
-                              {educationData.map((edu, index) => (
-                                <li key={index} className="relative flex-none w-72 mb-6 mr-8 last:mr-0">
-                                  <div className="flex items-center">
-                                    <div className="z-10 flex items-center justify-center w-12 h-12 bg-white rounded-full ring-0 ring-white sm:ring-8 shrink-0 overflow-hidden border-2 border-gray-100">
-                                      <img src={edu.logo} alt={`${edu.institution} logo`} className="w-12 h-12 object-cover" />
-                                    </div>
-                                    {index < educationData.length - 1 && (
-                                      <div className="hidden sm:flex w-full bg-gray-200 h-0.5"></div>
-                                    )}
-                                  </div>
-                                  <div className="mt-3 sm:pe-8 relative">
-                                    {isEditMode && (
-                                      <button
-                                        onClick={() => {
-                                          setEditingEducation(edu);
-                                          setIsEducationFormOpen(true);
-                                        }}
-                                        className="absolute right-0 top-0 p-1 bg-gray-100 rounded-full hover:bg-gray-200"
-                                      >
-                                        <img src={edit} alt="Edit" className="w-3 h-3" />
-                                      </button>
-                                    )}
-                                    <h3 className="text-sm w-72 overflow-hidden text-ellipsis whitespace-wrap font-normal text-gray-900">{edu.institution}</h3>
-                                    <p className="text-xs font-light text-gray-600">{edu.degree}</p>
-                                    <time className="block mb-2 text-xs font-normal text-gray-500">{edu.year}</time>
-                                  </div>
-                                </li>
-                              ))}
-                            </ol>
-                          </div>
-
-                          {/* Mobile View */}
-                          <div className="lg:hidden flex flex-col space-y-8">
-                            {educationData.slice(0, expanded ? educationData.length : 3).map((edu, index) => (
-                              <div key={index} className="flex items-start gap-4">
-                                <div className="flex-shrink-0">
-                                  <img src={edu.logo} alt={`${edu.institution} logo`} className="w-12 h-12 rounded-full border-2 border-gray-100" />
-                                </div>
-                                <div className="flex-grow relative">
-                                  {isEditMode && (
-                                    <button
-                                      onClick={() => {
-                                        setEditingEducation(edu);
-                                        setIsEducationFormOpen(true);
-                                      }}
-                                      className="absolute right-0 top-0 p-1 bg-gray-100 rounded-full hover:bg-gray-200"
-                                    >
-                                      <img src={edit} alt="Edit" className="w-3 h-3" />
-                                    </button>
-                                  )}
-                                  <h3 className="text-sm font-normal text-gray-900">{edu.institution}</h3>
-                                  <p className="text-xs font-light text-gray-600">{edu.degree}</p>
-                                  <time className="block text-xs font-normal text-gray-500">{edu.year}</time>
-                                </div>
-                              </div>
-                            ))}
-                            
-                            {/* Show "See all" button only on mobile if more than 3 items */}
-                            {educationData.length > 3 && (
+                            </div>
+                            <div className="mt-3 sm:pe-8 relative">
+                            {isEditMode && (
                               <button
-                                onClick={() => setExpanded(!expanded)}
-                                className="text-fillc text-sm font-medium flex items-center gap-1 lg:hidden"
+                              onClick={() => {
+                                setEditingEducation(edu);
+                                setIsEducationFormOpen(true);
+                              }}
+                              className="absolute right-0 top-0 p-1 bg-gray-100 rounded-full hover:bg-gray-200"
                               >
-                                {expanded ? "Show Less" : "See all Education"} 
-                                <img src={arrowright} alt="" className={`transform ${expanded ? 'rotate-180' : ''} w-4 h-4`} />
+                              <img src={edit} alt="Edit" className="w-3 h-3" />
                               </button>
                             )}
+                            <h3 className="text-sm w-72 overflow-hidden text-ellipsis whitespace-wrap font-normal text-gray-900">{edu.institution}</h3>
+                            <p className="text-xs font-light text-gray-600">{edu.degree}</p>
+                            <time className="block mb-2 text-xs font-normal text-gray-500">{edu.year}</time>
+                            </div>
+                          </li>
+                          ))}
+                        </ol>
+                        </div>
+
+                        {/* Mobile View */}
+                        <div className="lg:hidden flex flex-col space-y-8">
+                        {educationData.slice(0, expanded ? educationData.length : 3).map((edu, index) => (
+                          <div key={index} className="flex items-start gap-4">
+                          <div className="flex-shrink-0">
+                            <img src={edu.logo} alt={`${edu.institution} logo`} className="w-12 h-12 rounded-full border-2 border-gray-100" />
                           </div>
-                        </>
+                          <div className="flex-grow relative">
+                            {isEditMode && (
+                            <button
+                              onClick={() => {
+                              setEditingEducation(edu);
+                              setIsEducationFormOpen(true);
+                              }}
+                              className="absolute right-0 top-0 p-1 bg-gray-100 rounded-full hover:bg-gray-200"
+                            >
+                              <img src={edit} alt="Edit" className="w-3 h-3" />
+                            </button>
+                            )}
+                            <h3 className="text-sm font-normal text-gray-900">{edu.institution}</h3>
+                            <p className="text-xs font-light text-gray-600">{edu.degree}</p>
+                            <time className="block text-xs font-normal text-gray-500">{edu.year}</time>
+                          </div>
+                          </div>
+                        ))}
+                        
+                        {/* Show "See all" button only on mobile if more than 3 items */}
+                        {educationData.length > 3 && (
+                          <button
+                          onClick={() => setExpanded(!expanded)}
+                          className="text-fillc text-sm font-medium flex items-center gap-1 lg:hidden"
+                          >
+                          {expanded ? "Show Less" : "See all Education"} 
+                          <img src={arrowright} alt="" className={`transform ${expanded ? 'rotate-180' : ''} w-4 h-4`} />
+                          </button>
+                        )}
+                        </div>
+                      </>
                       
                       )}
                     </div>
-                  </div>
-                 
-                        <EducationForm
-                          isOpen={isEducationFormOpen}
-                          onClose={() => {
-                            setIsEducationFormOpen(false);
-                            setEditingEducation(null);
-                          }}
-                          
-                          onSubmit={(data: EducationFormData) => {
-                            if (editingEducation) {
-                              // Update existing education
-                              const updatedEducation = educationData.map(edu =>
-                                edu.institution === editingEducation.institution
-                                  ? { ...edu, ...data }
-                                  : edu
-                              );
-                              setEducationData(updatedEducation);
-                            } else {
-                              // Add new education
-                              const newEducation = {
-                                institution: data.institution,
-                                degree: data.degree,
-                                year: data.year,
-                                logo: data.logo || "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372"
-                              };
-                              setEducationData([...educationData, newEducation]);
-                            }
-                            setIsEducationFormOpen(false);
-                            setEditingEducation(null);
-                          }}
-                          initialData={editingEducation ? {
-                            institution: editingEducation.institution,
-                            degree: editingEducation.degree,
-                            year: editingEducation.year,
-                            logo: editingEducation.logo
-                          } : undefined}
-                          isEditing={!!editingEducation}
-                        />
+                    </div>
+                  {/* Education Form */}
+                  <EducationForm
+                    isOpen={isEducationFormOpen}
+                    onClose={() => {
+                    setIsEducationFormOpen(false);
+                    setEditingEducation(null);
+                    }}
+                    onSubmit={(data: EducationFormData) => {
+                    if (editingEducation) {
+                      // Update existing education
+                      const updatedEducation = educationData.map(edu =>
+                      edu === editingEducation ? { 
+                        ...data, 
+                        logo: data.logo instanceof File ? URL.createObjectURL(data.logo) : data.logo 
+                      } : edu
+                      );
+                      setEducationData(updatedEducation);
+                    } else {
+                      // Add new education
+                      const logoUrl = data.logo instanceof File 
+                      ? URL.createObjectURL(data.logo)
+                      : data.logo || "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372";
+                      
+                      const newEducation: Education = {
+                      institution: data.institution,
+                      degree: data.degree,
+                      year: data.year,
+                      logo: logoUrl
+                      };
+                      setEducationData([...educationData, newEducation]);
+                    }
+                    setIsEducationFormOpen(false);
+                    setEditingEducation(null);
+                    }}
+                    initialData={editingEducation ? {
+                    institution: editingEducation.institution,
+                    degree: editingEducation.degree, 
+                    year: editingEducation.year,
+                    logo: editingEducation.logo,
+                    notifyFollowers: false
+                    } : undefined}
+                    isEditing={!!editingEducation}
+                    key={editingEducation ? editingEducation.institution : 'new-education'}
+                  />
+                     
 
 
                   <div className={`flex flex-col lg:flex-row gap-6 ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
@@ -1832,7 +1934,8 @@ const [activeIndex, setActiveIndex] = useState(0);
                         setEditingInterest(null);
                       }}
                       initialData={{
-                        name: editingInterest ? editingInterest.name : ''
+                        name: editingInterest ? editingInterest.name : '',
+                        notifyFollowers: false
                       }}
                       isEditing={!!editingInterest}
                       key={editingInterest ? editingInterest.id : 'new'}
@@ -1842,52 +1945,72 @@ const [activeIndex, setActiveIndex] = useState(0);
 
 
 
-
-
                     {/* Licenses and Certification Card */}
                     <div className={`w-full lg:w-1/2 bg-white shadow-md rounded-xl p-6 ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
                       <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-lg font-medium">Licenses and Certification</h2>
-                        <div className='flex gap-4'>
-                          <button className="text-gray-500 hover:text-blue-500">
-                            <img src={edit} alt="" />
-                          </button>
-                          <button
-                            className="flex items-center space-x-1 bg-maincl text-white px-1 py-1 rounded-full hover:bg-fillc text-sm"
-                          >
-                            <FaPlus className="w-3 h-3" />
-                          </button>
-                        </div>
+                      <h2 className="text-lg font-medium">Licenses and Certification</h2>
+                      <div className='flex gap-4'>
+                        <button 
+                        onClick={() => setShowCertEditButtons(!showCertEditButtons)} 
+                        className="text-gray-500 hover:text-blue-500"
+                        >
+                        <img src={edit} alt="" />
+                        </button>
+                        <button
+                        onClick={() => {
+                          setEditingCertification(null);
+                          setIsCertificationFormOpen(true);
+                        }}
+                        className="flex items-center space-x-1 bg-maincl text-white px-1 py-1 rounded-full hover:bg-fillc text-sm"
+                        >
+                        <FaPlus className="w-3 h-3" />
+                        </button>
+                      </div>
                       </div>
 
                       {/* Certification List */}
                       {certificationData.length === 0 ? (
-                        <div className="text-center py-8">
-                          <p className="text-gray-600 text-sm">
-                            Including your licenses and certifications highlights your expertise and qualifications, boosting your profile's credibility and professionalism.
-                          </p>
-                        </div>
+                      <div className="text-center py-8">
+                        <p className="text-gray-600 text-sm">
+                        Including your licenses and certifications highlights your expertise and qualifications, boosting your profile's credibility and professionalism.
+                        </p>
+                      </div>
                       ) : (
-                        <>
-                          <ul className="space-y-4">
-                            {certificationData.slice(0, showAllCertifications ? certificationData.length : 2).map((cert, index) => (
-                              <li key={index} className="border-b pb-2 last:border-none">
-                                <div className="flex items-start gap-4">
-                                  <div className="w-12 h-12 bg-gray-200 rounded-full">
-                                    <img src={cert.logo} alt={cert.title} className="w-full h-full rounded-full" />
-                                  </div>
-                                  <div>
-                                    <p className="font-normal text-sm line-clamp-1">{cert.title}</p>
-                                    <p className="text-sm text-gray-400 line-clamp-1">{cert.organization}</p>
-                                    <p className="text-xs text-gray-700">Issued: {cert.issueDate}</p>
-                                    <button className="mt-2 px-2 py-1 border text-xs rounded-3xl text-maincl border-gray-200 hover:bg-blue-50">
-                                      Show Credential
-                                    </button>
-                                  </div>
-                                </div>
-                              </li>
-                            ))}
-                          </ul>
+                      <>
+                        <ul className="space-y-4">
+                        {certificationData.slice(0, showAllCertifications ? certificationData.length : 2).map((cert) => (
+                          <li key={cert.id} className="border-b pb-2 last:border-none">
+                          <div className="flex items-start gap-4 relative">
+                            <div className="w-12 h-12 bg-gray-200 rounded-full">
+                            <img src={cert.logo} alt={cert.title} className="w-full h-full rounded-full" />
+                            </div>
+                            <div className="flex-1">
+                            <div className="flex justify-between items-start">
+                              <div>
+                              <p className="font-normal text-sm line-clamp-1">{cert.title}</p>
+                              <p className="text-sm text-gray-400 line-clamp-1">{cert.organization}</p>
+                              <p className="text-xs text-gray-700">Issued: {cert.issueDate}</p>
+                              <button className="mt-2 px-2 py-1 border text-xs rounded-3xl text-maincl border-gray-200 hover:bg-blue-50">
+                                Show Credential
+                              </button>
+                              </div>
+                              {showCertEditButtons && (
+                              <button
+                                onClick={() => {
+                                setEditingCertification(cert);
+                                setIsCertificationFormOpen(true);
+                                }}
+                                className="text-gray-400 hover:text-gray-600"
+                              >
+                                <img src={edit} alt="Edit" className="w-4 h-4" />
+                              </button>
+                              )}
+                            </div>
+                            </div>
+                          </div>
+                          </li>
+                        ))}
+                        </ul>
 
                           {/* Footer Link - Only show if there are more than 2 certifications */}
                           {certificationData.length > 2 && (
@@ -1902,6 +2025,53 @@ const [activeIndex, setActiveIndex] = useState(0);
                       )}
                     </div>
                   </div>
+                  {/* Certification Form */}
+                  <CertificationForm
+                    isOpen={isCertificationFormOpen}
+                    onClose={() => {
+                      setIsCertificationFormOpen(false);
+                      setEditingCertification(null);
+                    }}
+                    onSubmit={(data: CertificationFormData) => {
+                      if (editingCertification) {
+                        // Update existing certification
+                        const updatedCertifications = certificationData.map(cert =>
+                          cert.id === editingCertification.id
+                            ? { 
+                                ...cert,
+                                title: data.title,
+                                organization: data.organization,
+                                issueDate: data.issueDate,
+                                logo: data.logo instanceof File ? URL.createObjectURL(data.logo) : cert.logo
+                              }
+                            : cert
+                        );
+                        setCertificationData(updatedCertifications);
+                      } else {
+                        // Add new certification
+                        const newCertification = {
+                          id: String(Date.now()),
+                          title: data.title,
+                          organization: data.organization,
+                          issueDate: data.issueDate,
+                          logo: data.logo instanceof File 
+                            ? URL.createObjectURL(data.logo)
+                            : "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372"
+                        };
+                        setCertificationData([...certificationData, newCertification]);
+                      }
+                      setIsCertificationFormOpen(false);
+                      setEditingCertification(null);
+                    }}
+                    initialData={editingCertification ? {
+                      title: editingCertification.title,
+                      organization: editingCertification.organization,
+                      issueDate: editingCertification.issueDate,
+                      logo: editingCertification.logo,
+                      notifyFollowers: false
+                    } : undefined}
+                    isEditing={!!editingCertification}
+                  />
 
 
 
@@ -2046,9 +2216,10 @@ const [activeIndex, setActiveIndex] = useState(0);
                       setEditingMembership(null);
                     }}
                     initialData={editingMembership ? {
-                      name: editingMembership.name ,
+                      name: editingMembership.name,
                       category: editingMembership.category || '',
-                      image: null
+                      image: null,
+                      notifyFollowers: false
                     } : undefined}
                     isEditing={!!editingMembership}
                     />
@@ -2172,6 +2343,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                         organization: editingAward.organization,
                         year: editingAward.year,
                         description: editingAward.description,
+                        notifyFollowers: false,
                         credentialLink: editingAward.credentialLink || ''
                       } : undefined} // Transform Award to AwardFormData
                       isEditing={!!editingAward}
