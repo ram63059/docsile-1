@@ -31,6 +31,7 @@ interface ExperienceItem {
   company: string;
   date: string;
   description?: string;
+  location?: string;
   img:string;
 }
 
@@ -177,6 +178,7 @@ interface ExperienceFormData {
   company: string;
   date: string;
   description?: string;
+  location?: string;
   img?: string | File;
 }
 
@@ -1974,7 +1976,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                             title: data.title,
                             company: data.company,
                             date: data.date,
-
+                            location: data.location,
                             description: data.description,
                             img: data.img instanceof File ? URL.createObjectURL(data.img) : exp.img
                           } : exp
@@ -1985,6 +1987,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                           title: data.title,
                           company: data.company,
                           date: data.date,
+                          location: data.location,
                           description: data.description,
                           
                           img: data.img instanceof File 
@@ -1992,6 +1995,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                             : "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372"
                         };
                         setExperiences([...experiences, newExperience]);
+                        console.log(newExperience);
                       }
                       setIsExperienceFormOpen(false);
                       setEditingExperience(null);
@@ -2001,6 +2005,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                       company: editingExperience.company,
                       date: editingExperience.date,
                       description: editingExperience.description || '',
+                      location: editingExperience.location || '',
                       img: editingExperience.img,
                       notifyFollowers: false
                     } : undefined}

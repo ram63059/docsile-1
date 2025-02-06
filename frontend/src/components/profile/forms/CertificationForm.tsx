@@ -40,6 +40,7 @@ const CertificationForm: React.FC<CertificationFormProps> = ({
 }) => {
   const [formData, setFormData] = useState<CertificationFormData>(emptyFormData);
   const [isMounted, setIsMounted] = useState(false);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
   useEffect(() => {
     if (isOpen && !isMounted) {
@@ -66,6 +67,16 @@ const CertificationForm: React.FC<CertificationFormProps> = ({
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+
+  const organizations = [
+    "Medical Council of India (MCI)",
+    "National Medical Commission (NMC)",
+    "Indian Medical Association (IMA)",
+    "Pharmacy Council of India (PCI)",
+    "Dental Council of India (DCI)"
+  ];
+
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={`${isEditing ? 'Edit' : 'Add'} License & Certification`}>
@@ -105,21 +116,44 @@ const CertificationForm: React.FC<CertificationFormProps> = ({
           />
         </div>
 
-        <div>
+        <div className="relative">
           <label htmlFor="organization" className="block text-sm font-medium text-gray-700">
-            Issuing Organization
+          Issuing Organization
           </label>
           <input
             type="text"
             id="organization"
             name="organization"
-            placeholder="e.g. indian Board of Ophthalmology"
             value={formData.organization}
-            onChange={handleChange}
+            onChange={(e) => {
+              setFormData(prev => ({ ...prev, organization: e.target.value }));
+              setIsDropdownVisible(true);
+            }}
             required
-            className="mt-1 p-2 block w-full text-gray-800 rounded-xl border border-gray-300 shadow-sm focus:border-fillc focus:outline-none"
+            className="mt-1 p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-fillc focus:outline-none"
           />
+          {isDropdownVisible && formData.organization && (
+            <div className="absolute z-10 w-full max-h-60 overflow-y-auto bg-white border border-gray-300 rounded-md shadow-lg mt-1">
+              {organizations
+          .filter(org => org.toLowerCase().includes(formData.organization.toLowerCase()))
+          .map((org, index) => (
+            <div
+              key={index}
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              onClick={() => {
+                setFormData(prev => ({ ...prev, organization: org }));
+                setIsDropdownVisible(false);
+              }}
+            >
+              {org}
+            </div>
+          ))}
+            </div>
+          )}
         </div>
+
+
+    
 
         <div>
           <label htmlFor="issueDate" className="block text-sm font-medium text-gray-700">
@@ -155,6 +189,8 @@ const CertificationForm: React.FC<CertificationFormProps> = ({
           />
         </div>
 
+
+        {formData.organization && !organizations.includes(formData.organization) && (
         <div>
             <label htmlFor="image" className="block text-sm font-medium text-gray-700">
             Organization Logo
@@ -213,7 +249,7 @@ const CertificationForm: React.FC<CertificationFormProps> = ({
             </div>
             </div>
           </div>
-
+          )}
         <div className="flex justify-end space-x-3">
           <button
             type="button"

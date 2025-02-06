@@ -64,8 +64,9 @@ const PostExpandedView: React.FC<PostExpandedViewProps> = ({ isOpen, onClose, po
   const [replyText, setReplyText] = useState('');
   const [likedComments, setLikedComments] = useState<Set<string>>(new Set());
   const [likedPost, setLikedPost] = useState(false);
-  const [isReplyLiked, setIsReplyLiked] = useState(false);
   const [expandedReplies, setExpandedReplies] = useState<Set<string>>(new Set());
+  const [comments, setComments] = useState<Comment[]>(post.comments);
+  const [stats, setStats] = useState(post.stats);
 
   if (!isOpen) return null;
 
@@ -92,21 +93,111 @@ const PostExpandedView: React.FC<PostExpandedViewProps> = ({ isOpen, onClose, po
       }
       return newSet;
     });
+
+    setComments(prevComments => 
+      prevComments.map(comment => {
+        if (comment.id === commentId) {
+          return {
+            ...comment,
+            likes: likedComments.has(commentId) ? comment.likes - 1 : comment.likes + 1
+          };
+        }
+        return comment;
+      })
+    );
   };
 
   const handleSubmitComment = () => {
     if (commentText.trim()) {
-      console.log('New comment:', commentText);
+      const newComment: Comment = {
+        id: String(Date.now()),
+        author: {
+          name: "Current User", // Replace with actual user data
+          avatar: "https://cdn.builder.io/api/v1/image/assets/TEMP/13d83c993760da19a222234c3cbcb356d551631f91a34653bf73ab3984455ff6",
+          bio: "User Bio", // Replace with actual user bio
+          timeAgo: "Just now",
+        },
+        content: commentText,
+        timeAgo: "Just now",
+        likes: 0,
+        replies: [],
+      };
+
+      setComments(prevComments => [newComment, ...prevComments]);
+      setStats(prev => ({
+        ...prev,
+        comments: prev.comments + 1
+      }));
       setCommentText('');
     }
   };
 
   const handleSubmitReply = (commentId: string) => {
     if (replyText.trim()) {
-      console.log('New reply to comment', commentId, ':', replyText);
+      const newReply = {
+        id: String(Date.now()),
+        author: {
+          name: "Current User", // Replace with actual user data
+          avatar: "https://cdn.builder.io/api/v1/image/assets/TEMP/13d83c993760da19a222234c3cbcb356d551631f91a34653bf73ab3984455ff6",
+          bio: "User Bio", // Replace with actual user bio
+          timeAgo: "Just now",
+        },
+        content: replyText,
+        timeAgo: "Just now",
+        likes: 0,
+      };
+
+      setComments(prevComments => 
+        prevComments.map(comment => {
+          if (comment.id === commentId) {
+            return {
+              ...comment,
+              replies: [...(comment.replies || []), newReply]
+            };
+          }
+          return comment;
+        })
+      );
+
       setReplyText('');
       setShowReplyInput(null);
+      setStats(prev => ({
+        ...prev,
+        comments: prev.comments + 1
+      }));
     }
+  };
+
+  const handleLikeReply = (commentId: string, replyId: string) => {
+    setComments(prevComments => 
+      prevComments.map(comment => {
+        if (comment.id === commentId && comment.replies) {
+          return {
+            ...comment,
+            replies: comment.replies.map(reply => {
+              if (reply.id === replyId) {
+                return {
+                  ...reply,
+                  likes: reply.likes + (likedComments.has(replyId) ? -1 : 1)
+                };
+              }
+              return reply;
+            })
+          };
+        }
+        return comment;
+      })
+    );
+
+    setLikedComments(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(replyId)) {
+        newSet.delete(replyId);
+      } else {
+        newSet.add(replyId);
+      }
+      return newSet;
+    });
   };
 
   const toggleReplies = (commentId: string) => {
@@ -120,8 +211,6 @@ const PostExpandedView: React.FC<PostExpandedViewProps> = ({ isOpen, onClose, po
       return newSet;
     });
   };
-
-
 
   return (
     <div className="fixed inset-0 bg-black/55  flex items-center justify-center z-50 font-fontsm">
@@ -228,7 +317,7 @@ const PostExpandedView: React.FC<PostExpandedViewProps> = ({ isOpen, onClose, po
 
                     <div>
                       <p className='text-fontlit'>Comments</p>
-                    <span className='text-sm text-gray-800'>{post.stats.comments}</span>
+                    <span className='text-sm text-gray-800'>{stats.comments}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 text-gray-600">
@@ -252,7 +341,7 @@ const PostExpandedView: React.FC<PostExpandedViewProps> = ({ isOpen, onClose, po
               {/* Comments Section */}
               <div className="space-y-4">
                 <p className='text-maincl pt-1 font-semibold'>Comments</p>
-                {post.comments.map((comment) => (
+                {comments.map((comment) => (
                   <div key={comment.id} className="space-y-3">
                     <div className="flex gap-3">
                       <img
@@ -277,16 +366,20 @@ const PostExpandedView: React.FC<PostExpandedViewProps> = ({ isOpen, onClose, po
                         <div className="flex items-center gap-4 mt-2 text-sm text-gray-500 ml-4">
                           <button 
                             onClick={() => handleLikeComment(comment.id)}
-                            className="hover:text-gray-700 flex text-xs"
+                            className="hover:text-gray-700 flex text-xs items-center gap-1"
                           >
-                             <img src={ likedComments ?  liked : like} alt=""  className='pr-1'/>
-                            {likedComments.has(comment.id) ? comment.likes + 1 : comment.likes} 
+                            <img 
+                              src={likedComments.has(comment.id) ? liked : like} 
+                              alt="" 
+                              className='w-4 h-4'
+                            />
+                            {comment.likes}
                           </button>
                           <button 
                             onClick={() => setShowReplyInput(comment.id)}
                             className="hover:text-gray-700 text-xs flex gap-1"
                           >
-                            <img src={comment1} alt="" />
+                            <img src={comment1} alt="" className='w-4 h-4' />
                             Reply
                           </button>
                         </div>
@@ -318,14 +411,22 @@ const PostExpandedView: React.FC<PostExpandedViewProps> = ({ isOpen, onClose, po
                                           <div>
                                             <span className="text-xs">{reply.author.name}</span>
                                             <span className="text-fontlit right-0 absolute pr-2 text-gray-500">{reply.timeAgo}</span>
-                                            <p className="text-fontlit line-clamp-1 text-gray-500 ">{reply.author.bio}</p>
+                                            <p className="text-fontlit line-clamp-1 text-gray-500">{reply.author.bio}</p>
                                           </div>
                                         </div>
                                         <p className="text-gray-600 text-sm">{formatComment(reply.content)}</p>
                                       </div>
                                       <div className="flex items-center gap-4 mt-1 text-sm text-gray-500 ml-4">
-                                        <button className="hover:text-gray-700 flex gap-1 items-center">
-                                           <img src={isReplyLiked ? liked :like}  onClick={()=>setIsReplyLiked(!isReplyLiked)} alt="" /> {reply.likes} 
+                                        <button 
+                                          onClick={() => handleLikeReply(comment.id, reply.id)}
+                                          className="hover:text-gray-700 flex gap-1 items-center"
+                                        >
+                                          <img 
+                                            src={likedComments.has(reply.id) ? liked : like} 
+                                            alt="" 
+                                            className='w-4 h-4'
+                                          />
+                                          {reply.likes}
                                         </button>
                                       </div>
                                     </div>
@@ -351,11 +452,16 @@ const PostExpandedView: React.FC<PostExpandedViewProps> = ({ isOpen, onClose, po
                                 onChange={(e) => setReplyText(e.target.value)}
                                 placeholder="Write a reply..."
                                 className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm outline-none"
+                                onKeyPress={(e) => {
+                                  if (e.key === 'Enter') {
+                                    handleSubmitReply(comment.id);
+                                  }
+                                }}
                                 autoFocus
                               />
                               <button 
                                 onClick={() => handleSubmitReply(comment.id)}
-                                className="px-4 py-2 bg-maincl text-white rounded-full text-sm font-medium"
+                                className="px-4 py-2 bg-maincl text-white rounded-full text-sm font-medium hover:bg-opacity-90"
                               >
                                 Reply
                               </button>
@@ -385,10 +491,15 @@ const PostExpandedView: React.FC<PostExpandedViewProps> = ({ isOpen, onClose, po
                   onChange={(e) => setCommentText(e.target.value)}
                   placeholder="Add Comments..."
                   className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm outline-none"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSubmitComment();
+                    }
+                  }}
                 />
                 <button 
                   onClick={handleSubmitComment}
-                  className="px-4 py-2 bg-maincl text-white rounded-full text-sm font-medium"
+                  className="px-4 py-2 bg-maincl text-white rounded-full text-sm font-medium hover:bg-opacity-90"
                 >
                   Comment
                 </button>

@@ -16,14 +16,11 @@ import sharev from "../../assets/icon/sharev.svg";
 import hide from "../../assets/icon/hide.svg";
 import notinterested from "../../assets/icon/notintrested.svg";
 
-
-
-
 interface Author {
   name: string;
   avatar: string;
   bio: string;
-  timeAgo?: string; // Make timeAgo optional if not always present
+  timeAgo: string; // Made timeAgo required
 }
 
 // Define the Comment interface
@@ -33,30 +30,48 @@ interface Comment {
   content: string;
   timeAgo: string;
   likes: number;
-  replies?: Comment[]; // Ensure replies is an array of Comment
+  replies?: Comment[];
 }
-const CommentInput = () => {
+
+const CommentInput = ({ onAddComment }: { onAddComment: (content: string) => void }) => {
   const [comment, setComment] = useState('');
+
+  const handleSubmit = () => {
+    if (comment.trim()) {
+      onAddComment(comment);
+      setComment('');
+    }
+  };
+
   return (
     <div className="flex mb-8 c gap-3 font-fontsm ">
       <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/13d83c993760da19a222234c3cbcb356d551631f91a34653bf73ab3984455ff6" alt="User avatar" className="w-8 h-8 rounded-full" />
-      <div className="flex   flex-1 gap-2">
-      <input
-                  type="text"
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  placeholder="Add Comments..."
-                  className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm outline-none"
-                />
-        
-          <div className="flex items-center  ">
-            <button className="px-3  py-1 text-sm text-white  font-light bg-maincl rounded-full hover:bg-fillc">Comment</button>
-          </div>
-      
+      <div className="flex flex-1 gap-2">
+        <input
+          type="text"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          placeholder="Add Comments..."
+          className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm outline-none"
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              handleSubmit();
+            }
+          }}
+        />
+        <div className="flex items-center">
+          <button 
+            onClick={handleSubmit}
+            className="px-3 py-1 text-sm text-white font-light bg-maincl rounded-full hover:bg-fillc"
+          >
+            Comment
+          </button>
+        </div>
       </div>
     </div>
   );
 };
+
 const formatComment = (text: string) => {
   return text.split(' ').map((word, index) => {
     if (word.startsWith('@')) {
@@ -70,10 +85,24 @@ const formatComment = (text: string) => {
   });
 };
 
-const Comment = ({ comment }: { comment: Comment }) => {
+const Comment = ({ comment, onAddReply }: { comment: Comment; onAddReply?: (parentId: string, replyContent: string) => void }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [replyText, setReplyText] = useState('');
+  const [localLikes, setLocalLikes] = useState(comment.likes);
+
+  const handleReplySubmit = () => {
+    if (replyText.trim() && onAddReply) {
+      onAddReply(comment.id, replyText);
+      setReplyText('');
+      setShowReplyInput(false);
+    }
+  };
+
+  const handleLike = () => {
+    setIsLiked(!isLiked);
+    setLocalLikes(prev => isLiked ? prev - 1 : prev + 1);
+  };
 
   return (
     <div className="px-4 mt-3 font-fontsm">
@@ -91,16 +120,16 @@ const Comment = ({ comment }: { comment: Comment }) => {
               </span>
               <span className="text-fontlit text-neutral-500">{comment.timeAgo}</span>
             </div>
-            <p className="text-fontvlit text-gray-500 max-w-64 line-clamp-1">{comment.author.bio} </p>
+            <p className="text-fontvlit text-gray-500 max-w-64 line-clamp-1">{comment.author.bio}</p>
             <p className="text-xs text-neutral-600 mt-1">{formatComment(comment.content)}</p>
           </div>
           <div className="flex items-center gap-4 mt-1 ml-2">
             <button
-              onClick={() => setIsLiked(!isLiked)}
+              onClick={handleLike}
               className="flex items-center gap-1 text-xs text-neutral-500 hover:text-neutral-700"
             >
               <img src={isLiked ? liked : like} alt="" className="w-4 h-4" />
-              <span>{comment.likes}</span>
+              <span>{localLikes}</span>
             </button>
             <button
               onClick={() => setShowReplyInput(!showReplyInput)}
@@ -117,20 +146,26 @@ const Comment = ({ comment }: { comment: Comment }) => {
                   alt="User avatar"
                   className="w-8 h-8 rounded-full"
                 />
-                <div className="flex-1 flex">
+                <div className="flex-1 flex gap-2">
                   <input
-                  type="text"
+                    type="text"
                     value={replyText}
                     onChange={(e) => setReplyText(e.target.value)}
                     placeholder="Write a reply..."
-                    className="w-full p-2 text-sm border border-gray-200 rounded-2xl focus:outline-none focus:border-blue-400 resize-none"
+                    className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm outline-none"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        handleReplySubmit();
+                      }
+                    }}
                   />
                   {replyText && (
-                    <div className="flex justify-end ml-1 items-center ">
-                      <button className="px-4 py-1 text-sm text-white bg-maincl rounded-full hover:bg-fillc">
-                        Reply
-                      </button>
-                    </div>
+                    <button 
+                      onClick={handleReplySubmit}
+                      className="px-4 py-1 text-sm text-white bg-maincl rounded-full hover:bg-fillc"
+                    >
+                      Reply
+                    </button>
                   )}
                 </div>
               </div>
@@ -139,7 +174,7 @@ const Comment = ({ comment }: { comment: Comment }) => {
           {comment.replies && comment.replies.length > 0 && (
             <div className="ml-4 mt-2 space-y-4">
               {comment.replies.map((reply) => (
-                <Comment key={reply.id} comment={reply} />
+                <Comment key={reply.id} comment={reply} onAddReply={onAddReply} />
               ))}
             </div>
           )}
@@ -176,6 +211,113 @@ export const Post: React.FC<PostProps> = ({
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const moreMenuRef = useRef<HTMLDivElement>(null);
   const moreButtonRef = useRef<HTMLButtonElement>(null);
+  const [postComments, setPostComments] = useState<Comment[]>([
+    {
+      id: "1",
+      author: {
+        name: "Nampally Sriram",
+        avatar: "https://cdn.builder.io/api/v1/image/assets/TEMP/13d83c993760da19a222234c3cbcb356d551631f91a34653bf73ab3984455ff6",
+        bio: "Ophthalmologist | AIIMS DM-(F) | Leading Medical Professional",
+        timeAgo: "3 days ago",
+
+      },
+      content: "Congrats @Vamshidhar_seelam",
+      timeAgo: "3 days ago",
+      likes: 37,
+      replies: [], // Correctly typed as Comment[]
+    },
+    {
+      id: "2",
+      author: {
+        name: "Nampally Sriram",
+        avatar: "https://cdn.builder.io/api/v1/image/assets/TEMP/13d83c993760da19a222234c3cbcb356d551631f91a34653bf73ab3984455ff6",
+        bio: "Ophthalmologist | AIIMS DM-(F) | Leading Medical Professional",
+        timeAgo: "3 days ago",
+      },
+      content: "Congrats @Vamshidhar_seelam",
+      timeAgo: "3 days ago",
+      likes: 32,
+      replies: [
+        {
+          id: "2-1",
+          author: {
+            name: "Nampally Sriram",
+            avatar: "https://cdn.builder.io/api/v1/image/assets/TEMP/13d83c993760da19a222234c3cbcb356d551631f91a34653bf73ab3984455ff6",
+            bio: "Ophthalmologist | AIIMS DM-(F) | Leading Medical Professional",
+            timeAgo: "3 days ago",
+          },
+          content: "Congrats @Vamshidhar_seelam",
+          timeAgo: "3 days ago",
+          likes: 15,
+          replies: [], // Correctly typed as Comment[]
+        },
+      ],
+    },
+  ]);
+
+  const handleAddComment = (commentContent: string) => {
+    const newComment: Comment = {
+      id: String(Date.now()),
+      author: {
+        name: "Current User", // Replace with actual user data
+        avatar: "https://cdn.builder.io/api/v1/image/assets/TEMP/13d83c993760da19a222234c3cbcb356d551631f91a34653bf73ab3984455ff6",
+        bio: "User Bio", // Replace with actual user bio
+        timeAgo: "Just now",
+      },
+      content: commentContent,
+      timeAgo: "Just now",
+      likes: 0,
+      replies: [],
+    };
+
+    setPostComments(prevComments => [newComment, ...prevComments]);
+    if (onComment) {
+      onComment();
+    }
+  };
+
+  const handleAddReply = (parentId: string, replyContent: string) => {
+    const newReply: Comment = {
+      id: String(Date.now()),
+      author: {
+        name: "Current User", // Replace with actual user data
+        avatar: "https://cdn.builder.io/api/v1/image/assets/TEMP/13d83c993760da19a222234c3cbcb356d551631f91a34653bf73ab3984455ff6",
+        bio: "User Bio", // Replace with actual user bio,
+        timeAgo: "Just now",
+      },
+      content: replyContent,
+      timeAgo: "Just now",
+      likes: 0,
+      replies: [],
+    };
+
+    setPostComments(prevComments => {
+      return prevComments.map(comment => {
+        if (comment.id === parentId) {
+          return {
+            ...comment,
+            replies: [newReply, ...(comment.replies || [])]
+          };
+        }
+        // Check for nested replies
+        if (comment.replies && comment.replies.length > 0) {
+          return {
+            ...comment,
+            replies: comment.replies.map(reply => {
+              if (reply.id === parentId) {
+                return {
+                  ...reply,
+                  replies: [newReply, ...(reply.replies || [])]
+                };
+              }
+              return reply;
+            })
+          };
+        }
+        return comment;
+      });
+    });
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -245,46 +387,6 @@ export const Post: React.FC<PostProps> = ({
   };
 
   const visibleDots = getVisibleDots();
-
-  const sampleComments : Comment[]= [
-    {
-      id: "1",
-      author: {
-        name: "Nampally Sriram",
-        avatar: "https://cdn.builder.io/api/v1/image/assets/TEMP/13d83c993760da19a222234c3cbcb356d551631f91a34653bf73ab3984455ff6",
-        bio: "Ophthalmologist | AIIMS DM-(F) | Leading Medical Professional",
-      },
-      content: "Congrats @Vamshidhar_seelam",
-      timeAgo: "3 days ago",
-      likes: 37,
-      replies: [], // Correctly typed as Comment[]
-    },
-    {
-      id: "2",
-      author: {
-        name: "Nampally Sriram",
-        avatar: "https://cdn.builder.io/api/v1/image/assets/TEMP/13d83c993760da19a222234c3cbcb356d551631f91a34653bf73ab3984455ff6",
-        bio: "Ophthalmologist | AIIMS DM-(F) | Leading Medical Professional",
-      },
-      content: "Congrats @Vamshidhar_seelam",
-      timeAgo: "3 days ago",
-      likes: 32,
-      replies: [
-        {
-          id: "2-1",
-          author: {
-            name: "Nampally Sriram",
-            avatar: "https://cdn.builder.io/api/v1/image/assets/TEMP/13d83c993760da19a222234c3cbcb356d551631f91a34653bf73ab3984455ff6",
-            bio: "Ophthalmologist | AIIMS DM-(F) | Leading Medical Professional",
-          },
-          content: "Congrats @Vamshidhar_seelam",
-          timeAgo: "3 days ago",
-          likes: 15,
-          replies: [], // Correctly typed as Comment[]
-        },
-      ],
-    },
-  ];
 
   return (
     <>
@@ -387,7 +489,7 @@ export const Post: React.FC<PostProps> = ({
             <div className="relative overflow-hidden" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
               <div className="flex transition-transform duration-300" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
                 {images.map((image, index) => (
-                  <div key={index} className="flex-none w-full lg:h-60 rounded-lg bg-gray-200">
+                  <div key={index} className="flex-none w-full  rounded-lg bg-gray-200">
                     <img onClick={() => setIsExpanded(!isExpanded)} src={image} alt={`Post image ${index + 1}`} className="w-full h-full object-cover rounded-lg" />
                   </div>
                 ))}
@@ -492,10 +594,14 @@ export const Post: React.FC<PostProps> = ({
           {/* Comments section */}
           {showComments && (
             <div className="mt-4 border-t border-gray-200 pt-4">
-              <CommentInput />
+              <CommentInput onAddComment={handleAddComment} />
               <div className="mt-4 space-y-4">
-                {sampleComments.map((comment) => (
-                  <Comment key={comment.id} comment={comment} />
+                {postComments.map((comment) => (
+                  <Comment 
+                    key={comment.id} 
+                    comment={comment} 
+                    onAddReply={handleAddReply}
+                  />
                 ))}
               </div>
             </div>
@@ -511,7 +617,7 @@ export const Post: React.FC<PostProps> = ({
           content: { title: title, description: content },
           stats: { likes, comments, shares, reposts },
           hashtags: ["Ophthalmology", "OpthalTech", "OphthalTrends"],
-          comments: sampleComments,
+          comments: postComments,
         }}
       />
     </>

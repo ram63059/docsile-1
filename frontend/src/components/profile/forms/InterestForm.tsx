@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Modal from '../../common/Modal';
 
 interface InterestFormProps {
@@ -30,13 +30,13 @@ const InterestForm: React.FC<InterestFormProps> = ({
   );
   
 
-  useEffect(() => {
-    if (!isEditing) {
-      setFormData({ name: '', notifyFollowers: false });
-    } else if (initialData) {
-      setFormData(initialData);
-    }
-  }, [isOpen, isEditing, initialData]);
+  const handleClose = () => {
+    setFormData({
+      name: '',
+      notifyFollowers: false,
+    });
+    onClose();
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +50,7 @@ const InterestForm: React.FC<InterestFormProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={`${isEditing ? 'Edit' : 'Add'} Skills`}>
+    <Modal isOpen={isOpen} onClose={handleClose} title={`${isEditing ? 'Edit' : 'Add'} Skills`}>
       <form onSubmit={handleSubmit} className="space-y-4">
       <div className="mb-4">
           <div className="flex items-center bg-yellow-100 opacity-80 p-1 justify-between">

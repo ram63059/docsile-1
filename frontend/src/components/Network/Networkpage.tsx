@@ -199,7 +199,9 @@ const Networkpage = () => {
                     <X className="w-3 h-3 text-gray-400" />
                   </button>
 
-                  <div className="w-40  text-center   rounded-2xl flex flex-col justify-center items-center mb-2 px-2 py-3">
+                  <div className="w-40  text-center   rounded-2xl flex flex-col justify-between items-center mb-2 px-2 py-3">
+                   <div className='flex flex-col items-center'>
+
                     <div>
                       <img src={person.avatar} alt="" className='w-16 h-16' />
                     </div>
@@ -211,9 +213,13 @@ const Networkpage = () => {
                         {person.mutualConnection} and {person.mutualCount} mutual connections
                       </div>
                     </div>
+                   </div>
+                   <div>
+
                     <button className=" py-1.5 px-3 text-xs text-white  bg-maincl rounded-3xl transition-colors">
                       Follow
                     </button>
+                   </div>
                   </div>
                 </div>
               ))}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Modal from '../../common/Modal';
 import {  State, City }  from 'country-state-city';
+import DropDownWithSearch from './Dropdownfilter';
 
 
 
@@ -98,11 +99,13 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({
     e.preventDefault();
     onSubmit(formData);
     onClose();
+
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    console.log(formData);
   };
 
 
@@ -162,42 +165,11 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({
           />
         </div>
 
-        <div className="relative">
-          <label htmlFor="company" className="block text-sm font-medium text-gray-700">
-            Organization
-          </label>
-          <input
-            type="text"
-            id="company"
-            name="company"
-            value={formData.company}
-            onChange={(e) => {
-              setFormData(prev => ({ ...prev, company: e.target.value }));
-              setIsDropdownVisible(true);
-            }}
-            required
-            className="mt-1 p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-fillc focus:outline-none"
-          />
-          {isDropdownVisible && formData.company && (
-            <div className="absolute z-10 w-full max-h-60 overflow-y-auto bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-              {organizations
-          .filter(org => org.toLowerCase().includes(formData.company.toLowerCase()))
-          .map((org, index) => (
-            <div
-              key={index}
-              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-              onClick={() => {
-                setFormData(prev => ({ ...prev, company: org }));
-                setIsDropdownVisible(false);
-              }}
-            >
-              {org}
-            </div>
-          ))}
-            </div>
-          )}
-        </div>
-
+        <DropDownWithSearch
+          place="Select Organization"
+          onSelect={(value) => setFormData(prev => ({ ...prev, company: value }))}
+          dropDownOptions={organizations}
+        />
 
         <div className="relative">
       <label htmlFor="location" className="block text-sm font-medium text-gray-700">
@@ -384,11 +356,12 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({
           </div>
         )}
         
-
+        
         <div className="flex justify-end space-x-3">
           <button
             type="button"
-            onClick={onClose}
+            onClick={onClose }
+            
             className="px-4 py-2 text-sm font-medium text-maincl bg-gray-100 border border-gray-300 rounded-3xl hover:bg-gray-50"
           >
             Cancel
@@ -399,6 +372,7 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({
           >
             {isEditing ? 'Save Changes' : 'Add Experience'}
           </button>
+          
         </div>
       </form>
     </Modal>
