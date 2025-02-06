@@ -869,7 +869,7 @@ const [activeIndex, setActiveIndex] = useState(0);
       {/* Posts Section */}
       <div className="mb-8 relative">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-medium">Posts</h2>
+          <h2 className="text-xl font-medium">Posts <span className='text-gray-500 text-md' > ({posts.length})</span></h2>
           {posts.length > 1 && (
             <button 
               onClick={() => setShowAllPosts(!showAllPosts)}
@@ -936,7 +936,7 @@ const [activeIndex, setActiveIndex] = useState(0);
       {/* Questions Section */}
       <div className="mb-8 relative group">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-medium">Questions</h2>
+          <h2 className="text-xl font-medium">Questions <span className='text-gray-500 text-md' > ({questions.length})</span></h2>
           {questions.length > 1 && (
             <button 
               onClick={() => setShowAllQuestions(!showAllQuestions)}
@@ -1001,7 +1001,7 @@ const [activeIndex, setActiveIndex] = useState(0);
       {/* Resources Section */}
       <div className="mb-8 relative group">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-medium">Resources</h2>
+          <h2 className="text-xl font-medium">Resources <span className='text-gray-500 text-md' > ({resources.length})</span></h2>
           {resources.length > 1 && (
             <button 
               onClick={() => setShowAllResources(!showAllResources)}
@@ -1453,7 +1453,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                               {/* Saved Posts Section */}
                               <div className="space-y-4 relative group">
                                 <div className="flex justify-between items-center mb-4">
-                                  <h2 className="text-xl font-medium">Saved Posts</h2>
+                                  <h2 className="text-xl font-medium">Saved Posts <span className='text-gray-500 text-md' > ({savedPosts.length})</span></h2>
                                   {savedPosts.length > 1 && (
                                     <button 
                                       onClick={() => setShowAllSavedPosts(!showAllSavedPosts)}
@@ -1519,7 +1519,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                               {/* Saved Questions Section */}
                                 <div className="space-y-4 relative group">
                                 <div className="flex justify-between items-center mb-4">
-                                  <h2 className="text-xl font-medium">Saved Questions</h2>
+                                  <h2 className="text-xl font-medium">Saved Questions <span className='text-gray-500 text-md' > ({savedQuestions.length})</span></h2>
                                   {savedQuestions.length > 1 && (
                                   <button 
                                     onClick={() => setShowAllSavedQuestions(!showAllSavedQuestions)}
@@ -1581,7 +1581,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                 {/* Saved Resources Section */}
                                 <div className="space-y-4 relative group">
                                 <div className="flex justify-between items-center mb-4">
-                                  <h2 className="text-xl font-medium">Saved Resources</h2>
+                                  <h2 className="text-xl font-medium">Saved Resources <span className='text-gray-500 text-md' > ({savedResources.length})</span></h2>
                                   {savedResources.length > 1 && (
                                   <button 
                                     onClick={() => setShowAllSavedResources(!showAllSavedResources)}
@@ -1638,7 +1638,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                               {/* Saved Jobs Section */}
                                 <div className="space-y-4 relative group">
                                 <div className="flex justify-between items-center mb-4">
-                                  <h2 className="text-xl font-medium">Saved Jobs</h2>
+                                  <h2 className="text-xl font-medium">Saved Jobs <span className='text-gray-500 text-md' > ({savedJobs.length})</span></h2>
                                   {savedJobs.length > 1 && (
                                   <button 
                                     onClick={() => setShowAllSavedJobs(!showAllSavedJobs)}
@@ -1698,7 +1698,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                 {/* Saved Conferences Section */}
                                 <div className="space-y-4 relative group">
                                 <div className="flex justify-between items-center mb-4">
-                                  <h2 className="text-xl font-medium">Saved Conferences</h2>
+                                  <h2 className="text-xl font-medium">Saved Conferences <span className='text-gray-500 text-md' > ({savedConferences.length})</span></h2>
                                   {savedConferences.length > 1 && (
                                   <button 
                                     onClick={() => setShowAllConferences(!showAllConferences)}
@@ -2718,7 +2718,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                               {/* Posts Section */}
                                 <div className='mb-8 relative group'>
                                   <div className="flex justify-between items-center mb-4">
-                                    <h2 className="text-xl font-medium">Posts</h2>
+                                    <h2 className="text-xl font-medium">Posts <span className='text-gray-500 text-md' > ({posts.length})</span></h2>
                                     {posts.length > 2 && (
                                       <button 
                                         onClick={() => setShowAllPosts(!showAllPosts)}
@@ -2796,7 +2796,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                               {/* Questions Section */}
                               <div className="mt-8 relative group">
                                 <div className="flex justify-between items-center mb-4">
-                                  <h2 className="text-xl font-medium">Questions</h2>
+                                  <h2 className="text-xl font-medium">Questions <span className='text-gray-500 text-md' > ({questions.length})</span></h2>
                                   {questions.length > 2 && (
                                     <button 
                                       onClick={() => setShowAllQuestions(!showAllQuestions)}
@@ -2874,7 +2874,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                             {/* Resources Section */}
                             <div className="pt-6 relative group">
                               <div className="flex justify-between items-center mb-4">
-                              <h2 className="text-xl font-medium">Resources</h2>
+                              <h2 className="text-xl font-medium">Resources <span className='text-gray-500 text-md' > ({resources.length})</span></h2>
                               {resources.length > 2 && (
                                 <button 
                                 onClick={() => setShowAllResources(!showAllResources)}
@@ -2996,7 +2996,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                 {/* Mentioned Section */}
                                 <div className="pt-8 relative group">
                                   <div className="flex justify-between items-center mb-4">
-                                    <h2 className="text-xl font-medium">Mentioned</h2>
+                                    <h2 className="text-xl font-medium">Mentioned <span className='text-gray-500 text-md' > ({mentionedPosts.length})</span></h2>
                                     {mentionedPosts.length > 2 && (
                                       <button 
                                         onClick={() => setShowAllMentioned(!showAllMentioned)}
@@ -3092,7 +3092,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                           {activeDesktopTab === 'jobs' && (
                             <div>
                               <div className="flex justify-between items-center mb-4">
-                                <h2 className="text-xl font-medium">Jobs</h2>
+                                <h2 className="text-xl font-medium">Jobs <span className='text-gray-500 text-md' > ({jobs.length})</span></h2>
                                 
                               </div>
                               <div className="grid grid-cols-2 gap-4">
@@ -3121,7 +3121,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                             <div className="space-y-8">
                               {/* Saved Posts Section */}
                                 <div className="space-y-4 relative group">
-                                <h2 className="text-xl font-medium">Saved Posts</h2>
+                                <h2 className="text-xl font-medium">Saved Posts <span className='text-gray-500 text-md' > ({savedPosts.length})</span></h2>
                                 {savedPosts.length > 2 && (
                                       <button 
                                         onClick={() => setShowAllSavedPosts(!showAllSavedPosts)}
@@ -3199,7 +3199,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                               {/* Saved Questions Section */}
                               <div className="mt-8 relative group">
                                 <div className="flex justify-between items-center mb-4">
-                                  <h2 className="text-xl font-medium">Saved Questions</h2>
+                                  <h2 className="text-xl font-medium">Saved Questions <span className='text-gray-500 text-md' > ({savedQuestions.length})</span></h2>
                                   {savedQuestions.length > 2 && (
                                     <button 
                                       onClick={() => setShowAllSavedQuestions(!showAllSavedQuestions)}
@@ -3277,7 +3277,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                               {/* Saved Resources Section */}
                               <div className="pt-6 relative group">
                               <div className="flex justify-between items-center mb-4">
-                              <h2 className="text-xl font-medium"> Saved Resources</h2>
+                              <h2 className="text-xl font-medium"> Saved Resources <span className='text-gray-500 text-md' > ({savedResources.length})</span></h2>
                               {savedResources.length > 2 && (
                                 <button 
                                 onClick={() => setShowAllSavedResources(!showAllSavedResources)}
@@ -3350,7 +3350,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                               {/* Saved Jobs Section */}
                                 <div className="space-y-4 relative group">
                                 <div className="flex justify-between items-center mb-4">
-                                  <h2 className="text-xl font-medium">Saved Jobs</h2>
+                                  <h2 className="text-xl font-medium">Saved Jobs <span className='text-gray-500 text-md' > ({savedJobs.length})</span></h2>
                                   {savedJobs.length > 2 && (
                                   <button 
                                     onClick={() => setShowAllSavedJobs(!showAllSavedJobs)}
@@ -3422,7 +3422,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                               {/* Saved Conferences Section */}
                               <div className="space-y-4 relative group">
                                 <div className="flex justify-between items-center mb-4">
-                                  <h2 className="text-xl font-medium">Saved Conferences</h2>
+                                  <h2 className="text-xl font-medium">Saved Conferences <span className='text-gray-500 text-md' > ({savedConferences.length})</span></h2>
                                   {savedConferences.length > 2 && (
                                     <button 
                                       onClick={() => setShowAllConferences(!showAllConferences)}
