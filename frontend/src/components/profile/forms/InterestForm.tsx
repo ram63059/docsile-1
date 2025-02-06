@@ -50,7 +50,7 @@ const InterestForm: React.FC<InterestFormProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={`${isEditing ? 'Edit' : 'Add'} Interest`}>
+    <Modal isOpen={isOpen} onClose={onClose} title={`${isEditing ? 'Edit' : 'Add'} Skills`}>
       <form onSubmit={handleSubmit} className="space-y-4">
       <div className="mb-4">
           <div className="flex items-center bg-yellow-100 opacity-80 p-1 justify-between">
@@ -98,7 +98,7 @@ const InterestForm: React.FC<InterestFormProps> = ({
             type="submit"
             className="px-4 py-2 text-sm font-medium text-white bg-maincl border border-transparent rounded-3xl hover:bg-fillc"
           >
-            {isEditing ? 'Save Changes' : 'Add Interest'}
+            {isEditing ? 'Save Changes' : 'Add Skill'}
           </button>
         </div>
       </form>

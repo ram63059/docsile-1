@@ -14,7 +14,6 @@ import PostCard from './PostCard';
 import QuestionCard from './QuestionCard';
 import ResourceCard from './ResourceCard';
 import MentionedCard from './MentionedCard';
-import { Link } from 'react-router-dom';
 import { JobsCard } from '../jobs/JobCard';
 import ConferenceCard from './ConferenceCard';
 import EventCalendar from './EventCalendar';
@@ -39,7 +38,9 @@ interface ExperienceItem {
 interface Education {
   institution: string;
   degree: string;
+  department: string;
   year: string;
+  grade?: string;
   logo: string;
 }
 
@@ -169,12 +170,7 @@ interface MembershipFormData {
   image: File | null;
 }
 
-interface EducationFormData {
-  institution: string;
-  degree: string;
-  year: string;
-  logo: string | File;
-}
+
 
 interface ExperienceFormData {
   title: string;
@@ -196,12 +192,16 @@ const Profile: React.FC = () => {
   const [expanded, setExpanded] = useState(false);
   const [interestsexpanded, setInterestsExpanded] = useState(false);
   const [showAllPosts, setShowAllPosts] = useState(false);
+  const [showAllSavedPosts, setShowAllSavedPosts] = useState(false);
   const [showAllQuestions, setShowAllQuestions] = useState(false);
+  const [showAllSavedQuestions, setShowAllSavedQuestions] = useState(false);
   const [showAllCertifications, setShowAllCertifications] = useState(false);
   const [showAllResources, setShowAllResources] = useState(false);
+  const [showAllSavedResources, setShowAllSavedResources] = useState(false);
   const [activeMediaTab, setActiveMediaTab] = useState<'Photos' | 'Videos' | 'Other'>('Photos');
   const [showAllMentioned, setShowAllMentioned] = useState(false);
   const [showAllJobs, setShowAllJobs] = useState(false);
+  const [showAllSavedJobs, setShowAllSavedJobs] = useState(false);
   const [activeDesktopTab, setActiveDesktopTab] = useState<string>('activity');
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [isAwardFormOpen, setIsAwardFormOpen] = useState(false);
@@ -254,6 +254,44 @@ const Profile: React.FC = () => {
     },
     {
       id: 2,
+      content: "Excited to share my research findings on advanced IOL technologies at the upcoming ophthalmology conference...",
+      likes: 3,
+      comments: 8,
+      userTitle:'Opthomology the future of eye care',
+      shares :12,
+      reposts:12,
+      time: "5 hours ago",
+      images: [
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/3179d893d2c64d78a71042d4bbe19d82929393a4cc746e57df0407426f7a4992?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/bacdf5b5cd530c209ad1b1cdb72874c3b55ba49a818704cd3a277725a590f529?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/6939df2c7edaf176e0907ced793a5e28a1df342e59d4610b8999ddc4aed782a9?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+      ],
+      userImage: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c",
+      userName: "Seelam Vamshidhar Goud",
+      postImage: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c"
+    },
+    {
+      id: 3,
+      content: "Just completed a successful cataract surgery using the latest minimally invasive technique. The patient's vision improved significantly...",
+      likes: 4,
+      comments: 12,
+      userTitle:'Opthomology the future of eye care',
+      shares :12,
+      reposts:12,
+      time: "2 hours ago",
+      images: [
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/3179d893d2c64d78a71042d4bbe19d82929393a4cc746e57df0407426f7a4992?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/bacdf5b5cd530c209ad1b1cdb72874c3b55ba49a818704cd3a277725a590f529?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/6939df2c7edaf176e0907ced793a5e28a1df342e59d4610b8999ddc4aed782a9?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+      ],
+      userImage: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c",
+      userName: "Seelam Vamshidhar Goud",
+      postImage: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c"
+    },
+    {
+      id: 4,
       content: "Excited to share my research findings on advanced IOL technologies at the upcoming ophthalmology conference...",
       likes: 32,
       comments: 8,
@@ -309,12 +347,14 @@ const Profile: React.FC = () => {
     {
       institution: "All India Institute of Medical Sciences (AIIMS), New Delhi",
       degree: "Bachelor of Medicine, Bachelor of Surgery (MBBS)",
+      department: "Ophthalmology",
       year: "2020 - 2023",
       logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
     },
     {
       institution: "St. Xavier’s High School, Mumbai",
       degree: "Higher Secondary Education (Class 12)",
+      department  : "Ophthalmology",
       year: "2020 - 2023",
       logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
     },
@@ -322,12 +362,14 @@ const Profile: React.FC = () => {
       institution: "All India Institute of Medical Sciences (AIIMS), New Delhi",
       degree: "Bachelor of Medicine, Bachelor of Surgery (MBBS)",
       year: "2020 - 2023",
+      department  : "Ophthalmology",
       logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
     },
     {
       institution: "St. Xavier’s High School, Mumbai",
       degree: "Higher Secondary Education (Class 12)",
       year: "2020 - 2023",
+      department  : "Ophthalmology",
       logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
     },
     // Add more education...
@@ -403,14 +445,7 @@ const Profile: React.FC = () => {
     { id: 5, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
     { id: 6, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
    ]);
-  // const memberships: Membership[] = [
-  //   { id: 1, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
-  //   { id: 2, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
-  //   { id: 3, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
-  //   { id: 4, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
-  //   { id: 5, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
-  //   { id: 6, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
-  // ];
+
   const [awards, setAwards] = useState<Award[]>(
 
 
@@ -488,6 +523,44 @@ const questions: Question[] = [
       title: "Ophthalmologist | AIIMS Delhi"
     },
     timeAgo: "5 days ago"
+  },
+  {
+    id: '3',
+    title: "Latest advancements in cataract surgery techniques?",
+    content: "I'm interested in learning about the newest developments in cataract surgery. What are the most promising techniques being used or researched currently?",
+    images: [
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/3179d893d2c64d78a71042d4bbe19d82929393a4cc746e57df0407426f7a4992?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/bacdf5b5cd530c209ad1b1cdb72874c3b55ba49a818704cd3a277725a590f529?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/6939df2c7edaf176e0907ced793a5e28a1df342e59d4610b8999ddc4aed782a9?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+    ],
+    answers: 12,
+    shares: 8,
+    author: {
+      image: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c",
+      name: "Dr. Seelam Vamshidhar",
+      title: "Ophthalmologist | AIIMS Delhi"
+    },
+    timeAgo: "2 days ago"
+  },
+  {
+    id: '4',
+    title: "Best practices for post-LASIK care?",
+    content: "Looking for recommendations on post-LASIK patient care protocols. What has been your experience with different approaches?",
+    images: [
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/3179d893d2c64d78a71042d4bbe19d82929393a4cc746e57df0407426f7a4992?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/bacdf5b5cd530c209ad1b1cdb72874c3b55ba49a818704cd3a277725a590f529?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/6939df2c7edaf176e0907ced793a5e28a1df342e59d4610b8999ddc4aed782a9?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+    ],
+    answers: 8,
+    shares: 5,
+    author: {
+      image: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c",
+      name: "Dr. Seelam Vamshidhar",
+      title: "Ophthalmologist | AIIMS Delhi"
+    },
+    timeAgo: "5 days ago"
   }
 ];
 
@@ -502,6 +575,22 @@ const resources: Resource[] = [
   },
   {
     id: '2',
+    type: 'Research',
+    title: 'Latest Advances in Glaucoma Treatment',
+    description: 'Recent developments in glaucoma treatment have opened new possibilities for patients. This comprehensive review explores innovative therapeutic approaches, surgical techniques, and medication delivery systems that are transforming the management of glaucoma.',
+    image: 'https://cdn.builder.io/api/v1/image/assets/TEMP/3179d893d2c64d78a71042d4bbe19d82929393a4cc746e57df0407426f7a4992?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08',
+    
+  },
+  {
+    id: '3',
+    type: 'Article',
+    title: 'The Future of AI in Ophthalmology',
+    description: 'Artificial intelligence (AI) is revolutionizing various fields of medicine, and ophthalmology is no exception. With the rapid advancement of machine learning, deep learning, and computer vision, AI is enhancing diagnostic accuracy, streamlining workflows, and improving patient outcomes. The integration of AI into ophthalmology is set to redefine the way eye diseases are detected, monitored, and treated.',
+    image: 'https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08',
+    
+  },
+  {
+    id: '4',
     type: 'Research',
     title: 'Latest Advances in Glaucoma Treatment',
     description: 'Recent developments in glaucoma treatment have opened new possibilities for patients. This comprehensive review explores innovative therapeutic approaches, surgical techniques, and medication delivery systems that are transforming the management of glaucoma.',
@@ -778,102 +867,193 @@ const [activeIndex, setActiveIndex] = useState(0);
   const ActivitySection = () => (
     <div className="space-y-8">
       {/* Posts Section */}
-      <div className="mb-8">
-        <div className="flex  justify-between items-center mb-4">
+      <div className="mb-8 relative">
+        <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-medium">Posts</h2>
-          <button>
-            <img src={more1} alt="" className="w-6 h-6" />
-          </button>
+          {posts.length > 1 && (
+            <button 
+              onClick={() => setShowAllPosts(!showAllPosts)}
+              className="text-fillc text-sm font-medium flex items-center gap-1"
+            >
+              {showAllPosts ? "Show Less" : "See all Posts"}
+              <img src={arrowright} alt="" className={`transform ${showAllPosts ? 'rotate-180' : ''} w-4 h-4`} />
+            </button>
+          )}
         </div>
-        <div className="grid grid-cols-1 overflow-scroll gap-4">
-          {posts.map((post) => (
-            <PostCard 
-              key={post.id}
-              userImage={post.userImage}
-              userName={post.userName}
-              userTitle={post.userTitle}
-              timeAgo={post.time}
-              content={post.content}
-              images={post.images}
-              likes={post.likes}
-              comments={post.comments}
-              shares={post.shares}
-              reposts={post.reposts}
-            />
-          ))}
-                 </div>
-                 <div className='flex justify-end'>
 
-                   <button 
-                  onClick={() => setShowAllPosts(!showAllPosts)}
-                  className="text-fillc text-sm font-medium flex  items-center gap-1"
+        {posts.length === 0 ? (
+          <div className="text-center py-8 bg-gray-50 rounded-lg">
+            <p className="text-gray-600 text-sm">
+              No posts yet. Share your first post to start engaging with your network!
+            </p>
+            <button className="mt-4 px-4 py-2 bg-maincl text-white rounded-full text-sm hover:bg-fillc">
+              Create Post
+            </button>
+          </div>
+        ) : (
+          <div className="relative">
+            <div 
+              id="posts-scroll-container" 
+              className={`flex ${showAllPosts ? 'overflow-x-auto' : 'overflow-x-hidden'} scroll-smooth`}
+              style={{ 
+                scrollSnapType: 'x mandatory',
+                scrollBehavior: 'smooth',
+                WebkitOverflowScrolling: 'touch',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none'
+              }}
+            >
+              <div className="flex gap-4 pb-4 transition-transform duration-300" >
+                {posts.map((post) => (
+                  <div 
+                    key={post.id} 
+                    className="w-[calc(40%)] flex-none"
+                    style={{ 
+                      scrollSnapAlign: 'start'
+                    }}
                   >
-                  {showAllPosts ? "Show Less" : "See all Posts"} 
-                  <img src={arrowright} alt="" className={`transform ${showAllPosts ? 'rotate-180' : ''} w-4 h-4`} />
-                   </button>
+                    <PostCard
+                      userTitle={post.userTitle}
+                      userImage={post.userImage}
+                      userName={post.userName}
+                      timeAgo={post.time}
+                      content={post.content}
+                      likes={post.likes}
+                      reposts={post.reposts}
+                      comments={post.comments}
+                      images={post.images}
+                      shares={post.shares}
+                    />
                   </div>
+                ))}
+              </div>
+            </div>
+            
+          </div>
+        )}
       </div>
-  
+
       {/* Questions Section */}
-      <div className="mb-8">
+      <div className="mb-8 relative group">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-medium">Questions</h2>
-          <button>
-            <img src={more1} alt="" className="w-6 h-6" />
-          </button>
-        </div>
-        <div className="grid grid-cols-1 gap-4">
-          {questions.map((question) => (
-            <QuestionCard
-              key={question.id}
-              userImage={question.author.image}
-              userName={question.author.name}
-              userTitle={question.author.title}
-              timeAgo={question.timeAgo}
-              questionTitle={question.title}
-              questionContent={question.content}
-              images={question.images}
-              answers={question.answers}
-              shares={question.shares}
-            />
-          ))}
-        </div>
-        <div className='flex justify-end'>
-
-        <button 
-            onClick={() => setShowAllQuestions(!showAllQuestions)}
-            className="text-fillc text-sm font-medium flex items-center gap-1"
+          {questions.length > 1 && (
+            <button 
+              onClick={() => setShowAllQuestions(!showAllQuestions)}
+              className="text-fillc text-sm font-medium flex items-center gap-1"
             >
-            {showAllQuestions ? "Show Less" : "See all Questions"}
-            <img src={arrowright} alt="" className={`transform ${showAllQuestions ? 'rotate-180' : ''} w-4 h-4`} />
-          </button>
+              {showAllQuestions ? "Show Less" : "See all Questions"}
+              <img src={arrowright} alt="" className={`transform ${showAllQuestions ? 'rotate-180' : ''} w-4 h-4`} />
+            </button>
+          )}
+        </div>
+
+        {questions.length === 0 ? (
+          <div className="text-center py-8 bg-gray-50 rounded-lg">
+            <p className="text-gray-600 text-sm">
+              No questions yet. Ask your first question to start engaging with your network!
+            </p>
+            <button className="mt-4 px-4 py-2 bg-maincl text-white rounded-full text-sm hover:bg-fillc">
+              Ask Question
+            </button>
+          </div>
+        ) : (
+          <div className="relative">
+            <div 
+              id="questions-scroll-container" 
+              className={`flex ${showAllQuestions ? 'overflow-x-auto' : 'overflow-x-hidden'} scroll-smooth`}
+              style={{ 
+                scrollSnapType: 'x mandatory',
+                scrollBehavior: 'smooth',
+                WebkitOverflowScrolling: 'touch',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none'
+              }}
+            >
+              <div className="flex gap-4 pb-4 transition-transform duration-300" >
+                {questions.map((question) => (
+                  <div 
+                    key={question.id} 
+                    className="w-[calc(52%)] flex-none"
+                    style={{ 
+                      scrollSnapAlign: 'start'
+                    }}
+                  >
+                    <QuestionCard
+                      userImage={question.author.image}
+                      userName={question.author.name}
+                      userTitle={question.author.title}
+                      timeAgo={question.timeAgo}
+                      questionTitle={question.title}
+                      questionContent={question.content}
+                      images={question.images}
+                      answers={question.answers}
+                      shares={question.shares}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
+          </div>
+        )}
       </div>
-  
+
       {/* Resources Section */}
-      <div className="mb-8 pb-8">
+      <div className="mb-8 relative group">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-medium">Resources</h2>
-          <button>
-            <img src={more1} alt="" className="w-6 h-6" />
-          </button>
-        </div>
-        <div className="grid grid-cols-1 gap-4">
-          {resources.map((resource) => (
-            <ResourceCard key={resource.id} {...resource} />
-          ))}
-        </div>
-        <div className='flex justify-end'>
-        <button 
-             onClick={() => setShowAllResources(!showAllResources)}
-             className="text-fillc text-sm font-medium flex items-center gap-1"
-           >
-             {showAllResources ? "Show Less" : "See all Resources"}
-             <img src={arrowright} alt="" className={`transform ${showAllResources ? 'rotate-180' : ''} w-4 h-4`} />
-           </button>
-          
+          {resources.length > 1 && (
+            <button 
+              onClick={() => setShowAllResources(!showAllResources)}
+              className="text-fillc text-sm font-medium flex items-center gap-1"
+            >
+              {showAllResources ? "Show Less" : "See all Resources"}
+              <img src={arrowright} alt="" className={`transform ${showAllResources ? 'rotate-180' : ''} w-4 h-4`} />
+            </button>
+          )}
         </div>
 
+        {resources.length === 0 ? (
+          <div className="text-center py-8 bg-gray-50 rounded-lg">
+            <p className="text-gray-600 text-sm">
+              No resources yet. Share your first resource to start engaging with your network!
+            </p>
+            <button className="mt-4 px-4 py-2 bg-maincl text-white rounded-full text-sm hover:bg-fillc">
+              Share Resource
+            </button>
+          </div>
+        ) : (
+          <div className="relative">
+            <div 
+              id="resources-scroll-container" 
+              className={`flex ${showAllResources ? 'overflow-x-auto' : 'overflow-x-hidden'} scroll-smooth`}
+              style={{ 
+                scrollSnapType: 'x mandatory',
+                scrollBehavior: 'smooth',
+                WebkitOverflowScrolling: 'touch',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none'
+              }}
+            >
+              <div className="flex gap-4 pb-4 transition-transform duration-300" >
+                {resources.map((resource) => (
+                  <div 
+                    key={resource.id} 
+                    className="w-[calc(50%)] flex-none"
+                    style={{ scrollSnapAlign: 'start' }}
+                  >
+                    <ResourceCard
+                      type={resource.type}
+                      title={resource.title}
+                      description={resource.description}
+                      image={resource.image}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -884,6 +1064,7 @@ const [activeIndex, setActiveIndex] = useState(0);
   const [showCertEditButtons, setShowCertEditButtons] = useState(false);
   const [editingCertification, setEditingCertification] = useState<Certification | null>(null);
   const [isCertificationFormOpen, setIsCertificationFormOpen] = useState(false);
+  const [showAllConferences, setShowAllConferences] = useState(false);
   return (
     <div className="min-h-screen font-fontsm mx-auto ">
       {/* Mobile Header - Only visible on mobile */}
@@ -926,7 +1107,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                   <img
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c"
                     alt="Profile"
-                    className=" w-28 lg:w-20  rounded-full object-cover"
+                    className=" w-28   rounded-full object-cover"
                     />
                   <div className="absolute bottom-0 right-0  w-6 h-6 flex items-center justify-center text-xs">
                   <img src={add} alt="" />
@@ -979,11 +1160,11 @@ const [activeIndex, setActiveIndex] = useState(0);
                 </div>
                   </div>
 
-                <div className="flex gap-4 mt-6 w-full text-sm font-normal">
-                  <button className="flex-1 px-3 py-1 bg-maincl text-white rounded-3xl hover:bg-fillc">
+                <div className="grid grid-cols-2 gap-4 mt-6 w-full text-sm  font-normal">
+                  <button className=" px-3  py-1 bg-maincl text-white rounded-3xl hover:bg-fillc">
                     Edit Profile
                   </button>
-                  <button className="flex px-3 py-1 border rounded-3xl hover:bg-gray-50">
+                  <button className="flex justify-center px-3 py-1 border rounded-3xl hover:bg-gray-50">
                     <img src={add2} alt="" />
                     Be Mentor
                   </button>
@@ -998,7 +1179,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                           : '-translate-x-full'
                       }`}
                     >
-                      <div className=''> 
+                      <div className=' '> 
                      <div className="flex justify-between items-start mb-2">
                       <h2 className="text-xl font-semibold">About</h2>
                       <button className="text-gray-500">
@@ -1007,7 +1188,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                     </div>
                     <div>
                       <p className="text-xs text-gray-600 ">
-                        Aspiring ophthalmologist with a keen interest in surgical techniques and patient care.  Currently pursuing MBBS at AIIMS Delhi with a focus on ophthalmology.  Passionate about leveraging technology in healthcare and contributing to medical research.
+                        {aboutText}
                       </p>
                     </div>
 
@@ -1270,160 +1451,308 @@ const [activeIndex, setActiveIndex] = useState(0);
                           
                             <div className="space-y-8">
                               {/* Saved Posts Section */}
-                              <div className="space-y-4">
-                                <h2 className="text-xl font-medium">Saved Posts</h2>
-                                {savedPosts.length > 0 ? (
-                                  <div className="grid grid-cols-1 gap-1 transition-all duration-300">
-                                  {savedPosts.map((post) => (
-                                    <PostCard
-                                      key={post.id}
-                                      userTitle={post.userTitle}
-                                      userImage={post.userImage}
-                                      userName={post.userName}
-                                      timeAgo={post.time}
-                                      content={post.content}
-                                      likes={post.likes}
-                                      reposts={post.reposts}
-                                      comments={post.comments}
-                                      images={post.images}
-                                      shares={post.shares}
-                                    />
-                                  ))}
-                                  <div className='flex justify-end'>
-                                  <button 
-                                    onClick={() => setShowAllPosts(!showAllPosts)}
-                                    className="text-fillc text-sm font-medium flex items-center gap-1"
-                                  >
-                                    {showAllPosts ? "Show Less" : "See all Posts"} 
-                                    <img src={arrowright} alt="" className={`transform ${showAllPosts ? 'rotate-180' : ''} w-4 h-4`} />
-                                  </button>
-                                  </div>
-                                  
+                              <div className="space-y-4 relative group">
+                                <div className="flex justify-between items-center mb-4">
+                                  <h2 className="text-xl font-medium">Saved Posts</h2>
+                                  {savedPosts.length > 1 && (
+                                    <button 
+                                      onClick={() => setShowAllSavedPosts(!showAllSavedPosts)}
+                                      className="text-fillc text-sm font-medium flex items-center gap-1"
+                                    >
+                                      {showAllSavedPosts ? "Show Less" : "See all Posts"}
+                                      <img src={arrowright} alt="" className={`transform ${showAllSavedPosts ? 'rotate-180' : ''} w-4 h-4`} />
+                                    </button>
+                                  )}
                                 </div>
-                                
+
+                                {savedPosts.length === 0 ? (
+                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                    <p className="text-gray-600 text-sm">
+                                      No saved posts yet. Save posts you want to revisit later!
+                                    </p>
+                                  </div>
                                 ) : (
-                                  <div className="text-center text-gray-500 py-4">
-                                    No saved posts yet
+                                  <div className="relative">
+                                    <div 
+                                      id="saved-posts-scroll-container" 
+                                      className={`flex ${showAllSavedPosts ? 'overflow-x-auto' : 'overflow-x-hidden'} scroll-smooth`}
+                                      style={{ 
+                                        scrollSnapType: 'x mandatory',
+                                        scrollBehavior: 'smooth',
+                                        WebkitOverflowScrolling: 'touch',
+                                        scrollbarWidth: 'none',
+                                        msOverflowStyle: 'none'
+                                      }}
+                                    >
+                                      <div className="flex gap-4 transition-transform duration-300">
+                                        {savedPosts.map((post) => (
+                                          <div 
+                                            key={post.id} 
+                                            className="w-[calc(80%)] flex-none"
+                                            style={{ 
+                                             
+                                              scrollSnapAlign: 'start'
+                                            }}
+                                          >
+                                            <PostCard
+                                              userTitle={post.userTitle}
+                                              userImage={post.userImage}
+                                              userName={post.userName}
+                                              timeAgo={post.time}
+                                              content={post.content}
+                                              likes={post.likes}
+                                              reposts={post.reposts}
+                                              comments={post.comments}
+                                              images={post.images}
+                                              shares={post.shares}
+                                            />
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+
+                                    
                                   </div>
                                 )}
                               </div>
 
                               {/* Saved Questions Section */}
-                              <div className="space-y-4">
-                                <h2 className="text-xl font-medium">Saved Questions</h2>
-                                {savedQuestions.length > 0 ? (
-                                  <div className="grid grid-cols-1 gap-4 transition-all duration-300">
-                                  {savedQuestions.map((question) => (
-                                    <QuestionCard
-                                      key={question.id}
-                                      userImage={question.author.image}
-                                      userName={question.author.name}
-                                      userTitle={question.author.title}
-                                      timeAgo={question.timeAgo}
-                                      questionTitle={question.title}
-                                      questionContent={question.content}
-                                      images={question.images}
-                                      answers={question.answers}
-                                      shares={question.shares}
-                                    />
-                                  ))}
-                                    <div className='flex justify-end'>
-                                    <button 
-                                    onClick={() => setShowAllQuestions(!showAllQuestions)}
+                                <div className="space-y-4 relative group">
+                                <div className="flex justify-between items-center mb-4">
+                                  <h2 className="text-xl font-medium">Saved Questions</h2>
+                                  {savedQuestions.length > 1 && (
+                                  <button 
+                                    onClick={() => setShowAllSavedQuestions(!showAllSavedQuestions)}
                                     className="text-fillc text-sm font-medium flex items-center gap-1"
                                   >
-                                    {showAllQuestions ? "Show Less" : "See all Questions"}
-                                    <img src={arrowright} alt="" className={`transform ${showAllQuestions ? 'rotate-180' : ''} w-4 h-4`} />
+                                    {showAllSavedQuestions ? "Show Less" : "See all Questions"}
+                                    <img src={arrowright} alt="" className={`transform ${showAllSavedQuestions ? 'rotate-180' : ''} w-4 h-4`} />
                                   </button>
+                                  )}
+                                </div>
+
+                                {savedQuestions.length === 0 ? (
+                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                  <p className="text-gray-600 text-sm">
+                                    No saved questions yet. Save questions you want to revisit later!
+                                  </p>
+                                  </div>
+                                ) : (
+                                  <div className="relative">
+                                  <div 
+                                    id="saved-questions-scroll-container" 
+                                    className={`flex ${showAllSavedQuestions ? 'overflow-x-auto' : 'overflow-x-hidden'} scroll-smooth`}
+                                    style={{ 
+                                    scrollSnapType: 'x mandatory',
+                                    scrollBehavior: 'smooth',
+                                    WebkitOverflowScrolling: 'touch',
+                                    scrollbarWidth: 'none',
+                                    msOverflowStyle: 'none'
+                                    }}
+                                  >
+                                    <div className="flex gap-4 transition-transform duration-300">
+                                    {savedQuestions.map((question) => (
+                                      <div 
+                                      key={question.id} 
+                                      className="w-[calc(100%)] flex-none"
+                                      style={{ 
+                                        scrollSnapAlign: 'start'
+                                      }}
+                                      >
+                                      <QuestionCard
+                                        userImage={question.author.image}
+                                        userName={question.author.name}
+                                        userTitle={question.author.title}
+                                        timeAgo={question.timeAgo}
+                                        questionTitle={question.title}
+                                        questionContent={question.content}
+                                        images={question.images}
+                                        answers={question.answers}
+                                        shares={question.shares}
+                                      />
+                                      </div>
+                                    ))}
                                     </div>
-
                                   </div>
-                                ) : (
-                                  <div className="text-center text-gray-500 py-4">
-                                    No saved questions yet
                                   </div>
                                 )}
-                              </div>
+                                </div>
 
-                              {/* Saved Resources Section */}
-                              <div className="space-y-4">
-                                <h2 className="text-xl font-medium">Saved Resources</h2>
-                                {savedResources.length > 0 ? (
-                                  <div className="grid grid-cols-1 gap-8 p-2">
-                                  {savedResources.map((resource) => (
-                                    <ResourceCard
-                                      key={resource.id}
-                                      type={resource.type}
-                                      title={resource.title}
-                                      description={resource.description}
-                                      image={resource.image}
-                                    />
-                                  ))}
-                                  <div className='flex justify-end'>
+                                {/* Saved Resources Section */}
+                                <div className="space-y-4 relative group">
+                                <div className="flex justify-between items-center mb-4">
+                                  <h2 className="text-xl font-medium">Saved Resources</h2>
+                                  {savedResources.length > 1 && (
                                   <button 
-                                  onClick={() => setShowAllResources(!showAllResources)}
-                                  className="text-fillc text-sm font-medium flex items-center gap-1"
-                                >
-                                  {showAllResources ? "Show Less" : "See all Resources"}
-                                  <img src={arrowright} alt="" className={`transform ${showAllResources ? 'rotate-180' : ''} w-4 h-4`} />
-                                </button>
-                                  </div>
+                                    onClick={() => setShowAllSavedResources(!showAllSavedResources)}
+                                    className="text-fillc text-sm font-medium flex items-center gap-1"
+                                  >
+                                    {showAllSavedResources ? "Show Less" : "See all Resources"}
+                                    <img src={arrowright} alt="" className={`transform ${showAllSavedResources ? 'rotate-180' : ''} w-4 h-4`} />
+                                  </button>
+                                  )}
+                                </div>
+
+                                {savedResources.length === 0 ? (
+                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                  <p className="text-gray-600 text-sm">
+                                    No saved resources yet. Save resources you want to revisit later!
+                                  </p>
                                   </div>
                                 ) : (
-                                  <div className="text-center text-gray-500 py-4">
-                                    No saved resources yet
+                                  <div className="relative">
+                                  
+
+                                  <div 
+                                    id="saved-resources-scroll-container" 
+                                    className={`flex ${showAllSavedResources ? 'overflow-x-auto' : 'overflow-x-hidden'} scroll-smooth`}
+                                    style={{ 
+                                    scrollSnapType: 'x mandatory',
+                                    scrollBehavior: 'smooth',
+                                    WebkitOverflowScrolling: 'touch',
+                                    scrollbarWidth: 'none',
+                                    msOverflowStyle: 'none'
+                                    }}
+                                  >
+                                    <div className="flex gap-4 transition-transform duration-300">
+                                    {savedResources.map((resource) => (
+                                      <div 
+                                      key={resource.id} 
+                                      className="w-[calc(100%)] flex-none"
+                                      style={{ scrollSnapAlign: 'start' }}
+                                      >
+                                      <ResourceCard
+                                        type={resource.type}
+                                        title={resource.title}
+                                        description={resource.description}
+                                        image={resource.image}
+                                      />
+                                      </div>
+                                    ))}
+                                    </div>
+                                  </div>
                                   </div>
                                 )}
-                              </div>
+                                </div>
 
                               {/* Saved Jobs Section */}
-                              <div className="space-y-4">
-                                <h2 className="text-xl font-medium">Saved Jobs</h2>
-                                {savedJobs.length > 0 ? (
-                                  <div className="grid grid-cols-1 gap-4">
-                                  {savedJobs.map((job) => (
-                                    <JobsCard
-                                      key={job.id}
-                                      job={{
+                                <div className="space-y-4 relative group">
+                                <div className="flex justify-between items-center mb-4">
+                                  <h2 className="text-xl font-medium">Saved Jobs</h2>
+                                  {savedJobs.length > 1 && (
+                                  <button 
+                                    onClick={() => setShowAllSavedJobs(!showAllSavedJobs)}
+                                    className="text-fillc text-sm font-medium flex items-center gap-1"
+                                  >
+                                    {showAllSavedJobs ? "Show Less" : "See all Jobs"}
+                                    <img src={arrowright} alt="" className={`transform ${showAllSavedJobs ? 'rotate-180' : ''} w-4 h-4`} />
+                                  </button>
+                                  )}
+                                </div>
+
+                                {savedJobs.length === 0 ? (
+                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                  <p className="text-gray-600 text-sm">
+                                    No saved jobs yet. Save jobs you're interested in!
+                                  </p>
+                                  </div>
+                                ) : (
+                                  <div className="relative">
+
+
+                                  <div 
+                                    id="saved-jobs-scroll-container" 
+                                    className={`flex ${showAllSavedJobs ? 'overflow-x-auto' : 'overflow-x-hidden'} scroll-smooth`}
+                                    style={{ 
+                                    scrollSnapType: 'x mandatory',
+                                    scrollBehavior: 'smooth',
+                                    WebkitOverflowScrolling: 'touch',
+                                    scrollbarWidth: 'none',
+                                    msOverflowStyle: 'none'
+                                    }}
+                                  >
+                                    <div className="flex gap-4 transition-transform duration-300">
+                                    {savedJobs.map((job) => (
+                                      <div 
+                                      key={job.id} 
+                                      className="w-[calc(80%)] flex-none"
+                                      style={{ scrollSnapAlign: 'start' }}
+                                      >
+                                      <JobsCard
+                                        job={{
                                         ...job,
                                         startingDate: "",  
                                         applyBy: "",
                                         numberOfApplicants: 0
-                                      }}
-                                    />
-                                  )) }
+                                        }}
+                                      />
+                                      </div>
+                                    ))}
+                                    </div>
                                   </div>
-                                ) : (
-                                  <div className="text-center text-gray-500 py-4">
-                                    No saved jobs yet
                                   </div>
                                 )}
-                              </div>
+                                </div>
 
                               {/* Saved Conferences Section */}
-                              <div className="space-y-4">
-                                <h2 className="text-xl font-medium">Saved Conferences</h2>
-                                {savedConferences.length > 0 ? (
-                                  <div className="grid grid-cols-1 gap-4">
-                                  {savedConferences.map((conference) => (
-                                    <ConferenceCard
-                                      key={conference.id}
-                                      title={conference.title}
-                                      date={conference.date}
-                                      speaker={conference.speaker}
-                                      price={conference.price}
-                                      location={conference.location}
-                                      speciality={conference.speciality}
-                                      image={conference.image}
-                                      avatar={conference.avatar}
-                                      id={conference.id}
-                                    
-                                    />
-                                  ))}
+                                {/* Saved Conferences Section */}
+                                <div className="space-y-4 relative group">
+                                <div className="flex justify-between items-center mb-4">
+                                  <h2 className="text-xl font-medium">Saved Conferences</h2>
+                                  {savedConferences.length > 1 && (
+                                  <button 
+                                    onClick={() => setShowAllConferences(!showAllConferences)}
+                                    className="text-fillc text-sm font-medium flex items-center gap-1"
+                                  >
+                                    {showAllConferences ? "Show Less" : "See all Conferences"}
+                                    <img src={arrowright} alt="" className={`transform ${showAllConferences ? 'rotate-180' : ''} w-4 h-4`} />
+                                  </button>
+                                  )}
+                                </div>
+
+                                {savedConferences.length === 0 ? (
+                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                  <p className="text-gray-600 text-sm">
+                                    No saved conferences yet. Save conferences you want to attend or revisit later!
+                                  </p>
                                   </div>
                                 ) : (
-                                  <div className="text-center text-gray-500 py-4">
-                                    No saved conferences yet
+                                  <div className="relative">
+                                  
+
+                                  <div 
+                                    id="saved-conferences-scroll-container" 
+                                    className={`flex ${showAllConferences ? 'overflow-x-auto' : 'overflow-x-hidden'} scroll-smooth hide-scrollbar`}
+                                    style={{ 
+                                    scrollSnapType: 'x mandatory',
+                                    scrollBehavior: 'smooth',
+                                    WebkitOverflowScrolling: 'touch',
+                                    scrollbarWidth: 'none',
+                                    msOverflowStyle: 'none'
+                                    }}
+                                  >
+                                    <div className="flex gap-4 transition-transform duration-300">
+                                    {savedConferences.map((conference) => (
+                                      <div 
+                                      key={conference.id} 
+                                      className="w-[calc(80%)] flex-none"
+                                      style={{ scrollSnapAlign: 'start' }}
+                                      >
+                                      <ConferenceCard
+                                        title={conference.title}
+                                        date={conference.date}
+                                        speaker={conference.speaker}
+                                        price={conference.price}
+                                        location={conference.location}
+                                        speciality={conference.speciality}
+                                        image={conference.image}
+                                        avatar={conference.avatar}
+                                        id={conference.id}
+                                      />
+                                      </div>
+                                    ))}
+                                    </div>
+                                  </div>
                                   </div>
                                 )}
                                 </div>
@@ -1459,7 +1788,7 @@ const [activeIndex, setActiveIndex] = useState(0);
               <div className="divide-">
                 {/* About Section - Only visible when About tab is active on mobile */}
                 <div className={`${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
-                  <div className="p-6">
+                  <div className="p-6 border border-gray-200 rounded-xl my-3 ">
                     <div className="flex justify-between items-center mb-4">
                       <h2 className="text-xl font-medium">About</h2>
                       <button className="text-gray-500">
@@ -1625,6 +1954,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                             title: data.title,
                             company: data.company,
                             date: data.date,
+
                             description: data.description,
                             img: data.img instanceof File ? URL.createObjectURL(data.img) : exp.img
                           } : exp
@@ -1636,6 +1966,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                           company: data.company,
                           date: data.date,
                           description: data.description,
+                          
                           img: data.img instanceof File 
                             ? URL.createObjectURL(data.img)
                             : "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372"
@@ -1743,7 +2074,9 @@ const [activeIndex, setActiveIndex] = useState(0);
                               </button>
                             )}
                             <h3 className="text-sm w-72 overflow-hidden text-ellipsis whitespace-wrap font-normal text-gray-900">{edu.institution}</h3>
-                            <p className="text-xs font-light text-gray-600">{edu.degree}</p>
+                            <p className="text-xs font-light text-gray-600 line-clamp-1">{edu.degree}</p>
+                            <p className="text-xs  text-gray-700 line-clamp-1">{edu.department}</p>
+                            <p className="text-xs font-light text-gray-700 line-clamp-1">{edu.grade}</p>
                             <time className="block mb-2 text-xs font-normal text-gray-500">{edu.year}</time>
                             </div>
                           </li>
@@ -1771,7 +2104,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                             </button>
                             )}
                             <h3 className="text-sm font-normal text-gray-900">{edu.institution}</h3>
-                            <p className="text-xs font-light text-gray-600">{edu.degree}</p>
+                            <p className="text-xs font-light text-gray-600 line-clamp-1 ">{edu.degree}</p>
                             <time className="block text-xs font-normal text-gray-500">{edu.year}</time>
                           </div>
                           </div>
@@ -1800,13 +2133,18 @@ const [activeIndex, setActiveIndex] = useState(0);
                     setIsEducationFormOpen(false);
                     setEditingEducation(null);
                     }}
-                    onSubmit={(data: EducationFormData) => {
+                    onSubmit={(data) => {
                     if (editingEducation) {
                       // Update existing education
                       const updatedEducation = educationData.map(edu =>
                       edu === editingEducation ? { 
-                        ...data, 
-                        logo: data.logo instanceof File ? URL.createObjectURL(data.logo) : data.logo 
+                        ...edu,
+                        institution: data.institution,
+                        degree: data.degree,
+                        department: data.department || '',
+                        year: data.year,
+                        grade: data.grade || '',
+                        logo: data.logo instanceof File ? URL.createObjectURL(data.logo) : edu.logo 
                       } : edu
                       );
                       setEducationData(updatedEducation);
@@ -1819,7 +2157,9 @@ const [activeIndex, setActiveIndex] = useState(0);
                       const newEducation: Education = {
                       institution: data.institution,
                       degree: data.degree,
+                      department: data.department || '',
                       year: data.year,
+                      grade: data.grade || '',
                       logo: logoUrl
                       };
                       setEducationData([...educationData, newEducation]);
@@ -1831,6 +2171,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                     institution: editingEducation.institution,
                     degree: editingEducation.degree, 
                     year: editingEducation.year,
+                    department: editingEducation.department,
                     logo: editingEducation.logo,
                     notifyFollowers: false
                     } : undefined}
@@ -1846,7 +2187,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                     <div className="w-full lg:w-1/2 flex flex-col justify-between bg-white shadow-md rounded-xl p-6">
                       <div>
                       <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-lg font-medium">Areas of Interest</h2>
+                        <h2 className="text-lg font-medium">Skills</h2>
                         <div className='flex gap-4'>
                         <button onClick={() => setShowInterestEditButtons(!showInterestEditButtons)} className="text-gray-500 hover:text-blue-500">
                           <img src={edit} alt="" />
@@ -1867,7 +2208,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                       {interestsData.length === 0 ? (
                         <div className="text-center py-8">
                         <p className="text-gray-600 text-sm">
-                          Adding your areas of interest will help showcase your passions and strengths, making your profile more personalized and impactful!
+                        Adding your skills will help showcase your expertise and strengths, making your profile more personalized and impactful!
                         </p>
                         </div>
                       ) : (
@@ -1903,7 +2244,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                         onClick={() => setInterestsExpanded(!interestsexpanded)}
                         className="mt-4 text-blue-600 text-sm font-medium cursor-pointer flex items-center gap-1"
                       >
-                        {interestsexpanded ? "Show Less" : "See all Areas of Interest"} →
+                        {interestsexpanded ? "Show Less" : "See Skills"} →
                       </button>
                       )}
                     </div>
@@ -2146,7 +2487,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                       {memberships.map((membership) => (
                       <div 
                         key={membership.id} 
-                        className={`flex items-center justify-between ${!isMobile && 'min-w-[200px]'}`}
+                        className={`flex items-center  justify-between pb-4 border-b   ${!isMobile && ' min-w-[200px] '}`}
                       >
                         <div className="flex items-center gap-3">
                         <img
@@ -2375,90 +2716,232 @@ const [activeIndex, setActiveIndex] = useState(0);
                           {(activeDesktopTab === 'activity' ) && (
                             <div className="space-y-1">
                               {/* Posts Section */}
-                              <div className='mb-8' >
-                                <div className="flex justify-between items-center">
-                                  <h2 className="text-xl font-medium">Posts</h2>
-                                  <button 
-                                    onClick={() => setShowAllPosts(!showAllPosts)}
-                                    className="text-fillc text-sm font-medium flex items-center gap-1"
-                                  >
-                                    {showAllPosts ? "Show Less" : "See all Posts"} 
-                                    <img src={arrowright} alt="" className={`transform ${showAllPosts ? 'rotate-180' : ''} w-4 h-4`} />
-                                  </button>
+                                <div className='mb-8 relative group'>
+                                  <div className="flex justify-between items-center mb-4">
+                                    <h2 className="text-xl font-medium">Posts</h2>
+                                    {posts.length > 2 && (
+                                      <button 
+                                        onClick={() => setShowAllPosts(!showAllPosts)}
+                                        className="text-fillc text-sm font-medium flex items-center gap-1"
+                                      >
+                                        {showAllPosts ? "Show Less" : "See all Posts"}
+                                        <img src={arrowright} alt="" className={`transform ${showAllPosts ? 'rotate-180' : ''} w-4 h-4`} />
+                                      </button>
+                                    )}
+                                  </div>
+                                  
+                                  {posts.length === 0 ? (
+                                    <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                      <p className="text-gray-600 text-sm">
+                                        No posts yet. Share your first post to start engaging with your network!
+                                      </p>
+                                      <button className="mt-4 px-4 py-2 bg-maincl text-white rounded-full text-sm hover:bg-fillc">
+                                        Create Post
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    <div className="relative">
+                                      <button 
+                                        className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllPosts?'opacity-100' : 'opacity-0'} group-hover: transition-opacity`}
+                                        onClick={() => {
+                                          const container = document.getElementById('posts-scroll-container');
+                                          if (container) {
+                                            container.scrollLeft -= container.offsetWidth;
+                                          }
+                                        }}
+                                      >
+                                        <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
+                                      </button>
+
+                                      <button 
+                                        className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllPosts?'opacity-100' : 'opacity-0'} group-hover: transition-opacity`}
+                                        onClick={() => {
+                                          const container = document.getElementById('posts-scroll-container');
+                                          if (container) {
+                                            container.scrollLeft += container.offsetWidth;
+                                          }
+                                        }}
+                                      >
+                                        <img src={arrowright} alt="Next" className="w-4 h-4" />
+                                      </button>
+
+                                      <div 
+                                        id="posts-scroll-container" 
+                                        className="flex overflow-x-hidden scroll-smooth"
+                                        style={{ scrollBehavior: 'smooth' }}
+                                      >
+                                        <div className="flex gap-4 transition-transform duration-300">
+                                          {posts.map((post) => (
+                                            <div key={post.id} className="w-[calc(50%-48px)] flex-none">
+                                              <PostCard
+                                                userTitle={post.userTitle}
+                                                userImage={post.userImage}
+                                                userName={post.userName}
+                                                timeAgo={post.time}
+                                                content={post.content}
+                                                likes={post.likes}
+                                                reposts={post.reposts}
+                                                comments={post.comments}
+                                                images={post.images}
+                                                shares={post.shares}
+                                              />
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
-                                
-                                <div className="grid grid-cols-2 gap-1 transition-all duration-300">
-                                  {posts.slice(0, showAllPosts ? posts.length : 2).map((post) => (
-                                    <PostCard
-                                      key={post.id}
-                                      userTitle={post.userTitle}
-                                      userImage={post.userImage}
-                                      userName={post.userName}
-                                      timeAgo ={post.time}
-                                      content={post.content}
-                                      likes={post.likes}
-                                      reposts={post.reposts}
-                                      comments={post.comments}
-                                      images={post.images}
-                                      shares={post.shares}
-                                    />
-                                  ))}
-                                </div>
-                              </div>
 
                               {/* Questions Section */}
-                              <div className="mt-8">
-                                <div className="flex justify-between items-center ">
+                              <div className="mt-8 relative group">
+                                <div className="flex justify-between items-center mb-4">
                                   <h2 className="text-xl font-medium">Questions</h2>
-                                  <button 
-                                    onClick={() => setShowAllQuestions(!showAllQuestions)}
-                                    className="text-fillc text-sm font-medium flex items-center gap-1"
-                                  >
-                                    {showAllQuestions ? "Show Less" : "See all Questions"}
-                                    <img src={arrowright} alt="" className={`transform ${showAllQuestions ? 'rotate-180' : ''} w-4 h-4`} />
-                                  </button>
+                                  {questions.length > 2 && (
+                                    <button 
+                                      onClick={() => setShowAllQuestions(!showAllQuestions)}
+                                      className="text-fillc text-sm font-medium flex items-center gap-1"
+                                    >
+                                      {showAllQuestions ? "Show Less" : "See all Questions"}
+                                      <img src={arrowright} alt="" className={`transform ${showAllQuestions ? 'rotate-180' : ''} w-4 h-4`} />
+                                    </button>
+                                  )}
                                 </div>
-                                <div className="grid grid-cols-2 gap-4 transition-all duration-300">
-                                  {questions.slice(0, showAllQuestions ? questions.length : 2).map((question) => (
-                                    <QuestionCard
-                                    key={question.id}
-                                    userImage={question.author.image}
-                                    userName={question.author.name}
-                                    userTitle={question.author.title}
-                                    timeAgo={question.timeAgo}
-                                    questionTitle={question.title}
-                                    questionContent={question.content}
-                                    images={question.images}
-                                    answers={question.answers}
-                                    shares={question.shares}
-                                  />
-                                  ))}
-                                </div>
+
+                                {questions.length === 0 ? (
+                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                    <p className="text-gray-600 text-sm">
+                                      No questions posted yet. Start engaging with your network by asking your first question!
+                                    </p>
+                                    <button className="mt-4 px-4 py-2 bg-maincl text-white rounded-full text-sm hover:bg-fillc">
+                                      Ask Question
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <div className="relative">
+                                    {/* Arrow buttons - Show on hover */}
+                                    <button 
+                                      className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllQuestions ? 'opacity-100' : 'opacity-0'}  transition-opacity`}
+                                      onClick={() => {
+                                        const container = document.getElementById('questions-scroll-container');
+                                        if (container) {
+                                          container.scrollLeft -= container.offsetWidth;
+                                        }
+                                      }}
+                                    >
+                                      <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
+                                    </button>
+
+                                    <button 
+                                      className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllQuestions ? 'opacity-100' : 'opacity-0'} transition-opacity`}
+                                      onClick={() => {
+                                        const container = document.getElementById('questions-scroll-container');
+                                        if (container) {
+                                          container.scrollLeft += container.offsetWidth;
+                                        }
+                                      }}
+                                    >
+                                      <img src={arrowright} alt="Next" className="w-4 h-4" />
+                                    </button>
+
+                                    <div 
+                                      id="questions-scroll-container" 
+                                      className="flex overflow-x-hidden scroll-smooth"
+                                      style={{ scrollBehavior: 'smooth' }}
+                                    >
+                                      <div className="flex gap-4 transition-transform duration-300">
+                                        {questions.map((question) => (
+                                          <div key={question.id} className="w-[calc(50%-8px)] flex-none">
+                                            <QuestionCard
+                                              userImage={question.author.image}
+                                              userName={question.author.name}
+                                              userTitle={question.author.title}
+                                              timeAgo={question.timeAgo}
+                                              questionTitle={question.title}
+                                              questionContent={question.content}
+                                              images={question.images}
+                                              answers={question.answers}
+                                              shares={question.shares}
+                                            />
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
 
                             {/* Resources Section */}
-                            <div className="pt-6">
-                              <div className="flex justify-between items-center mb-4 ">
-                                <h2 className="text-xl font-medium">Resources</h2>
+                            <div className="pt-6 relative group">
+                              <div className="flex justify-between items-center mb-4">
+                              <h2 className="text-xl font-medium">Resources</h2>
+                              {resources.length > 2 && (
                                 <button 
-                                  onClick={() => setShowAllResources(!showAllResources)}
-                                  className="text-fillc text-sm font-medium flex items-center gap-1"
+                                onClick={() => setShowAllResources(!showAllResources)}
+                                className="text-fillc text-sm font-medium flex items-center gap-1"
                                 >
-                                  {showAllResources ? "Show Less" : "See all Resources"}
-                                  <img src={arrowright} alt="" className={`transform ${showAllResources ? 'rotate-180' : ''} w-4 h-4`} />
+                                {showAllResources ? "Show Less" : "See all Resources"}
+                                <img src={arrowright} alt="" className={`transform ${showAllResources ? 'rotate-180' : ''} w-4 h-4`} />
+                                </button>
+                              )}
+                              </div>
+
+                              {resources.length === 0 ? (
+                              <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                <p className="text-gray-600 text-sm">
+                                No resources shared yet. Share your first resource to help others learn!
+                                </p>
+                                <button className="mt-4 px-4 py-2 bg-maincl text-white rounded-full text-sm hover:bg-fillc">
+                                Share Resource
                                 </button>
                               </div>
-                              <div className="grid grid-cols-2 gap-8 p-2">
-                                {resources.slice(0, showAllResources ? resources.length : 2).map((resource) => (
-                                  <ResourceCard
-                                    key={resource.id}
+                              ) : (
+                              <div className="relative">
+                                {/* Arrow buttons - Show on hover */}
+                                <button 
+                                className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllResources ? 'opacity-100' : 'opacity-0'} transition-opacity`}
+                                onClick={() => {
+                                  const container = document.getElementById('resources-scroll-container');
+                                  if (container) {
+                                  container.scrollLeft -= container.offsetWidth;
+                                  }
+                                }}
+                                >
+                                <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
+                                </button>
+
+                                <button 
+                                className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllResources ? 'opacity-100' : 'opacity-0'} transition-opacity`}
+                                onClick={() => {
+                                  const container = document.getElementById('resources-scroll-container');
+                                  if (container) {
+                                  container.scrollLeft += container.offsetWidth;
+                                  }
+                                }}
+                                >
+                                <img src={arrowright} alt="Next" className="w-4 h-4" />
+                                </button>
+
+                                <div 
+                                id="resources-scroll-container" 
+                                className="flex overflow-x-hidden scroll-smooth"
+                                style={{ scrollBehavior: 'smooth' }}
+                                >
+                                <div className="flex gap-4 transition-transform duration-300">
+                                  {resources.map((resource) => (
+                                  <div key={resource.id} className="w-[calc(50%-8px)] flex-none">
+                                    <ResourceCard
                                     type={resource.type}
                                     title={resource.title}
                                     description={resource.description}
                                     image={resource.image}
-                                  />
-                                ))}
+                                    />
+                                  </div>
+                                  ))}
+                                </div>
+                                </div>
                               </div>
+                              )}
                             </div>
 
                             {/* Media Section */}
@@ -2506,51 +2989,85 @@ const [activeIndex, setActiveIndex] = useState(0);
                                 ))}
                               </div>
                               
-                              {/* See all Photos link */}
-                              <div className="mt-4 text-right">
-                                <Link to="#" className="text-blue-600 text-sm hover:underline">
-                                  See all Photos →
-                                </Link>
-                              </div>
+                              
                             </div>
 
 
                                 {/* Mentioned Section */}
-                                <div className="pt-8">
-                                  <div className="flex justify-between items-center mb-6 pr-2">
+                                <div className="pt-8 relative group">
+                                  <div className="flex justify-between items-center mb-4">
                                     <h2 className="text-xl font-medium">Mentioned</h2>
-                                    <button>
-                                      <img src={more1} alt="" className='w-6 h-6' />
-                                    </button>
-                                  </div>
-                                  <div className="grid grid-cols-2 gap-6">
-                                    {mentionedPosts.slice(0, showAllMentioned ? mentionedPosts.length : 2).map((post) => (
-                                      <MentionedCard
-                                        key={post.id}
-                                        userImage={post.userImage}
-                                        userName={post.userName}
-                                        userTitle={post.userTitle}
-                                        timeAgo={post.timeAgo}
-                                        title={post.title}
-                                        content={post.content}
-                                        images={post.images}
-                                        likes={post.likes}
-                                        comments={post.comments}
-                                        shares={post.shares}
-                                        reposts={post.reposts}
-                                      />
-                                    ))}
+                                    {mentionedPosts.length > 2 && (
+                                      <button 
+                                        onClick={() => setShowAllMentioned(!showAllMentioned)}
+                                        className="text-fillc text-sm font-medium flex items-center gap-1"
+                                      >
+                                        {showAllMentioned ? "Show Less" : "See all Mentioned"}
+                                        <img src={arrowright} alt="" className={`transform ${showAllMentioned ? 'rotate-180' : ''} w-4 h-4`} />
+                                      </button>
+                                    )}
                                   </div>
 
-                                  <div className='flex justify-end'>
-                                      <button 
-                                      onClick={() => setShowAllMentioned(!showAllMentioned)}
-                                      className="text-fillc text-sm font-medium flex just  items-center gap-1"
-                                      >
-                                      {showAllMentioned ? "Show Less" : "See all Mentioned"}
-                                      <img src={arrowright} alt="" className={`transform ${showAllMentioned ? 'rotate-180' : ''} w-4 h-4`} />
-                                    </button>
+                                  {mentionedPosts.length === 0 ? (
+                                    <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                      <p className="text-gray-600 text-sm">
+                                        No mentions yet. Engage with others to get mentioned in their posts!
+                                      </p>
                                     </div>
+                                  ) : (
+                                    <div className="relative">
+                                      {/* Arrow buttons - Show on hover */}
+                                      <button 
+                                        className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllMentioned ? 'opacity-100' : 'opacity-0'} transition-opacity`}
+                                        onClick={() => {
+                                          const container = document.getElementById('mentioned-scroll-container');
+                                          if (container) {
+                                            container.scrollLeft -= container.offsetWidth;
+                                          }
+                                        }}
+                                      >
+                                        <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
+                                      </button>
+
+                                      <button 
+                                        className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllMentioned ? 'opacity-100' : 'opacity-0'} transition-opacity`}
+                                        onClick={() => {
+                                          const container = document.getElementById('mentioned-scroll-container');
+                                          if (container) {
+                                            container.scrollLeft += container.offsetWidth;
+                                          }
+                                        }}
+                                      >
+                                        <img src={arrowright} alt="Next" className="w-4 h-4" />
+                                      </button>
+
+                                      <div 
+                                        id="mentioned-scroll-container" 
+                                        className="flex overflow-x-hidden scroll-smooth"
+                                        style={{ scrollBehavior: 'smooth' }}
+                                      >
+                                        <div className="flex gap-4 transition-transform duration-300">
+                                          {mentionedPosts.map((post) => (
+                                            <div key={post.id} className="w-[calc(50%-8px)] flex-none">
+                                              <MentionedCard
+                                                userImage={post.userImage}
+                                                userName={post.userName}
+                                                userTitle={post.userTitle}
+                                                timeAgo={post.timeAgo}
+                                                title={post.title}
+                                                content={post.content}
+                                                images={post.images}
+                                                likes={post.likes}
+                                                comments={post.comments}
+                                                shares={post.shares}
+                                                reposts={post.reposts}
+                                              />
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
 
                             </div>
@@ -2603,133 +3120,379 @@ const [activeIndex, setActiveIndex] = useState(0);
                           {activeDesktopTab === 'saved' && (
                             <div className="space-y-8">
                               {/* Saved Posts Section */}
-                              <div className="space-y-4">
+                                <div className="space-y-4 relative group">
                                 <h2 className="text-xl font-medium">Saved Posts</h2>
-                                {savedPosts.length > 0 ? (
-                                  <div className="grid grid-cols-2 gap-1 transition-all duration-300">
-                                  {savedPosts.map((post) => (
-                                    <PostCard
-                                      key={post.id}
-                                      userTitle={post.userTitle}
-                                      userImage={post.userImage}
-                                      userName={post.userName}
-                                      timeAgo={post.time}
-                                      content={post.content}
-                                      likes={post.likes}
-                                      reposts={post.reposts}
-                                      comments={post.comments}
-                                      images={post.images}
-                                      shares={post.shares}
-                                    />
-                                  ))}
+                                {savedPosts.length > 2 && (
+                                      <button 
+                                        onClick={() => setShowAllSavedPosts(!showAllSavedPosts)}
+                                        className="text-fillc text-sm font-medium flex items-center gap-1"
+                                      >
+                                        {showAllSavedPosts ? "Show Less" : "See all Posts"}
+                                        <img src={arrowright} alt="" className={`transform ${showAllSavedPosts ? 'rotate-180' : ''} w-4 h-4`} />
+                                      </button>
+                                    )}
+                                {savedPosts.length ===0 ? (
+                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                  <p className="text-gray-600 text-sm">
+                                    No saved posts yet. !
+                                  </p>
+                                  <button className="mt-4 px-4 py-2 bg-maincl text-white rounded-full text-sm hover:bg-fillc">
+                                    Save  Posts
+                                  </button>
                                 </div>
-                                ) : (
-                                  <div className="text-center text-gray-500 py-4">
-                                    No saved posts yet
-                                  </div>
-                                )}
-                              </div>
+                                    ) : (
+                                      <div className="relative">
+                                        <button 
+                                          className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedPosts?'opacity-100' : 'opacity-0'} group-hover: transition-opacity`}
+                                          onClick={() => {
+                                            const container = document.getElementById('posts-scroll-container');
+                                            if (container) {
+                                              container.scrollLeft -= container.offsetWidth;
+                                            }
+                                          }}
+                                        >
+                                          <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
+                                        </button>
+  
+                                        <button 
+                                          className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedPosts?'opacity-100' : 'opacity-0'} group-hover: transition-opacity`}
+                                          onClick={() => {
+                                            const container = document.getElementById('posts-scroll-container');
+                                            if (container) {
+                                              container.scrollLeft += container.offsetWidth;
+                                            }
+                                          }}
+                                        >
+                                          <img src={arrowright} alt="Next" className="w-4 h-4" />
+                                        </button>
+  
+                                        <div 
+                                          id="posts-scroll-container" 
+                                          className="flex overflow-x-hidden scroll-smooth"
+                                          style={{ scrollBehavior: 'smooth' }}
+                                        >
+                                          <div className="flex gap-4 transition-transform duration-300">
+                                            {savedPosts.map((post) => (
+                                              <div key={post.id} className="w-[calc(50%-8px)] flex-none">
+                                                <PostCard
+                                                  userTitle={post.userTitle}
+                                                  userImage={post.userImage}
+                                                  userName={post.userName}
+                                                  timeAgo={post.time}
+                                                  content={post.content}
+                                                  likes={post.likes}
+                                                  reposts={post.reposts}
+                                                  comments={post.comments}
+                                                  images={post.images}
+                                                  shares={post.shares}
+                                                />
+                                              </div>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )}
+                                
+                        
+                                </div>
 
                               {/* Saved Questions Section */}
-                              <div className="space-y-4">
-                                <h2 className="text-xl font-medium">Saved Questions</h2>
-                                {savedQuestions.length > 0 ? (
-                                  <div className="grid grid-cols-2 gap-4 transition-all duration-300">
-                                  {savedQuestions.map((question) => (
-                                    <QuestionCard
-                                      key={question.id}
-                                      userImage={question.author.image}
-                                      userName={question.author.name}
-                                      userTitle={question.author.title}
-                                      timeAgo={question.timeAgo}
-                                      questionTitle={question.title}
-                                      questionContent={question.content}
-                                      images={question.images}
-                                      answers={question.answers}
-                                      shares={question.shares}
-                                    />
-                                  ))}
+                              <div className="mt-8 relative group">
+                                <div className="flex justify-between items-center mb-4">
+                                  <h2 className="text-xl font-medium">Saved Questions</h2>
+                                  {savedQuestions.length > 2 && (
+                                    <button 
+                                      onClick={() => setShowAllSavedQuestions(!showAllSavedQuestions)}
+                                      className="text-fillc text-sm font-medium flex items-center gap-1"
+                                    >
+                                      {showAllSavedQuestions ? "Show Less" : "See all Questions"}
+                                      <img src={arrowright} alt="" className={`transform ${showAllSavedQuestions ? 'rotate-180' : ''} w-4 h-4`} />
+                                    </button>
+                                  )}
+                                </div>
+
+                                {savedQuestions.length === 0 ? (
+                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                    <p className="text-gray-600 text-sm">
+                                      No questions posted yet. Start engaging with your network by asking your first question!
+                                    </p>
+                                    <button className="mt-4 px-4 py-2 bg-maincl text-white rounded-full text-sm hover:bg-fillc">
+                                      Ask Question
+                                    </button>
                                   </div>
                                 ) : (
-                                  <div className="text-center text-gray-500 py-4">
-                                    No saved questions yet
+                                  <div className="relative">
+                                    {/* Arrow buttons - Show on hover */}
+                                    <button 
+                                      className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedQuestions ? 'opacity-100' : 'opacity-0'}  transition-opacity`}
+                                      onClick={() => {
+                                        const container = document.getElementById('questions-scroll-container');
+                                        if (container) {
+                                          container.scrollLeft -= container.offsetWidth;
+                                        }
+                                      }}
+                                    >
+                                      <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
+                                    </button>
+
+                                    <button 
+                                      className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedQuestions ? 'opacity-100' : 'opacity-0'} transition-opacity`}
+                                      onClick={() => {
+                                        const container = document.getElementById('questions-scroll-container');
+                                        if (container) {
+                                          container.scrollLeft += container.offsetWidth;
+                                        }
+                                      }}
+                                    >
+                                      <img src={arrowright} alt="Next" className="w-4 h-4" />
+                                    </button>
+
+                                    <div 
+                                      id="questions-scroll-container" 
+                                      className="flex overflow-x-hidden scroll-smooth"
+                                      style={{ scrollBehavior: 'smooth' }}
+                                    >
+                                      <div className="flex gap-4 transition-transform duration-300">
+                                        {savedQuestions.map((question) => (
+                                          <div key={question.id} className="w-[calc(50%-8px)] flex-none">
+                                            <QuestionCard
+                                              userImage={question.author.image}
+                                              userName={question.author.name}
+                                              userTitle={question.author.title}
+                                              timeAgo={question.timeAgo}
+                                              questionTitle={question.title}
+                                              questionContent={question.content}
+                                              images={question.images}
+                                              answers={question.answers}
+                                              shares={question.shares}
+                                            />
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
                                   </div>
                                 )}
                               </div>
 
                               {/* Saved Resources Section */}
-                              <div className="space-y-4">
-                                <h2 className="text-xl font-medium">Saved Resources</h2>
-                                {savedResources.length > 0 ? (
-                                  <div className="grid grid-cols-2 gap-8 p-2">
-                                  {savedResources.map((resource) => (
-                                    <ResourceCard
-                                      key={resource.id}
-                                      type={resource.type}
-                                      title={resource.title}
-                                      description={resource.description}
-                                      image={resource.image}
-                                    />
-                                  ))}
-                                  </div>
-                                ) : (
-                                  <div className="text-center text-gray-500 py-4">
-                                    No saved resources yet
-                                  </div>
-                                )}
+                              <div className="pt-6 relative group">
+                              <div className="flex justify-between items-center mb-4">
+                              <h2 className="text-xl font-medium"> Saved Resources</h2>
+                              {savedResources.length > 2 && (
+                                <button 
+                                onClick={() => setShowAllSavedResources(!showAllSavedResources)}
+                                className="text-fillc text-sm font-medium flex items-center gap-1"
+                                >
+                                {showAllSavedResources ? "Show Less" : "See all Resources"}
+                                <img src={arrowright} alt="" className={`transform ${showAllSavedResources ? 'rotate-180' : ''} w-4 h-4`} />
+                                </button>
+                              )}
                               </div>
 
+                              {savedResources.length === 0 ? (
+                              <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                <p className="text-gray-600 text-sm">
+                                No Saved resources  yet.
+                                </p>
+                                <button className="mt-4 px-4 py-2 bg-maincl text-white rounded-full text-sm hover:bg-fillc">
+                                Share Resource
+                                </button>
+                              </div>
+                              ) : (
+                              <div className="relative">
+                                {/* Arrow buttons - Show on hover */}
+                                <button 
+                                className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedResources ? 'opacity-100' : 'opacity-0'} transition-opacity`}
+                                onClick={() => {
+                                  const container = document.getElementById('resources-scroll-container');
+                                  if (container) {
+                                  container.scrollLeft -= container.offsetWidth;
+                                  }
+                                }}
+                                >
+                                <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
+                                </button>
+
+                                <button 
+                                className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedResources ? 'opacity-100' : 'opacity-0'} transition-opacity`}
+                                onClick={() => {
+                                  const container = document.getElementById('resources-scroll-container');
+                                  if (container) {
+                                  container.scrollLeft += container.offsetWidth;
+                                  }
+                                }}
+                                >
+                                <img src={arrowright} alt="Next" className="w-4 h-4" />
+                                </button>
+
+                                <div 
+                                id="resources-scroll-container" 
+                                className="flex overflow-x-hidden scroll-smooth"
+                                style={{ scrollBehavior: 'smooth' }}
+                                >
+                                <div className="flex gap-4 transition-transform duration-300">
+                                  {savedResources.map((resource) => (
+                                  <div key={resource.id} className="w-[calc(50%-8px)] flex-none">
+                                    <ResourceCard
+                                    type={resource.type}
+                                    title={resource.title}
+                                    description={resource.description}
+                                    image={resource.image}
+                                    />
+                                  </div>
+                                  ))}
+                                </div>
+                                </div>
+                              </div>
+                              )}
+                            </div>
+
                               {/* Saved Jobs Section */}
-                              <div className="space-y-4">
-                                <h2 className="text-xl font-medium">Saved Jobs</h2>
-                                {savedJobs.length > 0 ? (
-                                   <div className="grid grid-cols-2 gap-4">
-                                  {savedJobs.map((job) => (
-                                    <JobsCard
-                                      key={job.id}
-                                      job={{
+                                <div className="space-y-4 relative group">
+                                <div className="flex justify-between items-center mb-4">
+                                  <h2 className="text-xl font-medium">Saved Jobs</h2>
+                                  {savedJobs.length > 2 && (
+                                  <button 
+                                    onClick={() => setShowAllSavedJobs(!showAllSavedJobs)}
+                                    className="text-fillc text-sm font-medium flex items-center gap-1"
+                                  >
+                                    {showAllSavedJobs ? "Show Less" : "See all Jobs"}
+                                    <img src={arrowright} alt="" className={`transform ${showAllSavedJobs ? 'rotate-180' : ''} w-4 h-4`} />
+                                  </button>
+                                  )}
+                                </div>
+
+                                {savedJobs.length === 0 ? (
+                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                  <p className="text-gray-600 text-sm">
+                                    No saved jobs yet. Start saving jobs that interest you!
+                                  </p>
+                                  </div>
+                                ) : (
+                                  <div className="relative">
+                                  {/* Arrow buttons - Show on hover */}
+                                  <button 
+                                    className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedJobs ? 'opacity-100' : 'opacity-0'} transition-opacity`}
+                                    onClick={() => {
+                                    const container = document.getElementById('saved-jobs-scroll-container');
+                                    if (container) {
+                                      container.scrollLeft -= container.offsetWidth;
+                                    }
+                                    }}
+                                  >
+                                    <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
+                                  </button>
+
+                                  <button 
+                                    className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedJobs ? 'opacity-100' : 'opacity-0'} transition-opacity`}
+                                    onClick={() => {
+                                    const container = document.getElementById('saved-jobs-scroll-container');
+                                    if (container) {
+                                      container.scrollLeft += container.offsetWidth;
+                                    }
+                                    }}
+                                  >
+                                    <img src={arrowright} alt="Next" className="w-4 h-4" />
+                                  </button>
+
+                                  <div 
+                                    id="saved-jobs-scroll-container" 
+                                    className="flex overflow-x-hidden scroll-smooth"
+                                    style={{ scrollBehavior: 'smooth' }}
+                                  >
+                                    <div className="flex gap-4 w-full  transition-transform duration-300">
+                                    {savedJobs.map((job) => (
+                                      <div key={job.id} className="w-[calc(50%-8px)]  flex-none">
+                                      <JobsCard
+                                        job={{
                                         ...job,
                                         startingDate: "",  
                                         applyBy: "",
                                         numberOfApplicants: 0
-                                      }}
-                                    />
-                                  )) }
+                                        }}
+                                      />
+                                      </div>
+                                    ))}
+                                    </div>
                                   </div>
-                                ) : (
-                                  <div className="text-center text-gray-500 py-4">
-                                    No saved jobs yet
-                                  </div>
-                                )}
-                              </div>
-
-                              {/* Saved Conferences Section */}
-                              <div className="space-y-4">
-                                <h2 className="text-xl font-medium">Saved Conferences</h2>
-                                {savedConferences.length > 0 ? (
-                                  <div className="grid grid-cols-2 gap-4">
-                                  {savedConferences.map((conference) => (
-                                    <ConferenceCard
-                                      key={conference.id}
-                                      title={conference.title}
-                                      date={conference.date}
-                                      speaker={conference.speaker}
-                                      price={conference.price}
-                                      location={conference.location}
-                                      speciality={conference.speciality}
-                                      image={conference.image}
-                                      avatar={conference.avatar}
-                                      id={conference.id}
-                                     
-                                    />
-                                  ))}
-                                  </div>
-                                ) : (
-                                  <div className="text-center text-gray-500 py-4">
-                                    No saved conferences yet
                                   </div>
                                 )}
                                 </div>
+
+                              {/* Saved Conferences Section */}
+                              <div className="space-y-4 relative group">
+                                <div className="flex justify-between items-center mb-4">
+                                  <h2 className="text-xl font-medium">Saved Conferences</h2>
+                                  {savedConferences.length > 2 && (
+                                    <button 
+                                      onClick={() => setShowAllConferences(!showAllConferences)}
+                                      className="text-fillc text-sm font-medium flex items-center gap-1"
+                                    >
+                                      {showAllConferences ? "Show Less" : "See all Conferences"}
+                                      <img src={arrowright} alt="" className={`transform ${showAllConferences ? 'rotate-180' : ''} w-4 h-4`} />
+                                    </button>
+                                  )}
+                                </div>
+
+                                {savedConferences.length === 0 ? (
+                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                    <p className="text-gray-600 text-sm">
+                                      No saved conferences yet. Start saving conferences you're interested in!
+                                    </p>
+                                  </div>
+                                ) : (
+                                  <div className="relative">
+                                    {/* Arrow buttons - Show on hover */}
+                                    <button 
+                                      className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllConferences ? 'opacity-100' : 'opacity-0'} transition-opacity`}
+                                      onClick={() => {
+                                        const container = document.getElementById('saved-conferences-scroll-container');
+                                        if (container) {
+                                          container.scrollLeft -= container.offsetWidth;
+                                        }
+                                      }}
+                                    >
+                                      <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
+                                    </button>
+
+                                    <button 
+                                      className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllConferences ? 'opacity-100' : 'opacity-0'} transition-opacity`}
+                                      onClick={() => {
+                                        const container = document.getElementById('saved-conferences-scroll-container');
+                                        if (container) {
+                                          container.scrollLeft += container.offsetWidth;
+                                        }
+                                      }}
+                                    >
+                                      <img src={arrowright} alt="Next" className="w-4 h-4" />
+                                    </button>
+
+                                    <div 
+                                      id="saved-conferences-scroll-container" 
+                                      className="flex overflow-x-hidden  scroll-smooth"
+                                      style={{ scrollBehavior: 'smooth' }}
+                                    >
+                                      <div className="flex gap-4 transition-transform w-full duration-300">
+                                        {savedConferences.map((conference) => (
+                                          <div key={conference.id} className="w-[calc(50%-8px)] flex-none">
+                                            <ConferenceCard
+                                              title={conference.title}
+                                              date={conference.date}
+                                              speaker={conference.speaker}
+                                              price={conference.price}
+                                              location={conference.location}
+                                              speciality={conference.speciality}
+                                              image={conference.image}
+                                              avatar={conference.avatar}
+                                              id={conference.id}
+                                            />
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           )}
                           {activeTab === 'drafts' && (

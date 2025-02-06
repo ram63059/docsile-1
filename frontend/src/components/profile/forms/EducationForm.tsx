@@ -12,9 +12,11 @@ interface EducationFormProps {
 export interface EducationFormData {
   institution: string;
   degree: string;
+  department?: string;
   year: string;
   logo: string | File;
   notifyFollowers: boolean;
+  grade?: string;
 }
 
 const EducationForm: React.FC<EducationFormProps> = ({
@@ -28,7 +30,9 @@ const EducationForm: React.FC<EducationFormProps> = ({
     initialData || {
       institution: '',
       degree: '',
+      department: '',
       year: '',
+      grade: '',
       logo: '',
       notifyFollowers: false,
     }
@@ -45,6 +49,58 @@ const EducationForm: React.FC<EducationFormProps> = ({
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  const institutions = [
+    "All India Institute of Medical Sciences (AIIMS), New Delhi",
+    "Post Graduate Institute of Medical Education and Research (PGIMER), Chandigarh",
+    "Christian Medical College (CMC), Vellore",
+    "National Institute of Mental Health and Neurosciences (NIMHANS), Bengaluru",
+    "Armed Forces Medical College (AFMC), Pune",
+    "Maulana Azad Medical College (MAMC), New Delhi",
+    "Jawaharlal Institute of Postgraduate Medical Education and Research (JIPMER), Puducherry",
+    "King George’s Medical University (KGMU), Lucknow",
+    "Institute of Medical Sciences, Banaras Hindu University (IMS-BHU), Varanasi",
+    "St. John’s Medical College, Bengaluru",
+    "Grant Medical College, Mumbai",
+    "Seth GS Medical College and KEM Hospital, Mumbai",
+    "Madras Medical College (MMC), Chennai",
+    "Dr. D. Y. Patil Medical College, Pune",
+    "Kasturba Medical College (KMC), Manipal"
+  ];
+
+  const Departments = [
+    "Anatomy",
+    "Physiology",
+    "Biochemistry",
+    "Pharmacology",
+    "Pathology",
+    "Microbiology",
+    "Forensic Medicine",
+    "Community Medicine",
+    "General Medicine",
+    "Pediatrics",
+    "Dermatology",
+    "Psychiatry",
+    "General Surgery",
+    "Orthopedics",
+    "Ophthalmology",
+    "Otorhinolaryngology (ENT)",
+    "Anesthesiology",
+    "Radiology",
+    "Obstetrics and Gynecology",
+    "Cardiology",
+    "Neurology",
+    "Nephrology",
+    "Endocrinology",
+    "Gastroenterology",
+    "Pulmonology",
+    "Urology",
+    "Oncology",
+    "Plastic Surgery",
+    "Emergency Medicine"
+  ];
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [isDepDropdownVisible, setIsDepDropdownVisible] = useState(false);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={`${isEditing ? 'Edit' : 'Add'} Education`}>
@@ -76,10 +132,31 @@ const EducationForm: React.FC<EducationFormProps> = ({
             id="institution"
             name="institution"
             value={formData.institution}
-            onChange={handleChange}
+            onChange={(e) => {
+              setFormData(prev => ({ ...prev, institution: e.target.value }));
+              setIsDropdownVisible(true);
+            }}
             required
             className="mt-1 block w-full rounded-md p-2 border border-gray-300 shadow-sm focus:border-fillc focus:outline-none"
           />
+          {isDropdownVisible && formData.institution && (
+            <div className="absolute z-10 max-w-xl w-full max-h-60 overflow-y-auto bg-white border border-gray-300 rounded-md shadow-lg mt-1">
+              {institutions
+          .filter(org => org.toLowerCase().includes(formData.institution.toLowerCase()))
+          .map((org, index) => (
+            <div
+              key={index}
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              onClick={() => {
+                setFormData(prev => ({ ...prev, institution: org }));
+                setIsDropdownVisible(false);
+              }}
+            >
+              {org}
+            </div>
+          ))}
+            </div>
+          )}
         </div>
 
         <div>
@@ -97,41 +174,98 @@ const EducationForm: React.FC<EducationFormProps> = ({
           />
         </div>
 
-        
+          <div>
+            <label htmlFor="department" className="block text-sm font-medium text-gray-700">
+              Department
+            </label>
+            <input
+              type="text"
+              id="department"
+              name="department"
+              value={formData.department}
+              onChange={(e) => {
+                setFormData(prev => ({ ...prev, department: e.target.value }));
+                setIsDepDropdownVisible(true);
+              }}
+              required
+              className="mt-1 block w-full rounded-md p-2 border border-gray-300 shadow-sm focus:border-fillc focus:outline-none"
+            />
+            {isDepDropdownVisible && formData.department && (
+              <div className="absolute z-10 max-w-xl  w-full max-h-60 overflow-y-auto  bg-white border border-gray-300 rounded-md shadow-lg mt-1">
+                {Departments 
+                  .filter(dept => dept.toLowerCase().includes(formData.department?.toLowerCase() || ''))
+                  .map((dept, index) => (
+                    <div
+                      key={index}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => {
+                        setFormData(prev => ({ ...prev, department: dept }));
+                        setIsDepDropdownVisible(false);
+                      }}
+                    >
+                      {dept}
+                    </div>
+                  ))}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <label htmlFor="grade" className="block text-sm font-medium text-gray-700">
+              Grade (optional)
+            </label>
+            <input
+              type="text"
+              id="grade"
+              name="grade"
+              value={formData.grade}
+              onChange={handleChange}
+              placeholder="Enter your grade or CGPA"
+              className="mt-1 block w-full rounded-md p-2 border border-gray-300 shadow-sm focus:border-fillc focus:outline-none"
+            />
+          </div>
+          
+          
         <div>
           <label htmlFor="year" className="block text-sm font-medium text-gray-700">
             Year 
           </label>
           <div className="flex items-center space-x-2">
             <input
-              type="date"
+              type="number"
               id="startYear"
               name="startYear"
+              min="1900"
+              max="2099"
+              placeholder="Start Year"
               value={formData.year.split(' - ')[0] || ''}
               onChange={(e) => {
-                const [, endDate] = formData.year.split(' - ');
-                const newYear = `${e.target.value}${endDate ? ' - ' + endDate : ''}`;
-                setFormData(prev => ({ ...prev, year: newYear }));
+          const [, endDate] = formData.year.split(' - ');
+          const newYear = `${e.target.value}${endDate ? ' - ' + endDate : ''}`;
+          setFormData(prev => ({ ...prev, year: newYear }));
               }}
               className="mt-1 block w-full rounded-md p-2 border border-gray-300 shadow-sm focus:border-fillc focus:outline-none"
             />
             <span className="text-gray-500">to</span>
             <input
-              type="date"
+              type="number"
               id="endYear"
               name="endYear"
+              min="1900"
+              max="2099"
+              placeholder="End Year"
               value={formData.year.split(' - ')[1] || ''}
               onChange={(e) => {
-                const [startDate] = formData.year.split(' - ');
-                const newYear = `${startDate}${e.target.value ? ' - ' + e.target.value : ''}`;
-                setFormData(prev => ({ ...prev, year: newYear }));
+          const [startDate] = formData.year.split(' - ');
+          const newYear = `${startDate}${e.target.value ? ' - ' + e.target.value : ''}`;
+          setFormData(prev => ({ ...prev, year: newYear }));
               }}
               className="mt-1 block w-full rounded-md p-2 border border-gray-300 shadow-sm focus:border-fillc focus:outline-none"
             />
           </div>
         </div>
 
-       
+        {formData.institution && !institutions.includes(formData.institution) && (
         <div>
           <label htmlFor="logo" className="block text-sm font-medium text-gray-700">
             Institution Logo
@@ -186,6 +320,7 @@ const EducationForm: React.FC<EducationFormProps> = ({
             </div>
           </div>
         </div>
+        )}
         <div className="flex justify-end space-x-3">
           <button
             type="button"
