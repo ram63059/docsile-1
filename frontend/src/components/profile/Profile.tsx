@@ -752,6 +752,26 @@ const [activeIndex, setActiveIndex] = useState(0);
       userName: "Seelam Vamshidhar Goud",
       postImage: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c"
     }
+    ,
+    {
+      id: 3,
+      content: "Excited to share my research findings on advanced IOL technologies at the upcoming ophthalmology conference...",
+      likes: 32,
+      comments: 8,
+      userTitle:'Opthomology the future of eye care',
+      shares :12,
+      reposts:12,
+      time: "5 hours ago",
+      images: [
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/3179d893d2c64d78a71042d4bbe19d82929393a4cc746e57df0407426f7a4992?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/bacdf5b5cd530c209ad1b1cdb72874c3b55ba49a818704cd3a277725a590f529?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/6939df2c7edaf176e0907ced793a5e28a1df342e59d4610b8999ddc4aed782a9?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+      ],
+      userImage: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c",
+      userName: "Seelam Vamshidhar Goud",
+      postImage: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c"
+    }
   ];
 
   const savedQuestions: Question[] = [
@@ -2756,7 +2776,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                       <button 
                                         className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllPosts?'opacity-100' : 'opacity-0'} group-hover: transition-opacity`}
                                         onClick={() => {
-                                          const container = document.getElementById('posts-scroll-container');
+                                          const container = document.getElementById('posts-scroll-container1');
                                           if (container) {
                                             container.scrollLeft += container.offsetWidth;
                                           }
@@ -2766,7 +2786,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                       </button>
 
                                       <div 
-                                        id="posts-scroll-container" 
+                                        id="posts-scroll-container1" 
                                         className="flex overflow-x-hidden scroll-smooth"
                                         style={{ scrollBehavior: 'smooth' }}
                                       >
@@ -2835,7 +2855,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                     <button 
                                       className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllQuestions ? 'opacity-100' : 'opacity-0'} transition-opacity`}
                                       onClick={() => {
-                                        const container = document.getElementById('questions-scroll-container');
+                                        const container = document.getElementById('questions-scroll-container1');
                                         if (container) {
                                           container.scrollLeft += container.offsetWidth;
                                         }
@@ -2845,7 +2865,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                     </button>
 
                                     <div 
-                                      id="questions-scroll-container" 
+                                      id="questions-scroll-container1" 
                                       className="flex overflow-x-hidden scroll-smooth"
                                       style={{ scrollBehavior: 'smooth' }}
                                     >
@@ -2901,7 +2921,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                 <button 
                                 className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllResources ? 'opacity-100' : 'opacity-0'} transition-opacity`}
                                 onClick={() => {
-                                  const container = document.getElementById('resources-scroll-container');
+                                  const container = document.getElementById('resources-scroll-container1');
                                   if (container) {
                                   container.scrollLeft -= container.offsetWidth;
                                   }
@@ -2923,7 +2943,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                 </button>
 
                                 <div 
-                                id="resources-scroll-container" 
+                                id="resources-scroll-container1" 
                                 className="flex overflow-x-hidden scroll-smooth"
                                 style={{ scrollBehavior: 'smooth' }}
                                 >
@@ -3020,7 +3040,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                       <button 
                                         className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllMentioned ? 'opacity-100' : 'opacity-0'} transition-opacity`}
                                         onClick={() => {
-                                          const container = document.getElementById('mentioned-scroll-container');
+                                          const container = document.getElementById('mentioned-scroll-container1');
                                           if (container) {
                                             container.scrollLeft -= container.offsetWidth;
                                           }
@@ -3032,7 +3052,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                       <button 
                                         className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllMentioned ? 'opacity-100' : 'opacity-0'} transition-opacity`}
                                         onClick={() => {
-                                          const container = document.getElementById('mentioned-scroll-container');
+                                          const container = document.getElementById('mentioned-scroll-container1');
                                           if (container) {
                                             container.scrollLeft += container.offsetWidth;
                                           }
@@ -3145,7 +3165,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                         <button 
                                           className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedPosts?'opacity-100' : 'opacity-0'} group-hover: transition-opacity`}
                                           onClick={() => {
-                                            const container = document.getElementById('posts-scroll-container');
+                                            const container = document.getElementById('posts-scroll-container2');
                                             if (container) {
                                               container.scrollLeft -= container.offsetWidth;
                                             }
@@ -3157,7 +3177,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                         <button 
                                           className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedPosts?'opacity-100' : 'opacity-0'} group-hover: transition-opacity`}
                                           onClick={() => {
-                                            const container = document.getElementById('posts-scroll-container');
+                                            const container = document.getElementById('posts-scroll-container2');
                                             if (container) {
                                               container.scrollLeft += container.offsetWidth;
                                             }
@@ -3226,7 +3246,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                     <button 
                                       className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedQuestions ? 'opacity-100' : 'opacity-0'}  transition-opacity`}
                                       onClick={() => {
-                                        const container = document.getElementById('questions-scroll-container');
+                                        const container = document.getElementById('questions-scroll-container2');
                                         if (container) {
                                           container.scrollLeft -= container.offsetWidth;
                                         }
@@ -3238,7 +3258,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                     <button 
                                       className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedQuestions ? 'opacity-100' : 'opacity-0'} transition-opacity`}
                                       onClick={() => {
-                                        const container = document.getElementById('questions-scroll-container');
+                                        const container = document.getElementById('questions-scroll-container2');
                                         if (container) {
                                           container.scrollLeft += container.offsetWidth;
                                         }
@@ -3304,7 +3324,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                 <button 
                                 className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedResources ? 'opacity-100' : 'opacity-0'} transition-opacity`}
                                 onClick={() => {
-                                  const container = document.getElementById('resources-scroll-container');
+                                  const container = document.getElementById('resources-scroll-container2');
                                   if (container) {
                                   container.scrollLeft -= container.offsetWidth;
                                   }
@@ -3316,7 +3336,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                 <button 
                                 className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedResources ? 'opacity-100' : 'opacity-0'} transition-opacity`}
                                 onClick={() => {
-                                  const container = document.getElementById('resources-scroll-container');
+                                  const container = document.getElementById('resources-scroll-container2');
                                   if (container) {
                                   container.scrollLeft += container.offsetWidth;
                                   }
@@ -3374,7 +3394,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                   <button 
                                     className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedJobs ? 'opacity-100' : 'opacity-0'} transition-opacity`}
                                     onClick={() => {
-                                    const container = document.getElementById('saved-jobs-scroll-container');
+                                    const container = document.getElementById('saved-jobs-scroll-container2');
                                     if (container) {
                                       container.scrollLeft -= container.offsetWidth;
                                     }
@@ -3386,7 +3406,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                   <button 
                                     className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedJobs ? 'opacity-100' : 'opacity-0'} transition-opacity`}
                                     onClick={() => {
-                                    const container = document.getElementById('saved-jobs-scroll-container');
+                                    const container = document.getElementById('saved-jobs-scroll-container2');
                                     if (container) {
                                       container.scrollLeft += container.offsetWidth;
                                     }
@@ -3446,7 +3466,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                     <button 
                                       className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllConferences ? 'opacity-100' : 'opacity-0'} transition-opacity`}
                                       onClick={() => {
-                                        const container = document.getElementById('saved-conferences-scroll-container');
+                                        const container = document.getElementById('saved-conferences-scroll-container2');
                                         if (container) {
                                           container.scrollLeft -= container.offsetWidth;
                                         }
@@ -3458,7 +3478,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                     <button 
                                       className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllConferences ? 'opacity-100' : 'opacity-0'} transition-opacity`}
                                       onClick={() => {
-                                        const container = document.getElementById('saved-conferences-scroll-container');
+                                        const container = document.getElementById('saved-conferences-scroll-container2');
                                         if (container) {
                                           container.scrollLeft += container.offsetWidth;
                                         }
