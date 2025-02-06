@@ -2764,7 +2764,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                       <button 
                                         className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllPosts?'opacity-100' : 'opacity-0'} group-hover: transition-opacity`}
                                         onClick={() => {
-                                          const container = document.getElementById('posts-scroll-container');
+                                          const container = document.getElementById('posts-scroll-container1');
                                           if (container) {
                                             container.scrollLeft -= container.offsetWidth;
                                           }
@@ -2843,7 +2843,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                     <button 
                                       className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllQuestions ? 'opacity-100' : 'opacity-0'}  transition-opacity`}
                                       onClick={() => {
-                                        const container = document.getElementById('questions-scroll-container');
+                                        const container = document.getElementById('questions-scroll-container1');
                                         if (container) {
                                           container.scrollLeft -= container.offsetWidth;
                                         }
@@ -2933,7 +2933,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                 <button 
                                 className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllResources ? 'opacity-100' : 'opacity-0'} transition-opacity`}
                                 onClick={() => {
-                                  const container = document.getElementById('resources-scroll-container');
+                                  const container = document.getElementById('resources-scroll-container1');
                                   if (container) {
                                   container.scrollLeft += container.offsetWidth;
                                   }
@@ -3062,7 +3062,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                       </button>
 
                                       <div 
-                                        id="mentioned-scroll-container" 
+                                        id="mentioned-scroll-container1" 
                                         className="flex overflow-x-hidden scroll-smooth"
                                         style={{ scrollBehavior: 'smooth' }}
                                       >
@@ -3187,7 +3187,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                         </button>
   
                                         <div 
-                                          id="posts-scroll-container" 
+                                          id="posts-scroll-container2" 
                                           className="flex overflow-x-hidden scroll-smooth"
                                           style={{ scrollBehavior: 'smooth' }}
                                         >
@@ -3268,7 +3268,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                     </button>
 
                                     <div 
-                                      id="questions-scroll-container" 
+                                      id="questions-scroll-container2" 
                                       className="flex overflow-x-hidden scroll-smooth"
                                       style={{ scrollBehavior: 'smooth' }}
                                     >
@@ -3346,7 +3346,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                 </button>
 
                                 <div 
-                                id="resources-scroll-container" 
+                                id="resources-scroll-container2" 
                                 className="flex overflow-x-hidden scroll-smooth"
                                 style={{ scrollBehavior: 'smooth' }}
                                 >
@@ -3416,7 +3416,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                   </button>
 
                                   <div 
-                                    id="saved-jobs-scroll-container" 
+                                    id="saved-jobs-scroll-container2" 
                                     className="flex overflow-x-hidden scroll-smooth"
                                     style={{ scrollBehavior: 'smooth' }}
                                   >
@@ -3488,7 +3488,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                     </button>
 
                                     <div 
-                                      id="saved-conferences-scroll-container" 
+                                      id="saved-conferences-scroll-container2" 
                                       className="flex overflow-x-hidden  scroll-smooth"
                                       style={{ scrollBehavior: 'smooth' }}
                                     >
