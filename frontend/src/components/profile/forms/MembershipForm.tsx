@@ -12,8 +12,8 @@ interface MembershipFormProps {
 export interface MembershipFormData {
   name: string;
   category: string;
-  image: File | null;
-  imagePreview?: string;
+  position?: string;
+  membershipId?: string;
   notifyFollowers: boolean;
 }
 
@@ -27,12 +27,33 @@ const MembershipForm: React.FC<MembershipFormProps> = ({
   const [formData, setFormData] = useState<MembershipFormData>({
     name: initialData?.name || '',
     category: initialData?.category || '',
-    image: null,
+    position: initialData?.position || '',
+    membershipId: initialData?.membershipId || '',
     notifyFollowers: initialData?.notifyFollowers || false
   });
 
   const [searchTerm, setSearchTerm] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
+
+  useEffect(() => {
+    if (initialData && isEditing) {
+      setFormData(initialData);
+      setSearchTerm(initialData.name);
+    }
+  }, [initialData, isEditing]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const dropdown = document.getElementById('suggestions-dropdown');
+      if (dropdown && !dropdown.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
 
   const medicalCategories = [
     "Ophthalmology",
@@ -56,6 +77,22 @@ const MembershipForm: React.FC<MembershipFormProps> = ({
     "Indian Orthopaedic Association",
   ];
 
+  const membershipPositions = [
+    "President",
+    "Vice President",
+    "Secretary",
+    "Treasurer",
+    "Chairman of the Scientific Committee",
+    "Editor of Publications",
+    "Committee Members",
+    "Past President",
+    "Past Vice President",
+    "Past Secretary",
+    "Past Treasurer",
+    "Past Chairman of the Scientific Committee",
+    "Past Editor of Publications",
+    "Past Committee Members"
+  ];
 
   const filteredSocieties = medicalSocieties.filter(society =>
     society.toLowerCase().includes(searchTerm.toLowerCase())
@@ -77,13 +114,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({
     onClose();
   };
 
-  useEffect(() => {
-    return () => {
-      if (formData.imagePreview) {
-        URL.revokeObjectURL(formData.imagePreview);
-      }
-    };
-  }, [formData.imagePreview]);
+ 
   
 
  
@@ -164,67 +195,45 @@ const MembershipForm: React.FC<MembershipFormProps> = ({
               </select>
             </div>
 
-            {/* Image Upload */}
-       
-
-            <div>
-            <label htmlFor="image" className="block text-sm font-medium text-gray-700">
-            Organization Logo
-            </label>
-            <div className="mt-1 flex items-center space-x-4">
-            <div className="flex-shrink-0 relative">
-              {formData.image ? (
-              <>
-                <img
-                src={formData.imagePreview || URL.createObjectURL(formData.image)}
-                alt="Preview"
-                className="h-20 w-20 object-cover rounded-md"
-                />
-                <button
-                type="button"
-                onClick={() => setFormData((prev) => ({ ...prev, image: null }))}
-                className="absolute -top-2 -right-2 w-6 h-6 bg-gray-500 rounded-full flex items-center justify-center text-white hover:bg-gray-600"
-                >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-                </button>
-              </>
-              ) : (
-              <div className="h-20 w-20 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center bg-gray-50">
-                <svg className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-              )}
-            </div>
-            <div className="flex-grow">
-              <input
-              type="file"
-              id="image"
-              name="image"
-              accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                setFormData(prev => ({ 
-                  ...prev, 
-                  image: file,
-                  imagePreview: URL.createObjectURL(file)
-                }));
-                }
-              }}
-              className="hidden"
-              />
-              <label
-              htmlFor="image"
-              className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
-              >
-              Upload Logo
+           {/* membership postion */}
+          
+              <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Position
               </label>
+              <select
+                name="position"
+                value={formData.position}
+                onChange={(e) => setFormData(prev => ({ ...prev, position: e.target.value }))}
+                className="w-full rounded-md border border-gray-300 text-gray-800 px-3 py-2"
+              >
+                <option value="">Select position</option>
+                {membershipPositions.map((position, index) => (
+                  <option key={index} value={position}>
+                    {position}
+                  </option>
+                ))}
+              </select>
             </div>
-            </div>
-          </div>
+
+
+
+
+
+              {/* membership Id (optional) */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Membership ID <span>(optional)</span> 
+                </label>
+                <input
+                  type="text"
+                  value={formData.membershipId}
+                  placeholder='eg. C123456'
+                  onChange={(e) => setFormData(prev => ({ ...prev, membershipId: e.target.value }))}
+                  className="w-full rounded-md border border-gray-300 px-3 py-2"
+                />    
+                <span className='text-xs text-gray-500'> (**This will not be visible to everyone and is only used for verification purposes.)</span>
+              </div>
 
             <div className="flex justify-end space-x-2 mt-4">
               <button
@@ -237,7 +246,7 @@ const MembershipForm: React.FC<MembershipFormProps> = ({
               <button
                 type="submit"
                 className="px-6 py-1 bg-maincl text-white rounded-3xl hover:bg-fillc"
-                disabled={!formData.name || !formData.category || !formData.image}
+                disabled={!formData.name || !formData.category || !formData.position}
               >
                 Save
               </button>

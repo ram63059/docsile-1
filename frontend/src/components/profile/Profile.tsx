@@ -28,6 +28,7 @@ import {  State }  from 'country-state-city';
 
 
 interface ExperienceItem {
+  id: number;
   title: string;
   company: string;
   date: string;
@@ -40,6 +41,7 @@ interface ExperienceItem {
 
 
 interface Education {
+  id: number;
   institution: string;
   degree: string;
   department: string;
@@ -66,7 +68,8 @@ interface Membership {
   id: number;
   name: string;
   category: string;
-  image: string;
+  position?: string;
+  membershipId?: string;
 }
 
 
@@ -171,7 +174,8 @@ interface MentionedPost {
 interface MembershipFormData {
   name: string;
   category: string;
-  image: File | null;
+  position?: string;
+  membershipId?: string;
 }
 
 
@@ -324,7 +328,7 @@ const Profile: React.FC = () => {
   
 
   const [experiences, setExperiences] = useState<ExperienceItem[]>([
-    {
+    { id:1,
       title: 'Ophthalmology Clinical Intern',
       company: 'Aravind Eye Hospital, Madurai, Tamil Nadu',
       date: 'Jun 2023 - Present',
@@ -332,7 +336,8 @@ const Profile: React.FC = () => {
       description: '',
       img:'https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08'
     },
-    {
+    { 
+      id:2,
       title: 'Ophthalmology Clinical Intern',
       company: 'Sankara Nethralaya, Chennai, Tamil Nadu',
       date: 'Jun 2023 - Present',
@@ -340,7 +345,8 @@ const Profile: React.FC = () => {
       description: 'Clinical rotations in various ophthalmology departments',
       img:'https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08'
     },
-    {
+    { 
+      id:3,
       title: 'Ophthalmology Clinical Intern',
       company: 'AIIMS',
       date: 'Jun 2023 - Present',
@@ -352,21 +358,24 @@ const Profile: React.FC = () => {
   ]);
 
   const [educationData, setEducationData] = useState<Education[]>([
-    {
+    { 
+      id:1,
       institution: "All India Institute of Medical Sciences (AIIMS), New Delhi",
       degree: "Bachelor of Medicine, Bachelor of Surgery (MBBS)",
       department: "Ophthalmology",
       year: "2020 - 2023",
       logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
     },
-    {
+    { 
+      id:2,
       institution: "St. Xavier’s High School, Mumbai",
       degree: "Higher Secondary Education (Class 12)",
       department  : "Ophthalmology",
       year: "2020 - 2023",
       logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
     },
-    {
+    { 
+      id:3,
       institution: "All India Institute of Medical Sciences (AIIMS), New Delhi",
       degree: "Bachelor of Medicine, Bachelor of Surgery (MBBS)",
       year: "2020 - 2023",
@@ -374,6 +383,7 @@ const Profile: React.FC = () => {
       logo: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
     },
     {
+      id:4,
       institution: "St. Xavier’s High School, Mumbai",
       degree: "Higher Secondary Education (Class 12)",
       year: "2020 - 2023",
@@ -446,12 +456,12 @@ const Profile: React.FC = () => {
   ]);
 
   const [memberships, setMemberships] = useState<Membership[]>([
-    { id: 1, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
-    { id: 2, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
-    { id: 3, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
-    { id: 4, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
-    { id: 5, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
-    { id: 6, name: "Visionary Care Society", category: "Ophthalmology", image: "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" },
+    { id: 1, name: "Visionary Care Society", category: "Ophthalmology", position: "Member"},
+    { id: 2, name: "Visionary Care Society", category: "Ophthalmology", position: "Member"},
+    { id: 3, name: "Visionary Care Society", category: "Ophthalmology", position: "Member"},
+    { id: 4, name: "Visionary Care Society", category: "Ophthalmology", position: "Member"},
+    { id: 5, name: "Visionary Care Society", category: "Ophthalmology", position: "Member"},
+    { id: 6, name: "Visionary Care Society", category: "Ophthalmology", position: "Member"},
    ]);
 
   const [awards, setAwards] = useState<Award[]>(
@@ -1979,7 +1989,8 @@ const [activeIndex, setActiveIndex] = useState(0);
                     onSubmit={(data) => {
                       if (editingExperience) {
                         const updatedExperiences = experiences.map(exp =>
-                          exp === editingExperience ? {
+                          exp.id === editingExperience.id
+                         ? {
                             ...exp,
                             title: data.title,
                             company: data.company,
@@ -1994,6 +2005,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                         setExperiences(updatedExperiences);
                       } else {
                         const newExperience: ExperienceItem = {
+                          id:Date.now(),
                           title: data.title,
                           company: data.company,
                           date: data.date,
@@ -2105,9 +2117,9 @@ const [activeIndex, setActiveIndex] = useState(0);
                                 setEditingEducation(edu);
                                 setIsEducationFormOpen(true);
                               }}
-                              className="absolute right-0 top-0 p-1 bg-gray-100 rounded-full hover:bg-gray-200"
+                              className="absolute right-0 -top-12 p-1  bg-gray-100 rounded-full hover:bg-gray-200"
                               >
-                              <img src={edit} alt="Edit" className="w-3 h-3" />
+                              <img src={edit} alt="Edit" className="w-3  h-3" />
                               </button>
                             )}
                             <h3 className="text-sm w-72 overflow-hidden text-ellipsis whitespace-wrap font-normal text-gray-900">{edu.institution}</h3>
@@ -2142,6 +2154,8 @@ const [activeIndex, setActiveIndex] = useState(0);
                             )}
                             <h3 className="text-sm font-normal text-gray-900">{edu.institution}</h3>
                             <p className="text-xs font-light text-gray-600 line-clamp-1 ">{edu.degree}</p>
+                            <p className="text-xs  text-gray-700 line-clamp-1">{edu.department}</p>
+                            <p className="text-xs font-light text-gray-700 line-clamp-1">{edu.grade}</p>
                             <time className="block text-xs font-normal text-gray-500">{edu.year}</time>
                           </div>
                           </div>
@@ -2164,6 +2178,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                     </div>
                     </div>
                   {/* Education Form */}
+                  {isEducationFormOpen && (
                   <EducationForm
                     isOpen={isEducationFormOpen}
                     onClose={() => {
@@ -2174,7 +2189,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                     if (editingEducation) {
                       // Update existing education
                       const updatedEducation = educationData.map(edu =>
-                      edu === editingEducation ? { 
+                      edu.id === editingEducation.id ? { 
                         ...edu,
                         institution: data.institution,
                         degree: data.degree,
@@ -2192,10 +2207,11 @@ const [activeIndex, setActiveIndex] = useState(0);
                       : data.logo || "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372";
                       
                       const newEducation: Education = {
-                      institution: data.institution,
-                      degree: data.degree,
+                        id: Date.now(),
+                      institution: data.institution || '',
+                      degree: data.degree || '',
                       department: data.department || '',
-                      year: data.year,
+                      year: data.year || '',
                       grade: data.grade || '',
                       logo: logoUrl
                       };
@@ -2205,17 +2221,18 @@ const [activeIndex, setActiveIndex] = useState(0);
                     setEditingEducation(null);
                     }}
                     initialData={editingEducation ? {
-                    institution: editingEducation.institution,
-                    degree: editingEducation.degree, 
-                    year: editingEducation.year,
-                    department: editingEducation.department,
-                    logo: editingEducation.logo,
+                    institution: editingEducation.institution ?? '',
+                    degree: editingEducation.degree ?? '', 
+                    year: editingEducation.year ?? '',
+                    grade: editingEducation.grade ?? '',
+                    department: editingEducation.department ?? '',
+                    logo: editingEducation.logo ?? '',
                     notifyFollowers: false
                     } : undefined}
                     isEditing={!!editingEducation}
                     key={editingEducation ? editingEducation.institution : 'new-education'}
                   />
-                     
+                  )}  
 
 
                   <div className={`flex flex-col lg:flex-row gap-6 ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
@@ -2528,13 +2545,14 @@ const [activeIndex, setActiveIndex] = useState(0);
                       >
                         <div className="flex items-center gap-3">
                         <img
-                          src={membership.image}
+                          src={"https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"}
                           alt={membership.name}
                           className="w-10 h-10 rounded-full"
                         />
                         <div>
                           <p className="font text-xs">{membership.name}</p>
                           <p className="text-fontlit text-gray-500">{membership.category}</p>
+                          <p className="text-fontlit text-gray-500">{membership.position}</p>
                         </div>
                         </div>
                         {showEditButtons && (
@@ -2572,8 +2590,10 @@ const [activeIndex, setActiveIndex] = useState(0);
                           ...membership, 
                           name: data.name,
                           category: data.category,
+                          position: data.position,
+                          membershipId: data.membershipId,
                           // Keep the existing image if no new file is provided
-                          image: data.image ? URL.createObjectURL(data.image) : membership.image
+                        
                           }
                         : membership
                       );
@@ -2584,9 +2604,9 @@ const [activeIndex, setActiveIndex] = useState(0);
                         id: Date.now(),
                         name: data.name,
                         category: data.category,
-                        image: data.image 
-                        ? URL.createObjectURL(data.image)
-                        : "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372"
+                        position: data.position,
+                        membershipId: data.membershipId,
+                    
                       };
                       setMemberships([...memberships, newMembership]);
                       }
@@ -2594,9 +2614,10 @@ const [activeIndex, setActiveIndex] = useState(0);
                       setEditingMembership(null);
                     }}
                     initialData={editingMembership ? {
-                      name: editingMembership.name,
+                      name: editingMembership.name || '',
                       category: editingMembership.category || '',
-                      image: null,
+                      position: editingMembership.position || '',
+                      membershipId: editingMembership.membershipId || '',
                       notifyFollowers: false
                     } : undefined}
                     isEditing={!!editingMembership}

@@ -106,7 +106,7 @@ const ReelsFeed = () => {
         title: 'Ophthalmologist | AIIMS Delhi`25 ',
         date: '22 Dec 2024'
       },
-      likes: 12,
+      likes: 126,
       comments: [
         {
           id: '1',
@@ -133,7 +133,7 @@ const ReelsFeed = () => {
         title: 'Ophthalmologist | AIIMS Delhi`25 ',
         date: '22 Dec 2024'
       },
-      likes: 16,
+      likes: 126,
       comments: [
         {
           id: '1',
@@ -483,7 +483,7 @@ const ReelsFeed = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex flex-1 min-h-screen lg:pl-24 max-w-7xl mx-auto w-full gap-10  ">
+      <div className="flex flex-1 min-h-screen lg:pl-24 max-w-7xl mx-auto w-full gap-10 ">
         {/* Left Sidebar */}
           <div className="hidden lg:block w-[300px] flex-shrink-0 font-fontsm">
             <div className="sticky top-[calc(theme(spacing.20)+1px)] space-y-4">
@@ -492,10 +492,10 @@ const ReelsFeed = () => {
           </div>
 
         {/* Main Feed and Comments Section */}
-        <div className={`flex-1 flex  'max-w-[1000px]'    mx-auto transition-all duration-300`}>
+        <div className={`flex-1 flex  'max-w-[1000px]'   mx-auto transition-all duration-300`}>
           {/* Video Feed */}
           <div 
-           className="relative  lg:rounded-3xl lg:max-h-[90vh] lg:max-w-[360px] bg-black font-fontsm transition-all duration-300 reels-container " 
+           className="relative  lg:rounded-3xl lg:max-h-[90vh] bg-black font-fontsm transition-all duration-300 reels-container" 
            style={{
             height: "calc(100vh)",
             width: "calc((100vh - 88px) * (9 / 16))",
@@ -578,7 +578,7 @@ const ReelsFeed = () => {
                   )}
 
                   {/* Options Menu */}
-                  <div className="absolute top-1 right-2 z-50" ref={el => el && (optionsRefs.current[reel.id] = el)}>
+                  <div className="absolute top-1 right-4 z-50" ref={el => el && (optionsRefs.current[reel.id] = el)}>
                     <button
                       onClick={() => setReelsState(prev => ({
                         ...prev,
@@ -586,7 +586,7 @@ const ReelsFeed = () => {
                       }))}
                       className="bg-white/30 p-2 rounded-full text-white hover:bg-white/40 transition-colors"
                     >
-                      <MoreVertical size={16} />
+                      <MoreVertical size={24} />
                     </button>
                     
                     {reelsState[reel.id]?.showOptions && (
@@ -634,7 +634,7 @@ const ReelsFeed = () => {
                   </div>
 
                   {/* Right Side Interaction Buttons */}
-                  <div className="absolute  right-1 z-40  bottom-24 mb-2 flex flex-col gap-4">
+                  <div className="absolute right-2  bottom-24 mb-2 flex flex-col gap-4">
                     <button 
                       className="flex flex-col items-center text-white"
                       onClick={() => setReelsState(prev => ({
@@ -737,10 +737,9 @@ const ReelsFeed = () => {
             ))}
           </div>
 
-              
           {/* Desktop Comments Panel */}
           <div 
-            className={` lg:block bg-white  h-[100vh] ${showComments ? 'pl-4 pt-12' : ''}  font-fontsm  rounded-xl shadow-lg border-gray-300 overflow-hidden transition-all duration-300 ${
+            className={`hidden lg:block bg-white  h-[100vh] ${showComments ? 'pl-4 pt-12' : ''}  font-fontsm  rounded-xl shadow-lg border-gray-300 overflow-hidden transition-all duration-300 ${
               showComments ? 'w-[440px]' : 'w-0'
             }`}
           >
@@ -783,7 +782,7 @@ const ReelsFeed = () => {
                 </div>
 
                 {/* Interaction Stats */}
-                <div className="flex items-start justify-start p-4 border-b">
+                <div className="flex items-start justify-between p-4 border-b">
                   <div className="flex gap-12">
                     <button 
                       onClick={() => setReelsState(prev => ({
@@ -1177,7 +1176,9 @@ const ReelsFeed = () => {
               </div>
             </div>
           )}
-          
+
+          <div className="hidden lg:block w-[300px] flex-shrink-0 font-fontsm">
+          </div>
 
       <div className="lg:hidden">
         <Navigation />
@@ -1189,3 +1190,56 @@ const ReelsFeed = () => {
 };
 
 export default ReelsFeed;
+
+
+
+
+           {/* Right Side Interaction Buttons */}
+             <div className="absolute  right-4 z-40  bottom-24 mb-2 flex flex-col gap-4">
+                    <button 
+                      className="flex flex-col items-center text-white"
+                      onClick={() => setReelsState(prev => ({
+                        ...prev,
+                        [currentReelIndex]: { ...prev[currentReelIndex], isLiked: !prev[currentReelIndex].isLiked }
+                      }))}
+                    >
+                      <div className="p-2 rounded-full hover:bg-black/40 transition-colors">
+                        <img src={reelsState[reelsData[currentReelIndex].id]?.isLiked ? liked : like}  alt="" className='w-8' />
+                        
+                      </div>
+                      <span className="text-sm text-gray-800">
+                        {reelsState[currentReelIndex]?.isLiked ?  reelsData[currentReelIndex].likes + 1 : reelsData[currentReelIndex].likes}
+                      </span>
+                    </button>
+                    
+                    <button 
+                      className="flex flex-col items-center text-white"
+                      onClick={toggleComments}
+                    >
+                      <div className="p-2 rounded-full hover:bg-black/40 transition-colors">
+                        <img src={comment} alt="" className="w-8" />
+                      </div>
+                      <span className="text-sm text-gray-800">{reelsData[currentReelIndex].comments.length}</span>
+                    </button>
+                    
+                    <button className="flex flex-col items-center text-white">
+                      <div className="p-2 rounded-full hover:bg-black/40 transition-colors">
+                        <img src={share} alt="" className="w-8" />
+                      </div>
+                      <span className="text-sm text-gray-800">{reelsData[currentReelIndex].shares}</span>
+                    </button>
+                    
+                    <button className="flex flex-col items-center text-gray-800 z-10">
+                      <div className="p-2 rounded-full transition-colors">
+                        <img
+                          src={reelsState[reelsData[currentReelIndex].id]?.isSaved ? save2 : save1} 
+                          onClick={() => setReelsState(prev => ({
+                            ...prev,
+                            [currentReelIndex]: { ...prev[currentReelIndex], isSaved: !prev[currentReelIndex].isSaved }
+                          }))}
+                          alt=""
+                          className="w-5"
+                        />
+                      </div>
+                    </button>
+                  </div>
