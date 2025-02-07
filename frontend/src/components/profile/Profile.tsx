@@ -2588,7 +2588,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                         membership.id === editingMembership.id
                         ? { 
                           ...membership, 
-                          name: data.name,
+                          name: data.name ,
                           category: data.category,
                           position: data.position,
                           membershipId: data.membershipId,

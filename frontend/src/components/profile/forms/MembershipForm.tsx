@@ -24,24 +24,20 @@ const MembershipForm: React.FC<MembershipFormProps> = ({
   initialData,
   isEditing = false,
 }) => {
-  const [formData, setFormData] = useState<MembershipFormData>({
-    name: initialData?.name || '',
-    category: initialData?.category || '',
-    position: initialData?.position || '',
-    membershipId: initialData?.membershipId || '',
-    notifyFollowers: initialData?.notifyFollowers || false
+  const [formData, setFormData] = useState<MembershipFormData>(
+    initialData|| {
+    name: '',
+    category: '',
+    position: '',
+    membershipId: '',
+    notifyFollowers: false,
   });
 
+ console.log(initialData)
   const [searchTerm, setSearchTerm] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  useEffect(() => {
-    if (initialData && isEditing) {
-      setFormData(initialData);
-      setSearchTerm(initialData.name);
-    }
-  }, [initialData, isEditing]);
-
+ 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const dropdown = document.getElementById('suggestions-dropdown');
@@ -146,11 +142,12 @@ const MembershipForm: React.FC<MembershipFormProps> = ({
               </label>
               <input
                 type="text"
-                value={searchTerm}
+                value={initialData?.name || formData.name}
                 placeholder='Search Society'
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
                   setFormData(prev => ({ ...prev, name: e.target.value }));
+                  
                   setShowSuggestions(true);
                 }}
                 onFocus={() => setShowSuggestions(true)}

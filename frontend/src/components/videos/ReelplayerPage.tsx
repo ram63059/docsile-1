@@ -182,6 +182,7 @@ const ReelsFeed = () => {
   ], []);
 
 
+      
   // Initialize state for each reel
   useEffect(() => {
     const initialState = reelsData.reduce((acc, reel) => ({
@@ -634,7 +635,13 @@ const ReelsFeed = () => {
                   </div>
 
                   {/* Right Side Interaction Buttons */}
-                  <div className="absolute  right-1 z-40  bottom-24 mb-2 flex flex-col gap-4">
+                  <div className={`${
+                    // On large screens, position outside the reel
+                    'lg:absolute lg:left-[calc(100%+1rem)] lg:top-1/2 lg:-translate-y-1/2 lg:flex lg:flex-col lg:gap-6 lg:items-center' +
+                    // On small screens, keep inside the reel
+                    ' absolute right-1 z-40 bottom-24 mb-2 flex flex-col gap-4'
+                  }`}>
+                    {/* Like button */}
                     <button 
                       className="flex flex-col items-center text-white"
                       onClick={() => setReelsState(prev => ({
@@ -642,34 +649,36 @@ const ReelsFeed = () => {
                         [reel.id]: { ...prev[reel.id], isLiked: !prev[reel.id].isLiked }
                       }))}
                     >
-                      <div className="p-2 rounded-full hover:bg-black/40 transition-colors">
-                        <img src={reelsState[reel.id]?.isLiked ?liked :like} alt="" className='w-8' />
-                        
+                      <div className="p-2 rounded-full hover:bg-black/40 transition-colors lg:hover:bg-gray-100">
+                        <img src={reelsState[reel.id]?.isLiked ? liked : like} alt="" className='w-8' />
                       </div>
-                      <span className="text-sm">
+                      <span className="text-sm lg:text-gray-700">
                         {reelsState[reel.id]?.isLiked ? reel.likes + 1 : reel.likes}
                       </span>
                     </button>
-                    
+
+                    {/* Comment button */}
                     <button 
                       className="flex flex-col items-center text-white"
                       onClick={toggleComments}
                     >
-                      <div className="p-2 rounded-full hover:bg-black/40 transition-colors">
+                      <div className="p-2 rounded-full hover:bg-black/40 transition-colors lg:hover:bg-gray-100">
                         <img src={comment} alt="" className="w-8" />
                       </div>
-                      <span className="text-sm">{reel.comments.length}</span>
+                      <span className="text-sm lg:text-gray-700">{reel.comments.length}</span>
                     </button>
-                    
+
+                    {/* Share button */}
                     <button className="flex flex-col items-center text-white">
-                      <div className="p-2 rounded-full hover:bg-black/40 transition-colors">
+                      <div className="p-2 rounded-full hover:bg-black/40 transition-colors lg:hover:bg-gray-100">
                         <img src={share} alt="" className="w-8" />
                       </div>
-                      <span className="text-sm">{reel.shares}</span>
+                      <span className="text-sm lg:text-gray-700">{reel.shares}</span>
                     </button>
-                    
+
+                    {/* Save button */}
                     <button className="flex flex-col items-center text-white z-10">
-                      <div className="p-2 rounded-full transition-colors">
+                      <div className="p-2 rounded-full transition-colors lg:hover:bg-gray-100">
                         <img
                           src={reelsState[reel.id]?.isSaved ? save2 : save1}
                           onClick={() => setReelsState(prev => ({
