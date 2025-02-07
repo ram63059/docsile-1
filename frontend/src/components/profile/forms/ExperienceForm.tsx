@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from '../../common/Modal';
 import {  State, City }  from 'country-state-city';
-import DropDownWithSearch from './Dropdownfilter';
 
 
 
@@ -23,6 +22,7 @@ export interface ExperienceFormData {
   location?: string;
   city?: string;
   state?: string;
+  
 }
 
 const ExperienceForm: React.FC<ExperienceFormProps> = ({
@@ -37,6 +37,7 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({
       title: '',
       company: '',
       date: '',
+      location: '', 
       state: '',
       city: '',
       description: '',
@@ -45,6 +46,7 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({
     }
   );
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [isDropdownVisible1, setIsDropdownVisible1] = useState(false);
 
   interface LocationState {
     name: string;
@@ -64,6 +66,7 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({
     
     // Show dropdown when user types
     setIsDropdownVisible(true);
+
   };
 
 
@@ -105,7 +108,84 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    console.log(formData);
+  };
+
+  const [isCurrentJob, setIsCurrentJob] = useState(false);
+
+  // Convert "MMM YYYY" to "YYYY-MM-DD" format
+  const convertToInputDate = (dateStr: string | number | Date) => {
+    if (!dateStr) return '';
+    try {
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return ''; // Invalid date
+      return date.toISOString().split('T')[0];
+    } catch {
+      return '';
+    }
+  };
+
+  // Parse initial date range on component mount
+  useEffect(() => {
+    if (initialData?.date) {
+      const [startStr, endStr] = initialData.date.split(' - ');
+      setIsCurrentJob(endStr === 'Present');
+      
+      // Set initial dates
+      const startDate = new Date(startStr);
+      if (!isNaN(startDate.getTime())) {
+        const startInputElement = document.getElementById('startDate') as HTMLInputElement;
+        if (startInputElement) {
+          startInputElement.value = convertToInputDate(startStr);
+        }
+      }
+
+      if (endStr && endStr !== 'Present') {
+        const endDate = new Date(endStr);
+        if (!isNaN(endDate.getTime())) {
+          const endInputElement = document.getElementById('endDate') as HTMLInputElement;
+          if (endInputElement) {
+            endInputElement.value = convertToInputDate(endStr);
+          }
+        }
+      }
+    }
+  }, [initialData]);
+
+  const handleStartDateChange = (e: { target: { value: string | number | Date; }; }) => {
+    const startDate = new Date(e.target.value);
+    const formattedStartDate = startDate.toLocaleDateString('en-US', {
+      month: 'short',
+      year: 'numeric'
+    });
+    
+    const currentEndDate = formData.date.split(' - ')[1] || 'Present';
+    setFormData(prev => ({
+      ...prev,
+      date: `${formattedStartDate} - ${currentEndDate}`
+    }));
+  };
+
+  const handleEndDateChange = (e: { target: { value: string | number | Date; }; }) => {
+    const startDate = formData.date.split(' - ')[0];
+    const endDate = e.target.value ? 
+      new Date(e.target.value).toLocaleDateString('en-US', {
+        month: 'short',
+        year: 'numeric'
+      }) : 'Present';
+
+    setFormData(prev => ({
+      ...prev,
+      date: `${startDate} - ${endDate}`
+    }));
+  };
+
+  const handleCurrentJobChange = (e: { target: { checked: boolean | ((prevState: boolean) => boolean); }; }) => {
+    setIsCurrentJob(e.target.checked);
+    const startDate = formData.date.split(' - ')[0];
+    setFormData(prev => ({
+      ...prev,
+      date: `${startDate} - ${e.target.checked ? 'Present' : ''}`
+    }));
   };
 
 
@@ -165,11 +245,42 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({
           />
         </div>
 
-        <DropDownWithSearch
-          place="Select Organization"
-          onSelect={(value) => setFormData(prev => ({ ...prev, company: value }))}
-          dropDownOptions={organizations}
-        />
+
+        <div>
+          <label htmlFor="institution" className="block text-sm font-medium text-gray-700">
+            Organization
+          </label>
+          <input
+            type="text"
+            id="institution"
+            name="institution"
+            value={formData.company}
+            onChange={(e) => {
+              setFormData(prev => ({ ...prev, company: e.target.value }));
+              setIsDropdownVisible1(true);
+            }}
+            required
+            className="mt-1 block w-full rounded-md p-2 border border-gray-300 shadow-sm focus:border-fillc focus:outline-none"
+          />
+          {isDropdownVisible1 && formData.company && (
+            <div className="absolute z-10 max-w-xl w-full max-h-60 overflow-y-auto bg-white border border-gray-300 rounded-md shadow-lg mt-1">
+              {organizations
+          .filter(org => org.toLowerCase().includes(formData.company.toLowerCase()))
+          .map((org, index) => (
+            <div
+              key={index}
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              onClick={() => {
+                setFormData(prev => ({ ...prev, company: org }));
+                setIsDropdownVisible1(false);
+              }}
+            >
+              {org}
+            </div>
+          ))}
+            </div>
+          )}
+        </div>
 
         <div className="relative">
       <label htmlFor="location" className="block text-sm font-medium text-gray-700">
@@ -179,7 +290,10 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({
         type="text"
         placeholder="Enter city name"
         name="location"
-        value={`${formData.city}${formData.state ? ', ' + State.getStateByCodeAndCountry(formData.state, 'IN')?.name : ''}`}
+        value={formData.city ? 
+          `${formData.city}${formData.state ? ', ' + State.getStateByCodeAndCountry(formData.state, 'IN')?.name : ''}` : 
+          formData.location || ''
+        }
         onChange={handleInputChange}
         onFocus={() => setIsDropdownVisible(true)}
         className="mt-1 p-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-fillc focus:outline-none"
@@ -208,63 +322,40 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({
       )}
     </div>
         
-        <div>
-          <label htmlFor="date" className="block text-sm font-medium text-gray-700">
-            Date Range
-          </label>
-          <div className="flex items-start space-x-2">
-            <input
-              type="date"
-              id="startDate"
-              name="startDate"
-              onChange={(e) => {
-          const endDate = formData.date.split(' - ')[1] || 'Present';
-          setFormData(prev => ({
-            ...prev,
-            date: `${new Date(e.target.value).toLocaleDateString('en-US', {
-              month: 'short',
-              year: 'numeric'
-            })} - ${endDate}`
-          }));
-              }}
-              className="mt-1 p-2 flex-1 rounded-md border border-gray-300 shadow-sm focus:border-fillc focus:outline-none"
-            />
-            <span className="text-gray-500 pt-2">to</span>
-            <div className="flex-1">
-              <input
+    <div>
+      <label htmlFor="date" className="block text-sm font-medium text-gray-700">
+        Date Range
+      </label>
+      <div className="flex items-start space-x-2">
+        <input
           type="date"
-          id="endDate"
-          name="endDate"
-          onChange={(e) => {
-            const startDate = formData.date.split(' - ')[0];
-            const endDate = e.target.value ? new Date(e.target.value).toLocaleDateString('en-US', {
-              month: 'short',
-              year: 'numeric'
-            }) : 'Present';
-            setFormData(prev => ({
-              ...prev,
-              date: `${startDate} - ${endDate}`
-            }));
-          }}
-          className="mt-1 p-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-fillc focus:outline-none"
-              />
-              <label className="flex items-center mt-1">
+          id="startDate"
+          name="startDate"
+          onChange={handleStartDateChange}
+          className="mt-1 p-2 flex-1 rounded-md border border-gray-300 shadow-sm focus:border-fillc focus:outline-none"
+        />
+        <span className="text-gray-500 pt-2">to</span>
+        <div className="flex-1">
           <input
-            type="checkbox"
-            onChange={(e) => {
-              const startDate = formData.date.split(' - ')[0];
-              setFormData(prev => ({
-                ...prev,
-                date: `${startDate} - ${e.target.checked ? 'Present' : ''}`
-              }));
-            }}
-            className="mr-2"
+            type="date"
+            id="endDate"
+            name="endDate"
+            onChange={handleEndDateChange}
+            disabled={isCurrentJob}
+            className="mt-1 p-2 w-full rounded-md border border-gray-300 shadow-sm focus:border-fillc focus:outline-none"
           />
-          <span className="text-sm text-gray-600">Currently working here</span>
-              </label>
-            </div>
-          </div>
+          <label className="flex items-center mt-1">
+            <input
+              type="checkbox"
+              checked={isCurrentJob}
+              onChange={handleCurrentJobChange}
+              className="mr-2"
+            />
+            <span className="text-sm text-gray-600">Currently working here</span>
+          </label>
         </div>
+      </div>
+    </div>
 
         <div>
           <label htmlFor="description" className="block text-sm font-medium text-gray-700">

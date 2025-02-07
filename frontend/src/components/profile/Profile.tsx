@@ -22,6 +22,7 @@ import InterestForm, { InterestFormData } from './forms/InterestForm';
 import EducationForm from './forms/EducationForm';
 import ExperienceForm from './forms/ExperienceForm';
 import CertificationForm, { CertificationFormData } from './forms/CertificationForm';
+import {  State }  from 'country-state-city';
 
 
 
@@ -32,6 +33,8 @@ interface ExperienceItem {
   date: string;
   description?: string;
   location?: string;
+  city?: string;
+  state?: string;
   img:string;
 }
 
@@ -173,14 +176,14 @@ interface MembershipFormData {
 
 
 
-interface ExperienceFormData {
-  title: string;
-  company: string;
-  date: string;
-  description?: string;
-  location?: string;
-  img?: string | File;
-}
+// interface ExperienceFormData {
+//   title: string;
+//   company: string;
+//   date: string;
+//   description?: string;
+//   location?: string;
+//   img?: string | File;
+// }
 
 const Profile: React.FC = () => {
   const [activeTab, setActiveTab] = useState('about');
@@ -325,6 +328,7 @@ const Profile: React.FC = () => {
       title: 'Ophthalmology Clinical Intern',
       company: 'Aravind Eye Hospital, Madurai, Tamil Nadu',
       date: 'Jun 2023 - Present',
+      location: 'Madurai, Tamil Nadu',
       description: '',
       img:'https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08'
     },
@@ -332,6 +336,7 @@ const Profile: React.FC = () => {
       title: 'Ophthalmology Clinical Intern',
       company: 'Sankara Nethralaya, Chennai, Tamil Nadu',
       date: 'Jun 2023 - Present',
+      location: 'Chennai, Tamil Nadu',
       description: 'Clinical rotations in various ophthalmology departments',
       img:'https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08'
     },
@@ -339,6 +344,7 @@ const Profile: React.FC = () => {
       title: 'Ophthalmology Clinical Intern',
       company: 'AIIMS',
       date: 'Jun 2023 - Present',
+      location: 'New Delhi',
       description: 'Clinical rotations in various ophthalmology departments',
       img:'https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08'
     },
@@ -1910,6 +1916,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                   {exp.description && (
                                     <p className="text-sm font-normal text-gray-500">{exp.description}</p>
                                   )}
+                                   <p className="text-sm font-normal text-gray-500">{exp.location}</p>
                                 </div>
                               </li>
                             ))}
@@ -1941,6 +1948,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                 {exp.description && (
                                   <p className="text-sm font-normal text-gray-500">{exp.description}</p>
                                 )}
+                                <p className="text-sm font-normal text-gray-500">{exp.location}</p>
                               </div>
                             </div>
                           ))}
@@ -1968,7 +1976,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                       setIsExperienceFormOpen(false);
                       setEditingExperience(null);
                     }}
-                    onSubmit={(data: ExperienceFormData) => {
+                    onSubmit={(data) => {
                       if (editingExperience) {
                         const updatedExperiences = experiences.map(exp =>
                           exp === editingExperience ? {
@@ -1976,7 +1984,9 @@ const [activeIndex, setActiveIndex] = useState(0);
                             title: data.title,
                             company: data.company,
                             date: data.date,
-                            location: data.location,
+                            city: data.city,
+                            state: data.state,
+                            location: `${data.city}${data.state ? ', ' + State.getStateByCodeAndCountry(data.state, 'IN')?.name : ''}`,
                             description: data.description,
                             img: data.img instanceof File ? URL.createObjectURL(data.img) : exp.img
                           } : exp
@@ -1987,15 +1997,15 @@ const [activeIndex, setActiveIndex] = useState(0);
                           title: data.title,
                           company: data.company,
                           date: data.date,
-                          location: data.location,
+                          city: data.city,
+                          state: data.state,
+                          location:`${data.city}${data.state ? ', ' + State.getStateByCodeAndCountry(data.state, 'IN')?.name : ''}`,
                           description: data.description,
-                          
                           img: data.img instanceof File 
                             ? URL.createObjectURL(data.img)
                             : "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372"
                         };
                         setExperiences([...experiences, newExperience]);
-                        console.log(newExperience);
                       }
                       setIsExperienceFormOpen(false);
                       setEditingExperience(null);
@@ -2003,13 +2013,15 @@ const [activeIndex, setActiveIndex] = useState(0);
                     initialData={editingExperience ? {
                       title: editingExperience.title,
                       company: editingExperience.company,
-                      date: editingExperience.date,
-                      description: editingExperience.description || '',
-                      location: editingExperience.location || '',
+                      date: editingExperience.date, 
+                      description: editingExperience.description ?? '',
+                      city: editingExperience.city ?? '',
+                      state: editingExperience.state ?? '',
                       img: editingExperience.img,
                       notifyFollowers: false
                     } : undefined}
                     isEditing={!!editingExperience}
+                    key={editingExperience ? `edit-${editingExperience.title}` : 'new-experience'}
                   />
                 )}
 
