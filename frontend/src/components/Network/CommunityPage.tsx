@@ -218,7 +218,7 @@ const CommunityPage = () => {
 
        {/* Main Feed */}
 
-       <div className="flex-1 max-w-[820px] mx- w-full ">
+       <div className="flex-1 max-w-[820px] mx-auto w-full ">
 
 
          {/* Search Bar */}

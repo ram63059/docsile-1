@@ -8,9 +8,8 @@ import videos1 from "../../assets/icon/videos1.svg";
 import videos2 from "../../assets/icon/videos2.svg";
 import connect1 from "../../assets/icon/connect1.svg";
 import connect2 from "../../assets/icon/connect2.svg";
-
-import jobs1 from "../../assets/icon/jobs1.svg";
-import jobs2 from "../../assets/icon/jobs2.svg";
+import careers1 from "../../assets/icon/careers1.svg";
+import careeers2 from "../../assets/icon/careers2.svg";
 
  interface NavItemProps {
   activeIcon: React.ReactNode;
@@ -42,7 +41,7 @@ const defaultNavItems: NavItemProps[] = [
     inactiveIcon: <img src={videos1} className="w-12 h-12" alt="" />,
     label: "Videos",
     path: "/videos",
-    isActive: false,
+    isActive: true,
   },
   {
     activeIcon: <img src={connect2} className="w-12 h-12" alt="" />,
@@ -53,10 +52,10 @@ const defaultNavItems: NavItemProps[] = [
   },
  
   {
-    activeIcon: <img src={jobs2} className="w-12 h-12" alt="" />,
-    inactiveIcon: <img src={jobs1} className="w-12 h-12" alt="" />,
-    label: "Jobs",
-    path: "/jobs",
+    activeIcon: <img src={careeers2} className="w-12 h-12" alt="" />,
+    inactiveIcon: <img src={careers1} className="w-12 h-12" alt="" />,
+    label: "Careers",
+    path: "/careers",
     isActive: false,
   },
 ];
@@ -79,7 +78,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   };
 
   return (
-    <nav className="fixed  bottom-0 left-0 right-0 max-w-[360px]  mx-auto bg-gray-900  bg-opacity-80 shadow-lg ">
+    <nav className="fixed  bottom-0 left-0 right-0 rounded-b-3xl  mx-auto bg-gray-900  bg-opacity-80 shadow-lg ">
       <div className="flex justify-between  items-center mx-auto px-5 py-2">
         {navItems.map((item, index) => (
           <button

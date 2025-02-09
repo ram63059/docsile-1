@@ -23,7 +23,7 @@ export const Header: React.FC<HeaderProps> = ({
         <button
           onClick={onNotification}
           aria-label="Notifications"
-          className="p-1 hover:bg-slate-100 rounded-full transition-colors"
+          className="p-1 hover:bg-slate-100 rounded-full transition-colors flex shrink-0"
         >
           <img
             src="https://cdn.builder.io/api/v1/image/assets/TEMP/fab538458494b7aa7bac372529c9270e51447dc519ddb2bef40c2959fb5a4741?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
@@ -34,7 +34,7 @@ export const Header: React.FC<HeaderProps> = ({
         <button
           onClick={onMessage}
           aria-label="Messages"
-          className="p-1 hover:bg-slate-100 rounded-full transition-colors"
+          className="p-1 hover:bg-slate-100 rounded-full transition-colors flex shrink-0"
         >
           <img
             src="https://cdn.builder.io/api/v1/image/assets/TEMP/89793a4a0e540436f40d998b9a47df9b85b1f339f9654fb5f3bb1a090fe02142?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
@@ -45,7 +45,7 @@ export const Header: React.FC<HeaderProps> = ({
         <button
           onClick={onProfile}
           aria-label="Profile"
-          className="p-1 hover:bg-slate-100 rounded-full transition-colors"
+          className="p-1 hover:bg-slate-100 rounded-full transition-colors flex shrink-0"
         >
           <img
             src="https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"

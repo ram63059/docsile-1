@@ -116,7 +116,7 @@ export const QuestionFeed: React.FC = () => {
 
 
 
-        <div className="flex-1 max-w-[560px]  w-full ">
+        <div className="flex-1 max-w-[560px] mx-auto  w-full ">
            <div className=" bg-white font-fontsm flex justify-around  rounded-xl">
                <div className="lg:hidden w-full">
                   <SearchBar onSearch={handleSearch} onAddPost={handleAskQuestion} />
@@ -239,7 +239,7 @@ export const QuestionFeed: React.FC = () => {
       </div>
 
 
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t w-full">
         <Navigation />
       </div>
        

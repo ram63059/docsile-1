@@ -1,7 +1,8 @@
 import React, { useState, useRef, FormEvent } from 'react';
-import { X, Calendar, Upload, CheckCircle, AlertCircle } from 'lucide-react';
+import { X, Calendar, Upload } from 'lucide-react';
 import upload from "../../assets/icon/upload.svg";
-
+import { useNavigate } from 'react-router-dom';
+import verifysent from '../../assets/icon/verifysent.svg';
 interface VerifyFormProps {
   isOpen: boolean;
   onClose: () => void;
@@ -20,6 +21,7 @@ type FormErrors = {
 };
 
 const VerifyForm: React.FC<VerifyFormProps> = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     name: '',
     studentId: '',
@@ -51,7 +53,7 @@ const VerifyForm: React.FC<VerifyFormProps> = ({ isOpen, onClose }) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 10 * 1024 * 1024) { // 10MB limit
+      if (file.size > 10 * 1024 * 1024) {
         setErrors(prev => ({ ...prev, studentIdFile: 'File size must be less than 10MB' }));
         return;
       }
@@ -67,7 +69,6 @@ const VerifyForm: React.FC<VerifyFormProps> = ({ isOpen, onClose }) => {
         return newErrors;
       });
       
-      // Create file preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setFilePreview(reader.result as string);
@@ -82,13 +83,8 @@ const VerifyForm: React.FC<VerifyFormProps> = ({ isOpen, onClose }) => {
 
     setIsSubmitting(true);
     try {
-      // TODO: Replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulated API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
       setSubmitStatus('success');
-      setTimeout(() => {
-        onClose();
-        setSubmitStatus('idle');
-      }, 2000);
     } catch {
       setSubmitStatus('error');
     } finally {
@@ -96,7 +92,41 @@ const VerifyForm: React.FC<VerifyFormProps> = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleAgreeAndContinue = () => {
+    navigate('/');
+    onClose();
+  };
+
   if (!isOpen) return null;
+
+  if (submitStatus === 'success') {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 font-fontsm">
+        <div className="bg-white rounded-2xl max-w-[400px]  text-center">
+          <div className="flex justify-center mb-6 rounded-t-2xl bg-gradient-to-b  from-yellow-50 to-yellow-100">
+            <img 
+              src={verifysent} 
+              alt="Verification Success" 
+              className="w-68 h-44"
+            />
+          </div>
+          <div className='px-8 pb-8'>
+
+          <h2 className="text-lg font-medium mb-2">Verification request sent successfully!</h2>
+          <p className="text-gray-600 text-sm mb-6">
+            Verification is in process. You can post now. However, if your request gets rejected, your posts will automatically be deleted.
+          </p>
+          <button
+            onClick={handleAgreeAndContinue}
+            className="w-full bg-maincl hover:bg-fillc text-white py-2 rounded-3xl transition-colors"
+            >
+            Agree & Continue
+          </button>
+            </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 font-fontsm">
@@ -208,15 +238,8 @@ const VerifyForm: React.FC<VerifyFormProps> = ({ isOpen, onClose }) => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`w-full py-2 rounded-3xl transition-colors relative ${
-              isSubmitting ? 'bg-gray-400' : submitStatus === 'success' ? 'bg-green-500' : 'bg-maincl hover:bg-fillc'
-            } text-white`}
-          >
-            <span className={`inline-flex items-center justify-center ${isSubmitting ? 'opacity-0' : ''}`}>
-              {submitStatus === 'success' && <CheckCircle className="mr-2" size={18} />}
-              {submitStatus === 'error' && <AlertCircle className="mr-2" size={18} />}
-              {submitStatus === 'success' ? 'Verified!' : submitStatus === 'error' ? 'Try Again' : 'Verify'}
-            </span>
+            className='w-full py-2 rounded-3xl transition-colors relative bg-maincl hover:bg-fillc text-white'
+          >              <span>Verify</span>
             {isSubmitting && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>

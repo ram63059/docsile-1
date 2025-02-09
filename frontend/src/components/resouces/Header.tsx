@@ -177,21 +177,21 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-4 ml-2">
           <button
             onClick={onNotification}
-            className="p-1 hover:bg-gray-100 rounded-full"
+            className="p-1 hover:bg-gray-100 rounded-full flex shrink-0"
           >
             <img src={notifications} alt="" className="w-6 h-6  lg:hidden"  />
             <img src={notifications1} alt="" className="w-16 hidden lg:block" />
           </button>
           <button
             onClick={onMessage}
-            className="p-1 hover:bg-gray-100 rounded-full"
+            className="p-1 hover:bg-gray-100 rounded-full flex shrink-0"
           >
             <img src={messages} alt="" className="w-6 h-6 lg:hidden " />
             <img src={messages1} alt="" className="w-16 hidden lg:block" />
           </button>
           <button
             onClick={onProfile}
-            className="p-1 hover:bg-gray-100 rounded-full"
+            className="p-1 hover:bg-gray-100 rounded-full flex shrink-0"
           >
             <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" alt="" className="w-7 h-7 rounded-full" />
           </button>

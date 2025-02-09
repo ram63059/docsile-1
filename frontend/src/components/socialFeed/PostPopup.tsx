@@ -15,7 +15,9 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 
 interface PostPopupProps {
   isOpen: boolean;
+  postType1: string;
   onClose: () => void;
+  onTypeChange:(type:string)=>void;
   userAvatar: string;
 }
 
@@ -26,6 +28,9 @@ const PostPopup: React.FC<PostPopupProps> = ({
   isOpen,
   onClose,
   userAvatar,
+  postType1,
+  onTypeChange,
+
 }) => {
   const [postContent, setPostContent] = useState("");
   const [postTitle, setPostTitle] = useState("");
@@ -48,7 +53,13 @@ const PostPopup: React.FC<PostPopupProps> = ({
 
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  
+  // const [localPostType, setLocalPostType] = useState(postType);
+
+
+  useEffect(() => {
+    setPostType(postType1 as PostType);
+  }, [postType1]);
+
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -590,7 +601,7 @@ const PostPopup: React.FC<PostPopupProps> = ({
                 onClick={() => setIsTypeOpen(!isTypeOpen)}
                 className="flex items-center gap-1 px-3 py-1 bg-buttonclr rounded-2xl"
               >
-                <span className="font-medium">{postType}</span>
+                <span className="font-medium">{postType1}</span>
                 <ChevronDown className="w-4 h-4" />
               </button>
 
@@ -602,6 +613,8 @@ const PostPopup: React.FC<PostPopupProps> = ({
                       onClick={() => {
                         setPostType(type as PostType);
                         setIsTypeOpen(false);
+                        // setLocalPostType(type);
+                          onTypeChange(type); 
                         // Reset media when changing type
                         setSelectedMedia([]);
                         setPdfFile(null);

@@ -80,7 +80,15 @@ export const SocialFeed: React.FC = () => {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const storiesContainerRef = useRef<HTMLDivElement>(null);
-  const [isPostPopupOpen, setIsPostPopupOpen] = useState(false);
+  // const [isPostPopupOpen, setIsPostPopupOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [postType1, setPostType1] = useState("Post");
+
+
+  const popupOpen = (type: string) => {
+    setPostType1(type);
+    setIsOpen(true);
+  };
 
   const handleScrollRight = () => {
     if (scrollContainerRef.current) {
@@ -196,7 +204,7 @@ export const SocialFeed: React.FC = () => {
         </div>
 
         {/* Main Feed */}
-        <div className="flex-1 max-w-[560px] mx- w-full ">
+        <div className="flex-1 max-w-[560px] mx-auto  w-full ">
           {/* Stories Section */}
           <div className="bg-white rounded-2xl  mb-2  relative">
             {/* Left Arrow */}
@@ -244,27 +252,27 @@ export const SocialFeed: React.FC = () => {
             {/*Posting Section */}
 
               <div className=" bg-white font-fontsm flex justify-around  rounded-xl">
-                <button className="flex items-center px-2 py-3"  onClick={() => setIsPostPopupOpen(true)}>
+                <button className="flex items-center px-2 py-3"  onClick={() => popupOpen("Post")}>
                 <img src={question} alt="" />
-                <p className="text-xs pl-1 text-gray-600">Ask Question</p>
+                <p className="text-xs pl-1 text-gray-600">Add Post</p>
                 </button>
                 <button 
                   className="flex items-center px-2 py-3"
-                  onClick={() => setIsPostPopupOpen(true)}
+                  onClick={() => popupOpen("Question")}
                 >
                   <img src={question} alt="" />
-                  <p className="text-xs pl-1 text-gray-600">Add Post</p>
+                  <p className="text-xs pl-1 text-gray-600">Ask Question </p>
                 </button>
-                <button className="flex items-center px-2 py-3"  onClick={() => setIsPostPopupOpen(true)}>
+                <button className="flex items-center px-2 py-3"  onClick={() => popupOpen("Resource")}>
                 <img src={question} alt="" />
                 <p className="text-xs text-gray-600 pl-1">Add Resources</p>
                 </button>
 
                 <PostPopup
-                  isOpen={isPostPopupOpen}
-                  onClose={() => setIsPostPopupOpen(false)}
-                  userAvatar={profileData.avatar}
-                />
+              isOpen={isOpen}
+              onTypeChange={setPostType1}
+              onClose={() => setIsOpen(false)}
+              userAvatar={profileData.avatar}  postType1={postType1}                />
               </div>
           {/* Posts */}
           <div className="space-y-4 mb-16 lg:mb-1">
@@ -343,12 +351,13 @@ export const SocialFeed: React.FC = () => {
 
           </div>
         </div>
-      </div>
-
-      {/* Mobile Navigation */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t">
+        {/* Mobile Navigation */}
+      <div className="lg:hidden fixed bottom-0  bg-white border-t  w-full">
         <Navigation />
       </div>
+      </div>
+
+      
     </div>
   );
 };

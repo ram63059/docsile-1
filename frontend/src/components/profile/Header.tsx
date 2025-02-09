@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import home1 from "../../assets/icon/homel.svg";
 import home2 from "../../assets/icon/lhome2.svg";
 import questions1 from "../../assets/icon/lquestions1.svg";
@@ -16,6 +16,7 @@ import careers1 from "../../assets/icon/lcareers1.svg";
 import careers2 from "../../assets/icon/lcareers2.svg";
 import { Search} from 'lucide-react';
 import SearchPopup from "./SearchPopup";
+import HomeButton from "./HomeButton";
 
 import { ReactNode } from 'react';
 
@@ -78,13 +79,14 @@ const defaultNavItems: NavItemProps[] = [
 export const Header: React.FC<HeaderProps> = ({
   onNotification,
   onMessage,
-  onProfile,
   onSearch,
   items = defaultNavItems,
 }) => {
-  const [navItems, setNavItems] = useState<NavItemProps[]>(items);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profileButtonRef = useRef<HTMLButtonElement>(null);
+  const [navItems, setNavItems] = useState<NavItemProps[]>(items);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,92 +112,117 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <div className="flex flex-row items-center justify-between font-fontsm  w-full px-5 py-1 bg-white  ">
-      {/* Logo and Search Section */}
-      <div className="flex flex-row w-2/4 items-center gap-4 lg:pl-28 lg:ml-12 mx-auto ml-3">
-        <div className="flex items-center gap-2  w-1/4">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/e026847d49c6384e9ff3e6753813971d077ca33d6044a8e61581beb3afbdabcc?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
-            alt=""
-            className="w-6 h-6"
-          />
-          <span className="text-3xl text-maincl font-medium">Docsile</span>
+    <header className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 relative">
+      <div className="flex flex-row items-center justify-between font-fontsm  w-full px-5 py-1 bg-white  ">
+        {/* Logo and Search Section */}
+        <div className="flex flex-row w-2/4 items-center gap-4 lg:pl-28 lg:ml-12 mx-auto ml-3">
+          <div className="flex items-center gap-2  w-1/4">
+            <img
+              src="https://cdn.builder.io/api/v1/image/assets/TEMP/e026847d49c6384e9ff3e6753813971d077ca33d6044a8e61581beb3afbdabcc?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
+              alt=""
+              className="w-6 h-6"
+            />
+            <span className="text-3xl text-maincl font-medium">Docsile</span>
+          </div>
+
+          <div className="hidden lg:block ml-8 w-3/4">
+            <form onSubmit={handleSubmit} className="relative ">
+              <div className="relative">
+                <input
+                  type="search"
+                  placeholder="Search"
+                  className="w-full px-10 py-2 bg-gray-100 rounded-full text-sm outline-none focus:bg-white focus:border focus:border-gray-300 transition-all"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setIsSearchOpen(true)}
+                />
+                {!isSearchOpen && !searchQuery && (
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                    <Search className="w-4 h-4" />
+                  </div>
+                )}
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={handleClearSearch}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                  </button>
+                )}
+                <SearchPopup
+                  isOpen={isSearchOpen}
+                  onClose={() => setIsSearchOpen(false)}
+                  searchQuery={searchQuery}
+                  onSearchChange={handleSearch}
+                />
+              </div>
+            </form>
+          </div>
         </div>
 
-        <div className="hidden lg:block ml-8 w-3/4">
-          <form onSubmit={handleSubmit} className="relative ">
-            <div className="relative">
-              <input
-                type="search"
-                placeholder="Search"
-                className="w-full px-10 py-2 bg-gray-100 rounded-full text-sm outline-none focus:bg-white focus:border focus:border-gray-300 transition-all"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => setIsSearchOpen(true)}
-              />
-              {!isSearchOpen && !searchQuery && (
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                  <Search className="w-4 h-4" />
-                </div>
-              )}
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={handleClearSearch}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-                </button>
-              )}
-              <SearchPopup
-                isOpen={isSearchOpen}
-                onClose={() => setIsSearchOpen(false)}
-                searchQuery={searchQuery}
-                onSearchChange={handleSearch}
-              />
-            </div>
-          </form>
-        </div>
-      </div>
+        {/* Navigation and Actions */}
+        <div className="flex items-center justify-end gap-2 lg:mr-28 w-2/4 ">
+          <div className="hidden lg:flex items-center gap-3">
+            {navItems.map((item, index) => (
+              <button
+                key={index}
+                onClick={() => handleNavClick(index)}
+                className={`flex items-center    gap-1 ${
+                  item.isActive ? "text-blue-600" : "text-gray-500"
+                }`}
+              >
+                {item.isActive ? item.activeIcon : item.inactiveIcon}
+              </button>
+            ))}
+          </div>
 
-      {/* Navigation and Actions */}
-      <div className="flex items-center justify-end gap-2 lg:mr-28 w-2/4 ">
-        <div className="hidden lg:flex items-center gap-3">
-          {navItems.map((item, index) => (
+          <div className="flex items-center gap-4 ml-2">
             <button
-              key={index}
-              onClick={() => handleNavClick(index)}
-              className={`flex items-center    gap-1 ${
-                item.isActive ? "text-blue-600" : "text-gray-500"
-              }`}
+              onClick={onNotification}
+              className="p-1 hover:bg-gray-100 rounded-full flex shrink-0"
             >
-              {item.isActive ? item.activeIcon : item.inactiveIcon}
+              <img src={notifications} alt="" className="w-6 h-6  lg:hidden"  />
+              <img src={notifications1} alt="" className="w-16 hidden lg:block" />
             </button>
-          ))}
-        </div>
+            <button
+              onClick={onMessage}
+              className="p-1 hover:bg-gray-100 rounded-full flex shrink-0"
+            >
+              <img src={messages} alt="" className="w-6 h-6 lg:hidden " />
+              <img src={messages1} alt="" className="w-16 hidden lg:block" />
+            </button>
 
-        <div className="flex items-center gap-4 ml-2">
-          <button
-            onClick={onNotification}
-            className="p-1 hover:bg-gray-100 rounded-full"
-          >
-            <img src={notifications} alt="" className="w-6 h-6  lg:hidden"  />
-            <img src={notifications1} alt="" className="w-16 hidden lg:block" />
-          </button>
-          <button
-            onClick={onMessage}
-            className="p-1 hover:bg-gray-100 rounded-full"
-          >
-            <img src={messages} alt="" className="w-6 h-6 lg:hidden " />
-            <img src={messages1} alt="" className="w-16 hidden lg:block" />
-          </button>
-          <button
-            onClick={onProfile}
-            className="p-1 hover:bg-gray-100 rounded-full"
-          >
-            <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" alt="" className="w-7 h-7 rounded-full" />
-          </button>
+            {/* Profile Button */}
+            <button
+              ref={profileButtonRef}
+              onClick={() => setIsProfileOpen(true)}
+              className="p-2 hover:bg-gray-100 rounded-full"
+            >
+              <img
+                src="https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
+                alt="Profile"
+                className="w-10 h-10 rounded-full"
+              />
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+      {isSearchOpen && (
+        <SearchPopup
+         isOpen={isSearchOpen}
+         onClose={() => setIsSearchOpen(false)}
+         searchQuery={searchQuery}
+         onSearchChange={handleSearch}
+       />
+      )}
+      <div className="">
+
+      <HomeButton
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        buttonRef={profileButtonRef}
+      />
+        </div>
+    </header>
   );
 };

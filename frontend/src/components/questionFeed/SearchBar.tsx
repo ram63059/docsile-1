@@ -38,7 +38,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         </form>
         <button
           onClick={onAddPost}
-          className="flex gap-2 justify-center items-center self-stretch py-1.5 pr-3 pl-1.5 my-auto text-xs text-white rounded-2xl bg-maincl min-h-[29px] hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400"
+          className="flex gap-2 shrink-0 justify-center items-center self-stretch py-1.5 pr-3 pl-1.5 my-auto text-xs text-white rounded-2xl bg-maincl min-h-[29px] hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400"
           aria-label="Add post"
         >
           <img

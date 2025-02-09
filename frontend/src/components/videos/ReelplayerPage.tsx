@@ -12,6 +12,7 @@ import like from "../../assets/icon/like1.svg";
 import { Navigation } from './Navigation';
 import { Header } from './Header';
 import JobFilterStatic from './JobFilterCard';
+import { Volume2, VolumeX } from "lucide-react"; // Import icons (install lucide-react if needed)
 
 interface ReelData {
   id: string;
@@ -39,7 +40,22 @@ interface Comment {
   content: string;
   likes: number;
   timestamp: string;
-  replies?:Comment[];
+  replies?:Reply[];
+}
+
+interface Author {
+  name: string;
+  profileImage: string;
+  title: string;
+}
+
+interface Reply {
+  id: string;
+  author: Author;
+  content: string;
+  likes: number;
+  timestamp: string;
+  isLiked?: boolean;
 }
 
 const ReelsFeed = () => {
@@ -55,11 +71,12 @@ const ReelsFeed = () => {
     isError: boolean;
   } }>({});
   const [showComments, setShowComments] = useState(false);
-  const [showReplyInput, setShowReplyInput] = useState<string | null>(null);
   const [commentText, setCommentText] = useState('');
   const [replyText, setReplyText] = useState('');
-  const [likedComments, setLikedComments] = useState<Set<string>>(new Set());
+  const [showReplyInput, setShowReplyInput] = useState<string | null>(null);
   const [expandedReplies, setExpandedReplies] = useState<Set<string>>(new Set());
+  const [likedComments, setLikedComments] = useState<Set<string>>(new Set());
+  const [likedReplies, setLikedReplies] = useState<Set<string>>(new Set());
   // const [likedPost, setLikedPost] = useState(false);
 
   const touchStartY = useRef(0);
@@ -67,6 +84,7 @@ const ReelsFeed = () => {
   const optionsRefs = useRef<{ [key: string]: HTMLDivElement }>({});
   const minSwipeDistance = 50;
   const isMounted = useRef(true);
+  const [isMuted, setIsMuted] = useState(true);
 
   // Sample reels data
   const reelsData = useMemo<ReelData[]>(() => [
@@ -90,7 +108,21 @@ const ReelsFeed = () => {
           },
           content: 'Great insights!',
           likes: 15,
-          timestamp: '3 days ago'
+          timestamp: '3 days ago',
+          replies: [
+            {
+              id: '1',
+              author: {
+                name: 'Current User',
+                profileImage: 'https://cdn.builder.io/api/v1/image/assets/TEMP/13d83c993760da19a222234c3cbcb356d551631f91a34653bf73ab3984455ff6',
+                title: 'User Title'
+              },
+              content: 'Thanks!',
+              likes: 2,
+              timestamp: '2 days ago',
+              isLiked: false
+            }
+          ]
         }
       ],
       shares: 1,
@@ -181,6 +213,15 @@ const ReelsFeed = () => {
     // Add more reels with the same structure
   ], []);
 
+  const toggleMute = () => {
+    const currentReel = reelsData[currentReelIndex];
+    const currentVideo = videoRefs.current[currentReel.id];
+
+    if (currentVideo) {
+      currentVideo.muted = !currentVideo.muted;
+      setIsMuted(currentVideo.muted);
+    }
+  };
 
       
   // Initialize state for each reel
@@ -194,51 +235,243 @@ const ReelsFeed = () => {
         isSaved: false,
         isExpanded: false,
         showOptions: false,
-        isError: false,
         comments: reel.comments,
+        isError: false,
       }
     }), {});
     setReelsState(initialState);
   }, [reelsData]);
 
-  const handleAddComment = (reelId: string, comment: Omit<Comment, 'id'>) => {
-    setReelsState(prev => ({
-      ...prev,
-      [reelId]: {
-        ...prev[reelId],
-        comments: [
-          ...prev[reelId].comments,
-          { ...comment, id: crypto.randomUUID() }
-        ]
-      }
-    }));
-  };  
+  const handleAddComment = (reelId: string, newComment: Omit<Comment, 'id'>) => {
+    if (!commentText.trim()) return;
 
-   // When the component mounts, auto-play the first reel (if available)
-   useEffect(() => {
+    setReelsState(prev => {
+      const comment: Comment = {
+        id: Date.now().toString(),
+        ...newComment,
+      };
+
+      const reelComments = prev[reelId]?.comments || [];
+      return {
+        ...prev,
+        [reelId]: {
+          ...prev[reelId],
+          comments: [comment, ...reelComments],
+        },
+      };
+    });
+
+    setCommentText('');
+  };
+  useEffect(() => {
     if (reelsData.length > 0) {
-      const firstReel = reelsData[0];
-      const video = videoRefs.current[firstReel.id];
-      if (video) {
-        video
-          .play()
-          .then(() => {
+      setTimeout(() => {
+        const firstReel = reelsData[0];
+        const video = videoRefs.current[firstReel.id];
+        if (video) {
+          video.muted = true;
+          console.log("Auto-playing first video");
+          video.play().then(() => {
             setReelsState(prev => ({
               ...prev,
               [firstReel.id]: {
                 ...prev[firstReel.id],
                 isPlaying: true,
+              
               },
             }));
-          })
-          .catch((error) => {
-            console.error('Error auto-playing video:', error);
+          }).catch(error => {
+            console.error("Error auto-playing video:", error);
           });
-      }
+        }
+      }, 1); // Small delay
     }
   }, [reelsData]);
 
-  useEffect(() => {
+  const handleLikeComment = (commentId: string) => {
+    setLikedComments(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(commentId)) {
+        newSet.delete(commentId);
+      } else {
+        newSet.add(commentId);
+      }
+      return newSet;
+    });
+
+    setReelsState(prev => {
+      const currentReel = prev[reelsData[currentReelIndex].id];
+      if (!currentReel) return prev;
+
+      const updatedComments = currentReel.comments.map(comment => {
+        if (comment.id === commentId) {
+          return {
+            ...comment,
+            likes: likedComments.has(commentId) ? comment.likes - 1 : comment.likes + 1,
+          };
+        }
+        return comment;
+      });
+
+      return {
+        ...prev,
+        [reelsData[currentReelIndex].id]: {
+          ...currentReel,
+          comments: updatedComments,
+        },
+      };
+    });
+  };
+
+  const handleLikeReply = (commentId: string, replyId: string) => {
+    setLikedReplies(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(replyId)) {
+        newSet.delete(replyId);
+      } else {
+        newSet.add(replyId);
+      }
+      return newSet;
+    });
+
+    setReelsState(prev => {
+      const currentReel = prev[reelsData[currentReelIndex].id];
+      if (!currentReel) return prev;
+
+      const updatedComments = currentReel.comments.map(comment => {
+        if (comment.id === commentId) {
+          const updatedReplies = comment.replies?.map(reply => {
+            if (reply.id === replyId) {
+              return {
+                ...reply,
+                likes: likedReplies.has(replyId) ? reply.likes - 1 : reply.likes + 1,
+                isLiked: !likedReplies.has(replyId)
+              };
+            }
+            return reply;
+          });
+
+          return {
+            ...comment,
+            replies: updatedReplies
+          };
+        }
+        return comment;
+      });
+
+      return {
+        ...prev,
+        [reelsData[currentReelIndex].id]: {
+          ...currentReel,
+          comments: updatedComments,
+        },
+      };
+    });
+  };
+
+  const handleSubmitReply = (commentId: string) => {
+    if (!replyText.trim()) return;
+
+    setReelsState(prev => {
+      const currentReel = prev[reelsData[currentReelIndex].id];
+      if (!currentReel) return prev;
+
+      const updatedComments = currentReel.comments.map(comment => {
+        if (comment.id === commentId) {
+          const newReply: Reply = {
+            id: Date.now().toString(),
+            author: {
+              name: 'Current User', // Replace with actual user data
+              profileImage: reelsData[currentReelIndex].author.profileImage,
+              title: 'User Title',
+            },
+            content: replyText,
+            likes: 0,
+            timestamp: 'Just now',
+            isLiked: false
+          };
+
+          return {
+            ...comment,
+            replies: [...(comment.replies || []), newReply],
+          };
+        }
+        return comment;
+      });
+
+      return {
+        ...prev,
+        [reelsData[currentReelIndex].id]: {
+          ...currentReel,
+          comments: updatedComments,
+        },
+      };
+    });
+
+    setReplyText('');
+    setShowReplyInput(null);
+  };
+
+  const toggleReplies = (commentId: string) => {
+    setExpandedReplies(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(commentId)) {
+        newSet.delete(commentId);
+      } else {
+        newSet.add(commentId);
+      }
+      return newSet;
+    });
+  };
+
+  const formatComment = (content: string) => {
+    // Add any formatting logic here if needed
+    return content;
+  };
+
+  const handleReelChange = React.useCallback(async (newIndex: number) => {
+    // Pause current video
+    const currentReel = reelsData[currentReelIndex];
+    const currentVideo = videoRefs.current[currentReel.id];
+    if (currentVideo) {
+      currentVideo.pause();
+      setReelsState(prev => ({
+        ...prev,
+        [currentReel.id]: { ...prev[currentReel.id], isPlaying: false }
+      }));
+    }
+    
+    Object.values(videoRefs.current).forEach(video => {
+      if (video) video.pause();
+    });
+  
+    // Update states for all videos
+    Object.keys(reelsState).forEach(id => {
+      setReelsState(prev => ({
+        ...prev,
+        [id]: { ...prev[id], isPlaying: false }
+      }));
+    });
+
+
+    
+    // Play new video
+    setCurrentReelIndex(newIndex);
+    const newReel = reelsData[newIndex];
+    const newVideo = videoRefs.current[newReel.id];
+    if (newVideo) {
+      try {
+        await newVideo.play();
+        setReelsState(prev => ({
+          ...prev,
+          [newReel.id]: { ...prev[newReel.id], isPlaying: true }
+        }));
+      } catch (error) {
+        console.error('Error playing video:', error);
+      }
+    }
+  }, [currentReelIndex, reelsData , reelsState]);
+useEffect(() => {
     return () => {
       isMounted.current = false;
       // Pause all videos when unmounting
@@ -248,53 +481,6 @@ const ReelsFeed = () => {
       });
     };
   }, []);
-
-
-    // Move handleReelChange inside useCallback to prevent infinite loops
-    const handleReelChange = React.useCallback(async (newIndex: number) => {
-      // Pause current video
-      const currentReel = reelsData[currentReelIndex];
-      const currentVideo = videoRefs.current[currentReel.id];
-      if (currentVideo) {
-        currentVideo.pause();
-        setReelsState(prev => ({
-          ...prev,
-          [currentReel.id]: { ...prev[currentReel.id], isPlaying: false }
-        }));
-      }
-      
-      Object.values(videoRefs.current).forEach(video => {
-        if (video) video.pause();
-      });
-  
-      // Update states for all videos
-      Object.keys(reelsState).forEach(id => {
-        setReelsState(prev => ({
-          ...prev,
-          [id]: { ...prev[id], isPlaying: false }
-        }));
-      });
-      
-      // Play new video
-      setCurrentReelIndex(newIndex);
-      const newReel = reelsData[newIndex];
-      const newVideo = videoRefs.current[newReel.id];
-      if (newVideo) {
-        try {
-          await newVideo.play();
-          setReelsState(prev => ({
-            ...prev,
-            [newReel.id]: { ...prev[newReel.id], isPlaying: true }
-          }));
-        } catch (error) {
-          console.error('Error playing video:', error);
-        }
-      }
-    }, [currentReelIndex, reelsData , reelsState]);
-
-    
-
-
   useEffect(() => {
     // Function to handle wheel events with proper type
     const handleWheelEvent = (e: WheelEvent) => {
@@ -425,52 +611,16 @@ const ReelsFeed = () => {
     setShowComments(!showComments);
   };
 
-  const formatComment = (text: string) => {
-    return text.split(' ').map((word, index) => {
-      if (word.startsWith('@')) {
-        return (
-          <span key={index}>
-            <span className="text-blue-500 hover:underline cursor-pointer">{word}</span>{' '}
-          </span>
-        );
-      }
-      return word + ' ';
-    });
-  };
-
-  const handleLikeComment = (commentId: string) => {
-    setLikedComments(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(commentId)) {
-        newSet.delete(commentId);
-      } else {
-        newSet.add(commentId);
-      }
-      return newSet;
-    });
-  };
-
-  
-
-  const handleSubmitReply = (commentId: string) => {
-    if (replyText.trim()) {
-      console.log('New reply to comment', commentId, ':', replyText);
-      setReplyText('');
-      setShowReplyInput(null);
-    }
-  };
-
-  const toggleReplies = (commentId: string) => {
-    setExpandedReplies(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(commentId)) {
-        newSet.delete(commentId);
-      } else {
-        newSet.add(commentId);
-      }
-      return newSet;
-    });
-  };
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+      // Pause all videos when unmounting
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      Object.values(videoRefs.current).forEach(video => {
+        if (video) video.pause();
+      });
+    };
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen  overflow-y-hidden no-scrollbar  mx-auto"> 
@@ -496,16 +646,15 @@ const ReelsFeed = () => {
         <div className={`flex-1 flex  'max-w-[1000px]'    mx-auto transition-all duration-300`}>
           {/* Video Feed */}
           <div 
-           className="relative  lg:rounded-3xl lg:max-h-[90vh] lg:max-w-[360px] bg-black font-fontsm transition-all duration-300 reels-container " 
+           className={`relative md:w-full h-[calc(100vh)] w-full  lg:max-h-[90vh]  ${showComments ? 'lg:w-[340px]':'lg:w-[340px]'}  font-fontsm transition-all duration-300 reels-container `}
            style={{
             height: "calc(100vh)",
-            width: "calc((100vh - 88px) * (9 / 16))",
+           
             minHeight: "560px",
             minWidth: "315px",
-            maxWidth: "428px", 
             position: "sticky",
             top: "80px",
-            overflowY: "hidden",
+            
             scrollBehavior: "smooth",
             touchAction: "pan-y pinch-zoom"
           }}
@@ -520,7 +669,7 @@ const ReelsFeed = () => {
             {reelsData.map((reel, index) => (
               <div
                 key={reel.id}
-                className={`absolute w-full h-full transition-transform duration-300 lg:pt-3 ${
+                className={`absolute w-full h-full rounded-3xl lg:   no-scrollbar  bg-black transition-transform duration-300 lg:pt-3 flex flex-row ${
                   index === currentReelIndex ? 'translate-y-0' : 
                   index < currentReelIndex ? '-translate-y-full' : 'translate-y-full'
                 }`}
@@ -536,8 +685,9 @@ const ReelsFeed = () => {
                 }}
                 
               >
+                
                 {/* Video Container */}
-                <div className="relative h-full w-full bg-black   flex items-center justify-center">
+                <div className="relative h-full w-full     flex items-center justify-center">
                   {reelsState[reel.id]?.isError ? (
                     <div className="absolute inset-0 flex items-center justify-center bg-gray-900 text-white">
                       <p>Failed to load video</p>
@@ -553,7 +703,7 @@ const ReelsFeed = () => {
                           }
                         }
                       }}
-                      className="h-full w-full"
+                      className="h-full w-full "
                       onLoadedMetadata={(e) => handleLoadedMetadata(e.target as HTMLVideoElement)}
                       loop
                       autoPlay
@@ -561,14 +711,21 @@ const ReelsFeed = () => {
                       onClick={() => togglePlay(reel.id)}
                       
                     >
+                  
                       <source src={reel.videoUrl} type="video/mp4" />
                       Your browser does not support the video tag.
                     </video>
                   )}
-
+                                  {/* Mute/Unmute Button */}
+                  <button
+                    onClick={toggleMute}
+                    className="absolute top-1 left-3 p-2 bg-black bg-opacity-50 rounded-full text-white"
+                  >
+                    {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+                  </button>
                   {/* Play Button Overlay */}
                   {!reelsState[reel.id]?.isPlaying && !reelsState[reel.id]?.isError && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                    <div className="absolute inset-0 flex items-center justify-center rounded-3xl bg-black/20">
                       <button 
                         onClick={() => togglePlay(reel.id)}
                         className="bg-white/30 rounded-full p-4 text-white hover:bg-white/40"
@@ -579,7 +736,7 @@ const ReelsFeed = () => {
                   )}
 
                   {/* Options Menu */}
-                  <div className="absolute top-1 right-2 z-50" ref={el => el && (optionsRefs.current[reel.id] = el)}>
+                  <div className="absolute top-3 right-2 z-50" ref={el => el && (optionsRefs.current[reel.id] = el)}>
                     <button
                       onClick={() => setReelsState(prev => ({
                         ...prev,
@@ -625,22 +782,76 @@ const ReelsFeed = () => {
 
                   {/* Progress Bar */}
                   <div 
-                    className="absolute bottom-16 lg:bottom-3  left-0 right-0 h-1 bg-gray-800 cursor-pointer"
+                    className="absolute bottom-16 lg:bottom-3 rounded-b-3xl   left-0 right-0 h-1 bg-gray-700 cursor-pointer"
                     onClick={(e) => handleProgressClick(e, reel.id)}
                   >
                     <div 
-                      className="h-full bg-white transition-all duration-100 z-20"
+                      className="h-full bg-white text-white transition-all duration-100 z-20"
                       style={{ width: `${reelsState[reel.id]?.progress || 0}%` }}
                     />
                   </div>
 
+
+
+                  {/* Bottom Info Section */}
+                  <div className="absolute bottom-16 lg:bottom-1 left-0 right-0 p-4 bg-gradient-to-t rounded-b-3xl from-black/70 to-transparent">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={reel.author.profileImage}
+                        alt={reel.author.name}
+                        className="w-11 h-11 rounded-full ml-1"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-white font-medium">{reel.author.name}</h3>
+                          <button className="text-maincl text-xs ml-1 bg-buttonclr bg-opacity-40 px-3 py-0.5 rounded-full hover:bg-white/70 transition-colors">
+                            Follow
+                          </button>
+                        </div>
+                        <p className="text-white/80 text-xs">{reel.author.title}</p>
+                        <p className="text-white/80 text-xs">{reel.author.date}</p>
+                      </div>
+                    </div>
+                    <div className={`mt-2 transition-all text-sm duration-300 ${
+                      reelsState[reel.id]?.isExpanded ? 'h-auto' : 'h-[2.6em]'
+                    } overflow-hidden relative`}>
+                      <p className="text-white pr-2">{reel.description}</p>
+                      {!reelsState[reel.id]?.isExpanded && reel.description.length > 70 && (
+                        <div className="absolute bottom-0 right-0 bg-gradient-to-l from-black/10 pl-8 z-10">
+                          <button 
+                            onClick={() => setReelsState(prev => ({
+                              ...prev,
+                              [reel.id]: { ...prev[reel.id], isExpanded: true }
+                            }))}
+                            className="text-maincl hover:underline"
+                          >
+                            ..more
+                          </button>
+                        </div>
+                      )}
+                      {reelsState[reel.id]?.isExpanded && (
+                        <button 
+                          onClick={() => setReelsState(prev => ({
+                            ...prev,
+                            [reel.id]: { ...prev[reel.id], isExpanded: false }
+                          }))}
+                          className="text-maincl hover:underline ml-1"
+                        >
+                          less
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                
                   {/* Right Side Interaction Buttons */}
-                  <div className={`${
+                  <div className={`${ 
                     // On large screens, position outside the reel
-                    'lg:absolute lg:left-[calc(100%+1rem)] lg:top-1/2 lg:-translate-y-1/2 lg:flex lg:flex-col lg:gap-6 lg:items-center' +
+                    'lg:absolute lg:-right-12 lg:-bottom-32 lg:-translate-y-1/2 lg:flex lg:flex-col  lg:gap-4 ' +
                     // On small screens, keep inside the reel
-                    ' absolute right-1 z-40 bottom-24 mb-2 flex flex-col gap-4'
-                  }`}>
+                    ' absolute right-1 z-40 bottom-24 mb-2 flex flex-col gap-4' 
+                  }   ${showComments? 'lg:w-0 lg:hidden ' :'lg:w-11'}   `  }>
                     {/* Like button */}
                     <button 
                       className="flex flex-col items-center text-white"
@@ -691,66 +902,19 @@ const ReelsFeed = () => {
                       </div>
                     </button>
                   </div>
-
-                  {/* Bottom Info Section */}
-                  <div className="absolute bottom-16 lg:bottom-3 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={reel.author.profileImage}
-                        alt={reel.author.name}
-                        className="w-11 h-11 rounded-full ml-1"
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-white font-medium">{reel.author.name}</h3>
-                          <button className="text-maincl text-xs ml-1 bg-buttonclr bg-opacity-40 px-3 py-0.5 rounded-full hover:bg-white/70 transition-colors">
-                            Follow
-                          </button>
-                        </div>
-                        <p className="text-white/80 text-xs">{reel.author.title}</p>
-                        <p className="text-white/80 text-xs">{reel.author.date}</p>
-                      </div>
-                    </div>
-                    <div className={`mt-2 transition-all text-sm duration-300 ${
-                      reelsState[reel.id]?.isExpanded ? 'h-auto' : 'h-[2.6em]'
-                    } overflow-hidden relative`}>
-                      <p className="text-white">{reel.description}</p>
-                      {!reelsState[reel.id]?.isExpanded && reel.description.length > 70 && (
-                        <div className="absolute bottom-0 right-0 bg-gradient-to-l from-black/10 pl-8 z-10">
-                          <button 
-                            onClick={() => setReelsState(prev => ({
-                              ...prev,
-                              [reel.id]: { ...prev[reel.id], isExpanded: true }
-                            }))}
-                            className="text-maincl hover:underline"
-                          >
-                            ..more
-                          </button>
-                        </div>
-                      )}
-                      {reelsState[reel.id]?.isExpanded && (
-                        <button 
-                          onClick={() => setReelsState(prev => ({
-                            ...prev,
-                            [reel.id]: { ...prev[reel.id], isExpanded: false }
-                          }))}
-                          className="text-maincl hover:underline ml-1"
-                        >
-                          less
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
               </div>
+              
             ))}
+            <div className="lg:hidden w-full absolute bottom-0">
+                <Navigation />
+             </div>
           </div>
 
               
           {/* Desktop Comments Panel */}
           <div 
-            className={` lg:block bg-white  h-[100vh] ${showComments ? 'pl-4 pt-12' : ''}  font-fontsm  rounded-xl shadow-lg border-gray-300 overflow-hidden transition-all duration-300 ${
-              showComments ? 'w-[440px]' : 'w-0'
+            className={` lg:block bg-white  h-[100vh] ${showComments ? 'pl-4 pt-12' : ''}  font-fontsm overflow-y-scroll no-scrollbar   rounded-xl shadow-lg border-gray-300  transition-all duration-300 ${
+              showComments ? 'w-[450px]' : 'w-0'
             }`}
           >
             <div className="h-full flex flex-col">
@@ -770,7 +934,7 @@ const ReelsFeed = () => {
                       className="w-10 h-10 rounded-full object-cover"
                     />
                     <div>
-                      <h3 className="font-semibold text-sm text-gray-900">{reelsData[currentReelIndex].author.name}</h3>
+                      <h3 className="text-lg font-semibold">{reelsData[currentReelIndex].author.name}</h3>
                       <p className="text-xs text-gray-500">{reelsData[currentReelIndex].author.title}</p>
                       <p className="text-xs text-gray-500">{reelsData[currentReelIndex].author.date}</p>
                     </div>
@@ -907,9 +1071,12 @@ const ReelsFeed = () => {
                                           <p className="text-gray-600 text-sm">{formatComment(reply.content)}</p>
                                         </div>
                                         <div className="flex items-center gap-4 mt-1 text-sm text-gray-500 ml-4">
-                                          <button className="hover:text-gray-700 flex gap-1 items-center">
+                                          <button 
+                                            onClick={() => handleLikeReply(comment.id, reply.id)}
+                                            className="hover:text-gray-700 flex gap-1 items-center"
+                                          >
                                             <img 
-                                              src={liked} 
+                                              src={likedReplies.has(reply.id) ? liked : like} 
                                               alt="" 
                                             /> 
                                             {reply.likes}
@@ -1111,6 +1278,18 @@ const ReelsFeed = () => {
                                               </div>
                                               <p className="text-sm">{formatComment(reply.content)}</p>
                                             </div>
+                                            <div className="flex items-center gap-4 mt-1 text-sm text-gray-500 ml-4">
+                                              <button 
+                                                onClick={() => handleLikeReply(comment.id, reply.id)}
+                                                className="hover:text-gray-700 flex gap-1 items-center"
+                                              >
+                                                <img 
+                                                  src={likedReplies.has(reply.id) ? liked : like} 
+                                                  alt="" 
+                                                /> 
+                                                {reply.likes}
+                                              </button>
+                                            </div>
                                           </div>
                                         </div>
                                       ))}
@@ -1188,9 +1367,7 @@ const ReelsFeed = () => {
           )}
           
 
-      <div className="lg:hidden">
-        <Navigation />
-      </div>
+      
     </div>
     </div>
     </div>

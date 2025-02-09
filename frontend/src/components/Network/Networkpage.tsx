@@ -258,7 +258,7 @@ const Networkpage = () => {
         <div className="hidden lg:block w-[300px] flex-shrink-0 font-fontsm">
           <div className="top-[calc(theme(spacing.24)+1px)] space-y-6">
             {/* Profile Card */}
-            <div className="bg-fillc bg-opacity-10 rounded-2xl p-6 shadow-sm">
+            <div className="bg-fillc bg-opacity-10 rounded-2xl p-6 flex shrink shadow-sm">
               <div className="flex flex-col items-center">
                 <img
                   src={profileData.avatar}
@@ -297,7 +297,7 @@ const Networkpage = () => {
 
         {/* Main Feed */}
 
-        <div className="flex-1 max-w-[820px] mx- w-full ">
+        <div className="flex-1 max-w-[820px] mx-auto w-full flex-shrink ">
 
                 {/* Search Bar */}
 
