@@ -36,7 +36,7 @@ import Jobs from "@/pages/Jobs";
 import Conferrences from "@/pages/Conferrences";
 // import Message from "@/pages/Message";
 
-import Notifications from "@/pages/Notifications";
+// import Notifications from "@/pages/Notifications";
 import QuestionPage from "@/pages/QuestionPage";
 import PhoneSignup from "@/pages/PhoneSignup";
 // import Safety from "@/pages/Safety";
@@ -58,6 +58,7 @@ import Profile from "@/components/profile/Profile";
 // import Grpsafety from "@/pages/socketsafe/grpsafety";
 import QuestionDetail from "../pages/QuestionDetail";
 import Verifying from "@/pages/Verifying";
+import NotificationsComponent from "@/components/notifications/NotificationPage";
 // import { ReelsPlayer } from "@/components/videos/reels/ReelsPlayer";
 
 
@@ -122,7 +123,7 @@ export const router = createBrowserRouter([
   { path: "/jobs/:id", element: <Jobs /> },
   { path: "/conferrences/:id", element: <Conferrences /> },
   {path : "/message/:id", element : <Group/>},
-  {path : "/notifications", element : <Notifications/>},
+  // {path : "/notifications", element : <Notifications/>},
   {path : "question-page", element : <QuestionPage/>},
   {path : "/phonesignup" , element : <PhoneSignup/>},
   {path : "/socialfeed" , element : <SocialFeed/>},
@@ -140,6 +141,7 @@ export const router = createBrowserRouter([
   {path: "/addEducation",element:<EducationPage/>},
   {path: "/profile",element:<Profile/>},
   {path: "/verifying",element:<Verifying/>},
+  {path: "/notifications",element:<NotificationsComponent />},
   {
     path: "/question/:questionId",
     element: <QuestionDetail />,

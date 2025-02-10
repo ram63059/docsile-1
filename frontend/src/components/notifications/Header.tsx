@@ -61,8 +61,8 @@ const defaultNavItems: NavItemProps[] = [
     inactiveIcon: <img src={connect1} className="w-16 h-16" alt="" />,
     label: "Connect",
     path: "/connect",
-    isActive: true,
-  },
+    isActive: false,
+  }, 
   
   {
     activeIcon: <img src={careers2} className="w-16 h-16" alt="" />,
@@ -177,7 +177,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-4 ml-2">
           <button
             onClick={onNotification}
-            className="p-1 hover:bg-gray-100 rounded-full flex shrink-0"
+            className="p-1 hover:bg-gray-100 lg:bg-buttonclr  rounded-full flex shrink-0"
           >
             <img src={notifications} alt="" className="w-6 h-6  lg:hidden"  />
             <img src={notifications1} alt="" className="w-16 hidden lg:block" />

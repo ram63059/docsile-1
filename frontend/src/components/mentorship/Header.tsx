@@ -5,7 +5,7 @@ import home2 from "../../assets/icon/lhome2.svg";
 import questions1 from "../../assets/icon/lquestions1.svg";
 import questions2 from "../../assets/icon/lquestion2.svg";
 import videos1 from "../../assets/icon/lvideos1.svg";
-import videos2 from "../../assets/icon/videos2.svg";
+import videos2 from "../../assets/icon/lvideos2.svg";
 import connect1 from "../../assets/icon/lconnect1.svg";
 import connect2 from "../../assets/icon/lconnect2.svg";
 import notifications1 from "../../assets/icon/lnotifications1.svg"
@@ -14,20 +14,9 @@ import messages1 from "../../assets/icon/lmessages1.svg"
 import messages from "../../assets/icon/messages.svg"
 import careers1 from "../../assets/icon/lcareers1.svg";
 import careers2 from "../../assets/icon/lcareers2.svg";
-import { Search} from 'lucide-react';
 import SearchPopup from "./SearchPopup";
-
-
-interface NavItemProps {
-  activeIcon: React.ReactNode;
-  inactiveIcon: React.ReactNode;
-  label: string;
-  path: string;
-  isActive: boolean;
-  onClick?: () => void;
-}
-
-
+import { Search} from 'lucide-react';
+import HomeButton from "./HomeButton";
 
 interface HeaderProps {
   onNotification: () => void;
@@ -35,6 +24,14 @@ interface HeaderProps {
   onProfile: () => void;
   onSearch: (query: string) => void;
   items?: NavItemProps[];
+}
+interface NavItemProps {
+  activeIcon: React.ReactNode;
+  inactiveIcon: React.ReactNode;
+  label: string;
+  path: string;
+  isActive: boolean;
+  onClick?: () => void;
 }
 
 const defaultNavItems: NavItemProps[] = [
@@ -79,13 +76,16 @@ const defaultNavItems: NavItemProps[] = [
 export const Header: React.FC<HeaderProps> = ({
   onNotification,
   onMessage,
-  onProfile,
   onSearch,
   items = defaultNavItems,
 }) => {
   const [navItems, setNavItems] = useState<NavItemProps[]>(items);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
+  const profileButtonRef = React.useRef<HTMLButtonElement>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,7 +111,7 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <div className="flex flex-row items-center justify-between font-fontsm   w-full px-5 py-1 bg-white  ">
+    <div className="flex flex-row items-center justify-between font-fontsm  w-full px-5 py-1 bg-white  ">
       {/* Logo and Search Section */}
       <div className="flex flex-row w-2/4 items-center gap-4 lg:pl-28 lg:ml-12 mx-auto ml-3">
         <div className="flex items-center gap-2  w-1/4">
@@ -190,13 +190,19 @@ export const Header: React.FC<HeaderProps> = ({
             <img src={messages1} alt="" className="w-16 hidden lg:block" />
           </button>
           <button
-            onClick={onProfile}
+             ref={profileButtonRef}
+           onClick={() => setIsProfileOpen(true)}
             className="p-1 hover:bg-gray-100 rounded-full flex shrink-0"
           >
             <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08" alt="" className="w-7 h-7 rounded-full" />
           </button>
         </div>
       </div>
+      <HomeButton
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        buttonRef={profileButtonRef}
+      />
     </div>
   );
 };

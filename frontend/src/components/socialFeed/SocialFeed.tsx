@@ -351,6 +351,7 @@ export const SocialFeed: React.FC = () => {
 
           </div>
         </div>
+        
         {/* Mobile Navigation */}
       <div className="lg:hidden fixed bottom-0  bg-white border-t  w-full">
         <Navigation />

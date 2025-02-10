@@ -50,7 +50,7 @@ const defaultNavItems: NavItemProps[] = [
     inactiveIcon: <img src={questions1} className="w-16 h-16" alt="" />,
     label: "Questions",
     path: "/questionsfeed",
-    isActive: true,
+    isActive: false,
   },
   {
     activeIcon: <img src={videos2} className="w-16 h-16" alt="" />,
@@ -112,7 +112,7 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-white shadow-md z-50 relative">
+    <header className=" top-0 left-0 right-0 bg-white shadow-md z-50 relative">
       <div className="flex flex-row items-center justify-between font-fontsm  w-full px-5 py-1 bg-white  ">
         {/* Logo and Search Section */}
         <div className="flex flex-row w-2/4 items-center gap-4 lg:pl-28 lg:ml-12 mx-auto ml-3">
@@ -196,7 +196,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               ref={profileButtonRef}
               onClick={() => setIsProfileOpen(true)}
-              className="p-2 hover:bg-gray-100 rounded-full"
+              className="p-2 bg-buttonclr rounded-full "
             >
               <img
                 src="https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
@@ -207,14 +207,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
       </div>
-      {isSearchOpen && (
-        <SearchPopup
-         isOpen={isSearchOpen}
-         onClose={() => setIsSearchOpen(false)}
-         searchQuery={searchQuery}
-         onSearchChange={handleSearch}
-       />
-      )}
+    
       <div className="">
 
       <HomeButton

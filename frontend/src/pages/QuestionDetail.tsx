@@ -568,7 +568,7 @@ const QuestionDetail: React.FC = () => {
           <div className="relative overflow-hidden" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
             <div className="flex transition-transform duration-300" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
               {questionData.images.map((image, index) => (
-                <div key={index} className="flex-none w-full lg:h-[400px] rounded-lg bg-gray-200">
+                <div key={index} className="flex-none w-full lg:h-[440px] rounded-lg bg-gray-200">
                   <img src={image} alt={`Post image ${index + 1}`} className="w-full h-full object-cover rounded-lg" />
                 </div>
               ))}

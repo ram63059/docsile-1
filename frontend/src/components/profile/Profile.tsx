@@ -23,8 +23,10 @@ import EducationForm from './forms/EducationForm';
 import ExperienceForm from './forms/ExperienceForm';
 import CertificationForm, { CertificationFormData } from './forms/CertificationForm';
 import {  State }  from 'country-state-city';
-
-
+import experience from "../../assets/icon/experience.svg";
+import education from "../../assets/icon/education.svg";
+import profile from "../../assets/icon/profile.svg";
+import memberships from "../../assets/icon/memberships.svg";
 
 
 interface ExperienceItem {
@@ -178,6 +180,15 @@ interface MembershipFormData {
   membershipId?: string;
 }
 
+interface ProfileProps {
+  name: string;
+  title: string;
+  location: string;
+  profileImage: string;
+  addIcon: string;
+  locationIcon: string;
+}
+
 
 
 // interface ExperienceFormData {
@@ -226,7 +237,7 @@ const Profile: React.FC = () => {
   const [isEditMode, setIsEditMode] = useState(false);
 
   useEffect(() => {
-    setActiveDesktopTab('activity');
+    setActiveDesktopTab('about');
 
     const handleResize = () => {
       setIsMobile(window.innerWidth < 1024);
@@ -238,7 +249,7 @@ const Profile: React.FC = () => {
 
 
   const tabs = ['About', 'Activity', 'Events', 'Memberships', 'Saved', 'Draft'];
-  const Desktoptabs = [ 'Activity', 'Jobs', 'Events', 'Saved', 'Draft'];
+  const Desktoptabs = ['About', 'Activity', 'Jobs', 'Events', 'Saved', 'Draft'];
 
   // Sample data for posts and questions
   const posts: Post[] = [
@@ -1141,7 +1152,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                   <div className='lg:border p-3 lg:py-8 shadow-sm rounded-xl border-gray-200'>
                 <div className='flex lg:flex-col  items-center' >
 
-                <div className="relative ">
+                <div className="relative "> 
                   <img
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c"
                     alt="Profile"
@@ -1806,40 +1817,78 @@ const [activeIndex, setActiveIndex] = useState(0);
 
 
             <div className="bg-white rounded-lg shadow-sm">
-              {/* Post Input */}
-              <div className="p-4 border border-gray-100 rounded-xl hidden lg:block">
-                <div className="flex items-center gap-3">
-                  <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c" alt="" className="w-10 h-10 rounded-full" />
-                  <input
-                    type="text"
-                    placeholder="What's on your mind?"
-                    className="flex-1  px-4 py-2"
-                  />
-                  <button className="px-4 py-1.5 flex items-center text-sm text-nowrap bg-maincl text-white rounded-3xl">
-                    <img src={add} alt="" className='w-5 ' />
-                    Add Post
-                  </button>
-                </div>
-              </div>
-
+             
               {/* Content Sections */}
               <div className="divide-">
-                {/* About Section - Only visible when About tab is active on mobile */}
-                <div className={`${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
-                  <div className="p-6 border border-gray-200 rounded-xl my-3 ">
-                    <div className="flex justify-between items-center mb-4">
-                      <h2 className="text-xl font-medium">About</h2>
-                      <button className="text-gray-500">
-                        <img src={edit} alt="" />
-                      </button>
-                    </div>
-                    <p className="text-gray-600">{aboutText}</p>
-                  </div>
-                </div>
+          
 
-               
-                {/* Experience Section */}
-                <div className={`p-6 border border-gray-100 rounded-xl my-3 group relative ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
+                   
+
+                 
+             
+
+
+
+                      {/* tabs for the desktop */}
+                      <div className=" mt-2 mb-6">
+                        <div className="border-b hidden lg:block bg-buttonclr rounded-xl">
+                          <div className="flex space-x-8">
+                            {Desktoptabs.map((tab) => (
+                              <button
+                                key={tab}
+                                onClick={() => setActiveDesktopTab(tab.toLowerCase())}
+                                className={`px-4 py-4 text-sm font-medium border-b-2 whitespace-nowrap ${
+                                  activeDesktopTab === tab.toLowerCase()
+                                    ? 'border-maincl text-maincl'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                }`}
+                              >
+                                {tab}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        
+                        {/* Tab content sections will be added here later */}
+
+                        <div className="mt-6 ">
+                          {(activeDesktopTab==='About' || activeDesktopTab==='about') &&(
+                            <div>
+                                 {/* Post Input */}
+                          <div className="p-4 border border-gray-100 rounded-xl hidden lg:block">
+                            <div className="flex items-center gap-3">
+                              <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c" alt="" className="w-10 h-10 rounded-full" />
+                              <input
+                                type="text"
+                                placeholder="What's on your mind?"
+                                className="flex-1  px-4 py-2"
+                              />
+                              <button className="px-4 py-1.5 flex items-center text-sm text-nowrap bg-maincl text-white rounded-3xl">
+                                <img src={add} alt="" className='w-5 ' />
+                                Add Post
+                              </button>
+                            </div>
+                          </div>
+
+
+                          {/* About Section - Only visible when About tab is active on mobile */}
+                        <div className={`${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
+                          <div className="p-6 border border-gray-200 rounded-xl my-3 ">
+                            <div className="flex justify-between items-center mb-4">
+                              <h2 className="text-xl font-medium">About</h2>
+                              <button className="text-gray-500">
+                                <img src={edit } alt="" />
+                              </button>
+                            </div>
+                            <p className="text-gray-600">{aboutText}</p>
+                          </div>
+                        </div>
+
+
+
+                               {/* Experience Section */}
+                <div className={`p-6 border border-gray-100 rounded-xl my-3 group relative ${ activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
                   <div className="flex gap-4 justify-between items-center mb-6">
 
                     <h2 className="text-xl font-medium">Experience</h2>
@@ -1902,7 +1951,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                               <li key={index} className="relative flex-none w-72 mb-6 mr-8 last:mr-0">
                                 <div className="flex items-center">
                                   <div className="z-10 flex items-center justify-center w-12 h-12 bg-white rounded-full ring-0 ring-white sm:ring-8 shrink-0 overflow-hidden border-2 border-gray-100">
-                                    <img src={exp.img} alt={`${exp.company} logo`} className="w-12 h-12 object-cover" />
+                                    <img src={exp.img || experience} alt={`${exp.company} logo`} className="w-12 h-12 object-cover" />
                                   </div>
                                   {index < experiences.length - 1 && (
                                     <div className="hidden sm:flex w-full bg-gray-200 h-0.5"></div>
@@ -1938,7 +1987,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                           {experiences.slice(0, expanded ? experiences.length : 3).map((exp, index) => (
                             <div key={index} className="flex items-start gap-4">
                               <div className="flex-shrink-0">
-                                <img src={exp.img} alt={`${exp.company} logo`} className="w-12 h-12 rounded-full border-2 border-gray-100" />
+                                <img src={exp.img || experience} alt={`${exp.company} logo`} className="w-12 h-12 rounded-full border-2 border-gray-100" />
                               </div>
                               <div className="flex-grow relative">
                                 {showEditExperience && (
@@ -2038,7 +2087,13 @@ const [activeIndex, setActiveIndex] = useState(0);
                 )}
 
 
-                    {/* Education Section */}
+
+
+
+
+
+
+                             {/* Education Section */}
                     <div className={`p-6 border border-gray-100 rounded-xl overflow-hidden my-5 group relative ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
                     <div className="flex gap-4  justify-between items-center mb-6">
                       <h2 className="text-xl  font-medium">Education</h2>
@@ -2104,7 +2159,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                           <li key={index} className="relative flex-none w-72 mb-6 mr-8 last:mr-0">
                             <div className="flex items-center">
                             <div className="z-10 flex items-center justify-center w-12 h-12 bg-white rounded-full ring-0 ring-white sm:ring-8 shrink-0 overflow-hidden border-2 border-gray-100">
-                              <img src={edu.logo} alt={`${edu.institution} logo`} className="w-12 h-12 object-cover" />
+                              <img src={edu.logo || education} alt={`${edu.institution} logo`} className="w-12 h-12 object-cover" />
                             </div>
                             {index < educationData.length - 1 && (
                               <div className="hidden sm:flex w-full bg-gray-200 h-0.5"></div>
@@ -2138,7 +2193,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                         {educationData.slice(0, expanded ? educationData.length : 3).map((edu, index) => (
                           <div key={index} className="flex items-start gap-4">
                           <div className="flex-shrink-0">
-                            <img src={edu.logo} alt={`${edu.institution} logo`} className="w-12 h-12 rounded-full border-2 border-gray-100" />
+                            <img src={edu.logo || education} alt={`${edu.institution} logo`} className="w-12 h-12 rounded-full border-2 border-gray-100" />
                           </div>
                           <div className="flex-grow relative">
                             {isEditMode && (
@@ -2235,7 +2290,10 @@ const [activeIndex, setActiveIndex] = useState(0);
                   )}  
 
 
-                  <div className={`flex flex-col lg:flex-row gap-6 ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
+
+
+
+                    <div className={`flex flex-col lg:flex-row gap-6 ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
 
                     {/* Areas of Interest Card */}
                     <div className="w-full lg:w-1/2 flex flex-col justify-between bg-white shadow-md rounded-xl p-6">
@@ -2419,8 +2477,8 @@ const [activeIndex, setActiveIndex] = useState(0);
                         </>
                       )}
                     </div>
-                  </div>
-                  {/* Certification Form */}
+                    </div>
+                             {/* Certification Form */}
                   <CertificationForm
                     isOpen={isCertificationFormOpen}
                     onClose={() => {
@@ -2470,160 +2528,176 @@ const [activeIndex, setActiveIndex] = useState(0);
 
 
 
-                {/* Memberships */}
+
+
+
+
+
+
+                   {/* Memberships */}
                 <div className={`bg-white shadow-md rounded-xl py-8 lg:px-6 px-4 my-4 ${activeTab === 'memberships' || activeTab === 'Memberships' ? 'block' : 'hidden lg:block'}`}>
                    
-                  <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-lg font-medium">Memberships</h2>
-                  <div className='flex gap-4'>
-                    <button 
-                    onClick={() => setShowEditButtons(!showEditButtons)} 
-                    className="text-gray-400 hover:text-gray-600"
-                    >
-                    <img src={edit} alt="" />
-                    </button>
-                    <button
-                    onClick={() => {
-                      setEditingMembership(null); // Clear any existing editing membership
-                      setIsAddMembershipFormOpen(true);
-                    }}
-                    className="flex items-center space-x-1 bg-maincl text-white px-1 py-1 rounded-full hover:bg-fillc text-sm"
-                    >
-                    <FaPlus className="w-3 h-3" />
-                    </button>
-                  </div>
-                  </div>
+                   <div className="flex justify-between items-center mb-6">
+                   <h2 className="text-lg font-medium">Memberships</h2>
+                   <div className='flex gap-4'>
+                     <button 
+                     onClick={() => setShowEditButtons(!showEditButtons)} 
+                     className="text-gray-400 hover:text-gray-600"
+                     >
+                     <img src={edit} alt="" />
+                     </button>
+                     <button
+                     onClick={() => {
+                       setEditingMembership(null); // Clear any existing editing membership
+                       setIsAddMembershipFormOpen(true);
+                     }}
+                     className="flex items-center space-x-1 bg-maincl text-white px-1 py-1 rounded-full hover:bg-fillc text-sm"
+                     >
+                     <FaPlus className="w-3 h-3" />
+                     </button>
+                   </div>
+                   </div>
+ 
+                   {/* Membership List */}
+                   {memberships.length === 0 ? (
+                   <div className="text-center py-8">
+                     <p className="text-gray-600 text-sm">
+                     Adding your memberships will showcase your professional affiliations and involvement, helping to strengthen your profile and credibility!
+                     </p>
+                   </div>
+                   ) : (
+                   <div className="relative group">
+                     {/* Scroll buttons - Only show on desktop */}
+                     {!isMobile && memberships.length > 4 && (
+                     <>
+                       <button 
+                       className="absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+                       onClick={() => {
+                         const container = document.getElementById('memberships-scroll');
+                         if (container) {
+                         container.scrollLeft -= 200;
+                         }
+                       }}
+                       >
+                       <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
+                       </button>
+ 
+                       <button 
+                       className="absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+                       onClick={() => {
+                         const container = document.getElementById('memberships-scroll');
+                         if (container) {
+                         container.scrollLeft += 200;
+                         }
+                       }}
+                       >
+                       <img src={arrowright} alt="Next" className="w-4 h-4" />
+                       </button>
+                     </>
+                     )}
+ 
+                     {/* Content container with different layouts for mobile and desktop */}
+                     <div
+                     id="memberships-scroll"
+                     className={`${isMobile ? 'flex flex-col space-y-4' : 'overflow-x-auto scrollbar-hide scroll-smooth'}`}
+                     >
+                     <div className={`${isMobile ? 'space-y-4' : 'flex gap-6'}`}>
+                       {memberships.map((membership) => (
+                       <div 
+                         key={membership.id} 
+                         className={`flex items-center  justify-between pb-4 border-b   ${!isMobile && ' min-w-[200px] '}`}
+                       >
+                         <div className="flex items-center gap-3">
+                         <img
+                           src={"https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"}
+                           alt={membership.name}
+                           className="w-10 h-10 rounded-full"
+                         />
+                         <div>
+                           <p className="font text-xs">{membership.name}</p>
+                           <p className="text-fontlit text-gray-500">{membership.category}</p>
+                           <p className="text-fontlit text-gray-500">{membership.position}</p>
+                         </div>
+                         </div>
+                         {showEditButtons && (
+                         <button
+                           onClick={() => {
+                           setEditingMembership(membership);
+                           setIsAddMembershipFormOpen(true);
+                           }}
+                           className="text-gray-400 hover:text-gray-600"
+                         >
+                           <img src={edit} alt="Edit" className="w-4 h-4" />
+                         </button>
+                         )}
+                       </div>
+                       ))}
+                     </div>
+                     </div>
+                   </div>
+                   )}
+                 </div>
+                   {/* Membership Form Modal */}
+                   {isAddMembershipFormOpen && (
+                     <MembershipForm
+                     isOpen={isAddMembershipFormOpen}
+                     onClose={() => {
+                       setIsAddMembershipFormOpen(false);
+                       setEditingMembership(null);
+                     }}
+                     onSubmit={(data: MembershipFormData) => {
+                       if (editingMembership) {
+                       // Update existing membership
+                       const updatedMemberships = memberships.map(membership =>
+                         membership.id === editingMembership.id
+                         ? { 
+                           ...membership, 
+                           name: data.name ,
+                           category: data.category,
+                           position: data.position,
+                           membershipId: data.membershipId,
+                           // Keep the existing image if no new file is provided
+                         
+                           }
+                         : membership
+                       );
+                       setMemberships(updatedMemberships);
+                       } else {
+                       // Add new membership
+                       const newMembership: Membership = {
+                         id: Date.now(),
+                         name: data.name,
+                         category: data.category,
+                         position: data.position,
+                         membershipId: data.membershipId,
+                     
+                       };
+                       setMemberships([...memberships, newMembership]);
+                       }
+                       setIsAddMembershipFormOpen(false);
+                       setEditingMembership(null);
+                     }}
+                     initialData={editingMembership ? {
+                       name: editingMembership.name || '',
+                       category: editingMembership.category || '',
+                       position: editingMembership.position || '',
+                       membershipId: editingMembership.membershipId || '',
+                       notifyFollowers: false
+                     } : undefined}
+                     isEditing={!!editingMembership}
+                     />
+                   )}
 
-                  {/* Membership List */}
-                  {memberships.length === 0 ? (
-                  <div className="text-center py-8">
-                    <p className="text-gray-600 text-sm">
-                    Adding your memberships will showcase your professional affiliations and involvement, helping to strengthen your profile and credibility!
-                    </p>
-                  </div>
-                  ) : (
-                  <div className="relative group">
-                    {/* Scroll buttons - Only show on desktop */}
-                    {!isMobile && memberships.length > 4 && (
-                    <>
-                      <button 
-                      className="absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => {
-                        const container = document.getElementById('memberships-scroll');
-                        if (container) {
-                        container.scrollLeft -= 200;
-                        }
-                      }}
-                      >
-                      <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
-                      </button>
 
-                      <button 
-                      className="absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => {
-                        const container = document.getElementById('memberships-scroll');
-                        if (container) {
-                        container.scrollLeft += 200;
-                        }
-                      }}
-                      >
-                      <img src={arrowright} alt="Next" className="w-4 h-4" />
-                      </button>
-                    </>
-                    )}
 
-                    {/* Content container with different layouts for mobile and desktop */}
-                    <div
-                    id="memberships-scroll"
-                    className={`${isMobile ? 'flex flex-col space-y-4' : 'overflow-x-auto scrollbar-hide scroll-smooth'}`}
-                    >
-                    <div className={`${isMobile ? 'space-y-4' : 'flex gap-6'}`}>
-                      {memberships.map((membership) => (
-                      <div 
-                        key={membership.id} 
-                        className={`flex items-center  justify-between pb-4 border-b   ${!isMobile && ' min-w-[200px] '}`}
-                      >
-                        <div className="flex items-center gap-3">
-                        <img
-                          src={"https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"}
-                          alt={membership.name}
-                          className="w-10 h-10 rounded-full"
-                        />
-                        <div>
-                          <p className="font text-xs">{membership.name}</p>
-                          <p className="text-fontlit text-gray-500">{membership.category}</p>
-                          <p className="text-fontlit text-gray-500">{membership.position}</p>
-                        </div>
-                        </div>
-                        {showEditButtons && (
-                        <button
-                          onClick={() => {
-                          setEditingMembership(membership);
-                          setIsAddMembershipFormOpen(true);
-                          }}
-                          className="text-gray-400 hover:text-gray-600"
-                        >
-                          <img src={edit} alt="Edit" className="w-4 h-4" />
-                        </button>
-                        )}
-                      </div>
-                      ))}
-                    </div>
-                    </div>
-                  </div>
-                  )}
-                </div>
-                  {/* Membership Form Modal */}
-                  {isAddMembershipFormOpen && (
-                    <MembershipForm
-                    isOpen={isAddMembershipFormOpen}
-                    onClose={() => {
-                      setIsAddMembershipFormOpen(false);
-                      setEditingMembership(null);
-                    }}
-                    onSubmit={(data: MembershipFormData) => {
-                      if (editingMembership) {
-                      // Update existing membership
-                      const updatedMemberships = memberships.map(membership =>
-                        membership.id === editingMembership.id
-                        ? { 
-                          ...membership, 
-                          name: data.name ,
-                          category: data.category,
-                          position: data.position,
-                          membershipId: data.membershipId,
-                          // Keep the existing image if no new file is provided
-                        
-                          }
-                        : membership
-                      );
-                      setMemberships(updatedMemberships);
-                      } else {
-                      // Add new membership
-                      const newMembership: Membership = {
-                        id: Date.now(),
-                        name: data.name,
-                        category: data.category,
-                        position: data.position,
-                        membershipId: data.membershipId,
+
+
+
+
+
                     
-                      };
-                      setMemberships([...memberships, newMembership]);
-                      }
-                      setIsAddMembershipFormOpen(false);
-                      setEditingMembership(null);
-                    }}
-                    initialData={editingMembership ? {
-                      name: editingMembership.name || '',
-                      category: editingMembership.category || '',
-                      position: editingMembership.position || '',
-                      membershipId: editingMembership.membershipId || '',
-                      notifyFollowers: false
-                    } : undefined}
-                    isEditing={!!editingMembership}
-                    />
-                  )}
-                    
+
+               
 
                     {/* Awards and Achievements */}
                     <div className={`bg-white shadow-md rounded-xl p-6 ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
@@ -2749,28 +2823,12 @@ const [activeIndex, setActiveIndex] = useState(0);
                     />
 
 
-                      {/* tabs for the desktop */}
-                      <div className="hidden lg:block mt-6">
-                        <div className="border-b">
-                          <div className="flex space-x-8">
-                            {Desktoptabs.map((tab) => (
-                              <button
-                                key={tab}
-                                onClick={() => setActiveDesktopTab(tab.toLowerCase())}
-                                className={`px-4 py-4 text-sm font-medium border-b-2 whitespace-nowrap ${
-                                  activeDesktopTab === tab.toLowerCase()
-                                    ? 'border-blue-500 text-blue-500'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                                }`}
-                              >
-                                {tab}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                        
-                        {/* Tab content sections will be added here later */}
-                        <div className="mt-6 ">
+
+
+
+
+                            </div>
+                          )}
                           {(activeDesktopTab === 'activity' ) && (
                             <div className="space-y-1">
                               {/* Posts Section */}
