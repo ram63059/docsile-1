@@ -52,7 +52,6 @@ import ConferencePage from "@/components/conferences/ConferencesPage";
 import { JobsPage } from "@/components/jobs/JobsPage";
 import ReelPlayerPage from "@/components/videos/ReelplayerPage";
 import { JobPostingForm } from "@/components/jobPosting/JobPostingForm";
-import StoriesSection from "@/components/socialFeed/StoriesPopup";
 import EducationPage from "@/components/education/EducationPage";
 import Profile from "@/components/profile/Profile";
 // import Grpsafety from "@/pages/socketsafe/grpsafety";
@@ -137,8 +136,7 @@ export const router = createBrowserRouter([
   {path: "/job",element:<JobsPage/>},
   {path: "/videos",element:<ReelPlayerPage/>},
   {path: "/jobposting",element:<JobPostingForm/>},
-  {path: "/stories",element:<StoriesSection/>},
-  {path: "/addEducation",element:<EducationPage/>},
+    {path: "/addEducation",element:<EducationPage/>},
   {path: "/profile",element:<Profile/>},
   {path: "/verifying",element:<Verifying/>},
   {path: "/notifications",element:<NotificationsComponent />},

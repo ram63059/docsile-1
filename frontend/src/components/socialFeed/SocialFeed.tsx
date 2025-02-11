@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Header } from "./Header";
-import { Story } from "./Story";
 import { Post } from "./Post";
 import { Navigation } from "./Navigation";
 import question from "../../assets/icon/question.svg"
 import  { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import PostPopup from "./PostPopup";
+import { Stories } from "./Stories";
 
 interface VideoCardProps {
   videoImage: string;
@@ -41,40 +41,7 @@ interface ProfileData {
 }
 
 export const SocialFeed: React.FC = () => {
-  const [stories] = React.useState([
-    {
-      imageUrl: "https://cdn.builder.io/api/v1/image/assets/TEMP/6093fa78a5975dce5cacdd69f3dc074d8a56ed1eef07c3b930dd6fa85cb956fe?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-      name: "Your Story",
-    },
-    {
-      imageUrl: "https://cdn.builder.io/api/v1/image/assets/TEMP/ab6937e93ef1ee7bddbbbf77a39d383095f69738f6470ae4ea7d346c46d2b699?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-      name: "Dr. Mahesh",
-    },
-    {
-      imageUrl: "https://cdn.builder.io/api/v1/image/assets/TEMP/b527f110a2eb672ae9e0b0bead1abbd22bc9bc28130e5503cc3abf13d16bee60?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-      name: "Dr. Swathi",
-    },
-    {
-      imageUrl: "https://cdn.builder.io/api/v1/image/assets/TEMP/ab6937e93ef1ee7bddbbbf77a39d383095f69738f6470ae4ea7d346c46d2b699?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-      name: "Dr. Mahesh",
-    },
-    {
-      imageUrl: "https://cdn.builder.io/api/v1/image/assets/TEMP/e11116406a9a6bca6e5c1de6ab87ff490cd336445d55d98097f72dbe60e3241d?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-      name: "Dr. Swathi",
-    },
-    {
-      imageUrl: "https://cdn.builder.io/api/v1/image/assets/TEMP/b527f110a2eb672ae9e0b0bead1abbd22bc9bc28130e5503cc3abf13d16bee60?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-      name: "Dr. Swathi",
-    },
-    {
-      imageUrl: "https://cdn.builder.io/api/v1/image/assets/TEMP/ab6937e93ef1ee7bddbbbf77a39d383095f69738f6470ae4ea7d346c46d2b699?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-      name: "Dr. Mahesh",
-    },
-    {
-      imageUrl: "https://cdn.builder.io/api/v1/image/assets/TEMP/e11116406a9a6bca6e5c1de6ab87ff490cd336445d55d98097f72dbe60e3241d?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-      name: "Dr. Swathi",
-    },
-  ]);
+ 
 
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -147,6 +114,210 @@ export const SocialFeed: React.FC = () => {
       <div className="text-xs text-gray-800">{label}</div>
     </div>
   );
+
+  const stories = [
+
+    {
+      id: "1",
+      userId: "user1",
+      userName: "John Doe",
+      userAvatar: "https://randomuser.me/api/portraits/men/1.jpg",
+      uploadTime: "2025-02-11T15:42:00",
+      isViewed: false,
+      media: [
+        {
+          id: "media1",
+          type: "image" as const,
+          url: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131",
+          duration: 5, // in seconds
+        },
+        {
+          id: "media2",
+          type: "image" as const,
+          url: "https://images.unsplash.com/photo-1518791841217-8f162f1e1131",
+          duration: 10,
+        },
+      ],
+    },
+    {
+      id: "2",
+      userId: "user2",
+      userName: "Emma Smith",
+      userAvatar: "https://randomuser.me/api/portraits/women/2.jpg",
+      uploadTime: "2025-02-11T15:40:00",
+      isViewed: false,
+      media: [
+        {
+          id: "media3",
+          type: "image" as const,
+          url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
+          duration: 6,
+        },
+      ],
+    },
+    {
+      id: "3",
+      userId: "user3",
+      userName: "Michael Brown",
+      userAvatar: "https://randomuser.me/api/portraits/men/3.jpg",
+      uploadTime: "2025-02-11T10:42:00",
+      isViewed: false,
+      media: [
+        {
+          id: "media4",
+          type: "image" as const,
+          url: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1",
+          duration: 12,
+        },
+        {
+          id: "media5",
+          type: "image" as const,
+          url: "https://images.unsplash.com/photo-1546964124-0cce460f38ef",
+          duration: 5,
+        },
+      ],
+    },
+    {
+      id: "4",
+      userId: "user4",
+      userName: "Sophia Wilson",
+      userAvatar: "https://randomuser.me/api/portraits/women/4.jpg",
+      uploadTime: "2025-02-11T11:42:00",
+      isViewed: false,
+      media: [
+        {
+          id: "media6",
+          type: "image" as const,
+          url: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1",
+          duration: 5,
+        },
+        {
+          id: "media7",
+          type: "image" as const,
+          url: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1",
+          duration: 5,
+        },
+      ],
+    },
+    {
+      id: "5",
+      userId: "user5",
+      userName: "David Lee",
+      userAvatar: "https://randomuser.me/api/portraits/men/5.jpg",
+      uploadTime: "2025-02-11T12:42:00",
+      isViewed: false,
+      media: [
+        {
+          id: "media8",
+          type: "image" as const,
+          url: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1",
+          duration: 8,
+        },
+      ],
+    },
+    {
+      id: "6",
+      userId: "user6",
+      userName: "Olivia Wilson",
+      userAvatar: "https://randomuser.me/api/portraits/women/6.jpg",
+      uploadTime: "2025-02-11T15:45:00",
+      isViewed: false,
+      media: [
+        {
+          id: "media10",
+          type: "image" as const,
+          url: "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d",
+          duration: 5,
+        },
+        {
+          id: "media11",
+          type: "image" as const,
+          url: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1", // ✅ Working video URL
+          duration: 8,
+        },
+      ],
+    },
+    {
+      id: "7",
+      userId: "user7",
+      userName: "Liam Johnson",
+      userAvatar: "https://randomuser.me/api/portraits/men/7.jpg",
+      uploadTime: "2025-02-11T15:48:00",
+      isViewed: false,
+      media: [
+        {
+          id: "media12",
+          type: "image" as const,
+          url: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1", // ✅ Working video URL
+          duration: 10,
+        },
+      ],
+    },
+    {
+      id: "8",
+      userId: "user8",
+      userName: "Ava Martin",
+      userAvatar: "https://randomuser.me/api/portraits/women/8.jpg",
+      uploadTime: "25m ago",
+      isViewed: false,
+      media: [
+        {
+          id: "media13",
+          type: "image" as const,
+          url: "https://images.unsplash.com/photo-1521747116042-5a810fda9664",
+          duration: 6,
+        },
+      ],
+    },
+    {
+      id: "9",
+      userId: "user9",
+      userName: "Noah Anderson",
+      userAvatar: "https://randomuser.me/api/portraits/men/9.jpg",
+      uploadTime: "30m ago",
+      isViewed: false,
+      media: [
+        {
+          id: "media14",
+          type: "image" as const,
+          url: "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6",
+          duration: 5,
+        },
+        {
+          id: "media15",
+          type: "image" as const,
+          url: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1", // ✅ Working video URL
+          duration: 10,
+        },
+      ],
+    },
+    {
+      id: "10",
+      userId: "user10",
+      userName: "Sophia Garcia",
+      userAvatar: "https://randomuser.me/api/portraits/women/10.jpg",
+      uploadTime: "40m ago",
+      isViewed: false,
+      media: [
+        {
+          id: "media16",
+          type: "video" as const,
+          url: "https://www.w3schools.com/html/mov_bbb.mp4", // ✅ Working video URL
+          duration: 7,
+        },
+        {
+          id: "media17",
+          type: "image" as const,
+          url: "https://images.unsplash.com/photo-1519681393784-d120267933ba",
+          duration: 6,
+        },
+      ],
+    },
+    
+
+  ];
+
+  
 
   return (
     <div className="flex flex-col min-h-screen ">
@@ -228,13 +399,9 @@ export const SocialFeed: React.FC = () => {
               }}
               onScroll={handleStoriesScroll}
             >
-        {stories.map((story, index) => (
-          <Story
-            key={index}
-            {...story}
-            onClick={() => console.log(`Story ${index} clicked`)}
-          />
-        ))}
+    
+             <Stories stories ={stories} />
+
       </div>
 
             {/* Right Arrow */}

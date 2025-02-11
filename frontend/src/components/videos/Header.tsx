@@ -174,7 +174,7 @@ export const Header: React.FC<HeaderProps> = ({
           ))}
         </div>
 
-        <div className="flex items-center gap-4 ml-2">
+        <div className="flex items-center gap-1 ml-10 bg-buttonclr rounded-3xl">
           <button
             onClick={onNotification}
             className="p-1 hover:bg-gray-100 rounded-full flex shrink-0"

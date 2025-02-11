@@ -213,16 +213,17 @@ const ReelsFeed = () => {
     // Add more reels with the same structure
   ], []);
 
-  const toggleMute = () => {
-    const currentReel = reelsData[currentReelIndex];
-    const currentVideo = videoRefs.current[currentReel.id];
-
-    if (currentVideo) {
-      currentVideo.muted = !currentVideo.muted;
-      setIsMuted(currentVideo.muted);
-    }
-  };
-
+  const toggleMute = useCallback(() => {
+    const newMutedState = !isMuted;
+    setIsMuted(newMutedState);
+    
+    // Update all video elements with the new mute state
+    Object.values(videoRefs.current).forEach(video => {
+      if (video) {
+        video.muted = newMutedState;
+      }
+    });
+  }, [isMuted]);
       
   // Initialize state for each reel
   useEffect(() => {
@@ -242,6 +243,7 @@ const ReelsFeed = () => {
     setReelsState(initialState);
   }, [reelsData]);
 
+  
   const handleAddComment = (reelId: string, newComment: Omit<Comment, 'id'>) => {
     if (!commentText.trim()) return;
 
@@ -269,7 +271,7 @@ const ReelsFeed = () => {
         const firstReel = reelsData[0];
         const video = videoRefs.current[firstReel.id];
         if (video) {
-          video.muted = true;
+          video.muted = true; // Initial mute for autoplay
           console.log("Auto-playing first video");
           video.play().then(() => {
             setReelsState(prev => ({
@@ -277,14 +279,13 @@ const ReelsFeed = () => {
               [firstReel.id]: {
                 ...prev[firstReel.id],
                 isPlaying: true,
-              
               },
             }));
           }).catch(error => {
             console.error("Error auto-playing video:", error);
           });
         }
-      }, 1); // Small delay
+      }, 1);
     }
   }, [reelsData]);
 
@@ -429,7 +430,7 @@ const ReelsFeed = () => {
     return content;
   };
 
-  const handleReelChange = React.useCallback(async (newIndex: number) => {
+  const handleReelChange = useCallback(async (newIndex: number) => {
     // Pause current video
     const currentReel = reelsData[currentReelIndex];
     const currentVideo = videoRefs.current[currentReel.id];
@@ -441,6 +442,7 @@ const ReelsFeed = () => {
       }));
     }
     
+    // Pause all other videos
     Object.values(videoRefs.current).forEach(video => {
       if (video) video.pause();
     });
@@ -452,8 +454,6 @@ const ReelsFeed = () => {
         [id]: { ...prev[id], isPlaying: false }
       }));
     });
-
-
     
     // Play new video
     setCurrentReelIndex(newIndex);
@@ -461,6 +461,8 @@ const ReelsFeed = () => {
     const newVideo = videoRefs.current[newReel.id];
     if (newVideo) {
       try {
+        // Apply current mute state to new video before playing
+        newVideo.muted = isMuted;
         await newVideo.play();
         setReelsState(prev => ({
           ...prev,
@@ -470,7 +472,8 @@ const ReelsFeed = () => {
         console.error('Error playing video:', error);
       }
     }
-  }, [currentReelIndex, reelsData , reelsState]);
+  }, [currentReelIndex, reelsData, reelsState, isMuted]);
+
 useEffect(() => {
     return () => {
       isMounted.current = false;
@@ -481,6 +484,7 @@ useEffect(() => {
       });
     };
   }, []);
+
   useEffect(() => {
     // Function to handle wheel events with proper type
     const handleWheelEvent = (e: WheelEvent) => {
@@ -522,13 +526,13 @@ useEffect(() => {
   const wheelTimeout = useRef<NodeJS.Timeout | null>(null);
   const isScrolling = useRef(false);
 
+ 
   const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
     e.preventDefault();
     
     if (isScrolling.current) return;
     isScrolling.current = true;
 
-    // Clear existing timeout
     if (wheelTimeout.current) {
       clearTimeout(wheelTimeout.current);
     }
@@ -539,11 +543,12 @@ useEffect(() => {
       handleReelChange(currentReelIndex - 1);
     }
 
-    // Reset scrolling flag after delay
     wheelTimeout.current = setTimeout(() => {
       isScrolling.current = false;
-    }, 500); // Debounce time
+    }, 500);
   }, [currentReelIndex, reelsData.length, handleReelChange]);
+
+  
   const handleTouchStart = (event: React.TouchEvent) => {
     touchStartY.current = event.touches[0].clientY;
   };
@@ -610,6 +615,20 @@ useEffect(() => {
   const toggleComments = () => {
     setShowComments(!showComments);
   };
+ const [showInteraction, setShowInteraction] = useState(true);
+ const handleCloseComments = () => {
+  setShowComments(false); // Immediately close comments
+  setTimeout(() => {
+    setShowInteraction(true); // Delay showing interaction div
+  }, 400); // Adjust delay time as needed
+};
+
+useEffect(() => {
+  if (showComments) {
+    setShowInteraction(false); // Hide interaction while comments are open
+  }
+}, [showComments]);
+
 
   useEffect(() => {
     return () => {
@@ -843,15 +862,10 @@ useEffect(() => {
                     </div>
                   </div>
                 </div>
-
-                
-                  {/* Right Side Interaction Buttons */}
+                {showInteraction && !showComments && (
                   <div className={`${ 
-                    // On large screens, position outside the reel
-                    'lg:absolute lg:-right-12 lg:-bottom-32 lg:-translate-y-1/2 lg:flex lg:flex-col  lg:gap-4 ' +
-                    // On small screens, keep inside the reel
-                    ' absolute right-1 z-40 bottom-24 mb-2 flex flex-col gap-4' 
-                  }   ${showComments? 'lg:w-0 lg:hidden ' :'lg:w-11'}   `  }>
+                    'lg:absolute lg:-right-12 lg:-bottom-32 lg:-translate-y-1/2 lg:flex lg:flex-col  lg:gap-4 ' + ' absolute right-1 z-40 bottom-24 mb-2 flex flex-col gap-4' 
+                    }   ${showComments? 'lg:w-0 lg:hidden ' :'lg:w-11'}   `  }>
                     {/* Like button */}
                     <button 
                       className="flex flex-col items-center text-white"
@@ -871,7 +885,7 @@ useEffect(() => {
                     {/* Comment button */}
                     <button 
                       className="flex flex-col items-center text-white"
-                      onClick={toggleComments}
+                      onClick={() => setShowComments(true)}
                     >
                       <div className="p-2 rounded-full hover:bg-black/40 transition-colors lg:hover:bg-gray-100">
                         <img src={comment} alt="" className="w-8" />
@@ -902,6 +916,14 @@ useEffect(() => {
                       </div>
                     </button>
                   </div>
+             )}
+               
+              
+
+                        
+
+
+               
               </div>
               
             ))}
@@ -919,7 +941,7 @@ useEffect(() => {
           >
             <div className="h-full flex flex-col">
               <div className="relative p-4 flex items-center justify-between">
-                <button onClick={toggleComments} className='top-8 right-3 absolute'>
+                <button onClick={handleCloseComments} className='top-8 right-3 absolute'>
                   <X className="w-6 h-6" />
                 </button>
               </div>

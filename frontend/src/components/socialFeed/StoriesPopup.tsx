@@ -1,226 +1,393 @@
-import  { useState, useEffect,useCallback  } from 'react';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { IoClose } from 'react-icons/io5';
+import liked from "../../assets/icon/liked.svg"
+import like from "../../assets/icon/like1.svg";
+import { BsPlayFill } from 'react-icons/bs';
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Story {
-  id: number;
-  username: string;
-  avatarUrl: string;
-  imageUrl: string;
-  viewed: boolean;
+  id: string;
+  userId: string;
+  userName: string;
+  userAvatar: string;
+  media: StoryMedia[];
+  uploadTime: string;
+  isViewed: boolean;
+  isLiked?: boolean;
+  replies?: string[];
 }
 
-const StoriesSection = () => {
-  const [activeStoryIndex, setActiveStoryIndex] = useState<number | null>(null);
-  const [progress, setProgress] = useState<number>(0);
-  const [isPlaying, setIsPlaying] = useState(true);
+interface StoryMedia {
+  id: string;
+  type: 'image' | 'video';
+  url: string;
+  duration: number;
+}
 
-  const [stories] = useState<Story[]>([
-    {
-      id: 1,
-      username: "Dr. Smith",
-      avatarUrl: "/api/placeholder/40/40",
-      imageUrl: "/api/placeholder/400/600",
-      viewed: false
-    },
-    {
-      id: 2,
-      username: "Dr. Johnson",
-      avatarUrl: "/api/placeholder/40/40",
-      imageUrl: "/api/placeholder/400/600",
-      viewed: false
-    },
-    {
-      id: 3,
-      username: "Dr. Williams",
-      avatarUrl: "/api/placeholder/40/40",
-      imageUrl: "/api/placeholder/400/600",
-      viewed: true
-    },
-    {
-      id: 4,
-      username: "Dr. Brown",
-      avatarUrl: "/api/placeholder/40/40",
-      imageUrl: "/api/placeholder/400/600",
-      viewed: false
+interface StoriesPopupProps {
+  stories: Story[];
+  initialStoryIndex: number;
+  onClose: () => void;
+  onStoryView: (storyId: string) => void;
+  onLikeStory: (storyId: string) => void;
+}
+
+export const StoriesPopup: React.FC<StoriesPopupProps> = ({
+  stories,
+  initialStoryIndex,
+  onClose,
+  onStoryView,
+  onLikeStory,
+}) => {
+  const [currentStoryIndex, setCurrentStoryIndex] = useState(initialStoryIndex);
+  const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [replyText, setReplyText] = useState('');
+  const [progress, setProgress] = useState(0);
+  const [showMoreOptions, setShowMoreOptions] = useState(false);
+  
+  const progressInterval = useRef<NodeJS.Timeout | null>(null);
+  const currentStory = stories[currentStoryIndex];
+  const currentMedia = currentStory?.media[currentMediaIndex];
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+const [storyReplies, setStoryReplies] = useState<{ [key: string]: string[] }>({});
+
+// Function to handle sending replies
+const handleSendReply = () => {
+  if (replyText.trim() !== '') {
+    setStoryReplies(prev => ({
+      ...prev,
+      [currentStory.id]: [...(prev[currentStory.id] || []), replyText],
+    }));
+    setReplyText(''); // Clear the input after sending
+  }
+};
+
+  
+  useEffect(() => {
+    startProgress();
+    if (!currentStory.isViewed) {
+      onStoryView(currentStory.id);
     }
-  ]);
+    return () => {
+      if (progressInterval.current) {
+        clearInterval(progressInterval.current);
+      }
+    };
+  }, [currentStoryIndex, currentMediaIndex, isPaused]);
 
-  const handleNextStory = useCallback(() => {
-    if (activeStoryIndex !== null && activeStoryIndex < stories.length - 1) {
-      setActiveStoryIndex(activeStoryIndex + 1);
-      setProgress(0);
-    } else if (activeStoryIndex === stories.length - 1) {
-      setActiveStoryIndex(null);
+  const startProgress = () => {
+    if (progressInterval.current) {
+      clearInterval(progressInterval.current);
     }
-  }, [activeStoryIndex, stories.length]);
-
-  const handlePreviousStory = () => {
-    if (activeStoryIndex !== null && activeStoryIndex > 0) {
-      setActiveStoryIndex(activeStoryIndex - 1);
+    
+    if (!isPaused) {
       setProgress(0);
+      const duration = currentMedia.duration * 1000;
+      const interval = 100;
+      let elapsed = 0;
+      
+      progressInterval.current = setInterval(() => {
+        elapsed += interval;
+        const newProgress = (elapsed / duration) * 100;
+        
+        if (newProgress >= 100) {
+          goToNextMedia();
+        } else {
+          setProgress(newProgress);
+        }
+      }, interval);
     }
   };
 
   useEffect(() => {
-    let progressInterval: NodeJS.Timeout;
-    if (activeStoryIndex !== null && isPlaying) {
-      progressInterval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 100) {
-            handleNextStory();
-            return 0;
-          }
-          return prev + 1;
-        });
-      }, 30);
+    const currentStory = stories[currentStoryIndex];
+    // If there are existing replies for this story, keep the last reply text
+    const existingReplies = storyReplies[currentStory.id] || [];
+    if (existingReplies.length > 0) {
+      setReplyText(existingReplies[existingReplies.length - 1]);
+    } else {
+      setReplyText('');
     }
-    return () => clearInterval(progressInterval);
-  }, [activeStoryIndex, isPlaying, handleNextStory]);
+  }, [currentStoryIndex, stories, storyReplies]);
 
-  // Stories list component
-  const StoriesList = () => (
-    <div className="relative">
-      <div 
-        className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
-        {stories.map((story, index) => (
-          <div 
-            key={story.id}
-            className="flex flex-col items-center min-w-[80px]"
-            onClick={() => {
-              setActiveStoryIndex(index);
-              setProgress(0);
-              setIsPlaying(true);
-            }}
-          >
-            <div className={`relative w-16 h-16 rounded-full mb-2 cursor-pointer
-              ${story.viewed ? 'ring-gray-300' : 'ring-blue-500'} ring-2 p-1`}>
-              <img
-                src={story.avatarUrl}
-                alt={story.username}
-                className="w-full h-full rounded-full object-cover"
-              />
-            </div>
-            <span className="text-sm text-gray-700 truncate w-full text-center">
-              {story.username}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+  
 
-  const StoryViewer = () => {
-    if (activeStoryIndex === null) return null;
+  const goToNextMedia = () => {
+    if (currentMediaIndex < currentStory.media.length - 1) {
+      setCurrentMediaIndex(prev => prev + 1);
+    } else if (currentStoryIndex < stories.length - 1) {
+      setCurrentStoryIndex(prev => prev + 1);
+      setCurrentMediaIndex(0);
+    } else {
+      onClose();
+    }
+  };
+
+  const goToPreviousMedia = () => {
+    if (currentMediaIndex > 0) {
+      setCurrentMediaIndex(prev => prev - 1);
+    } else if (currentStoryIndex > 0) {
+      setCurrentStoryIndex(prev => prev - 1);
+      setCurrentMediaIndex(stories[currentStoryIndex - 1].media.length - 1);
+    }
+  };
+
+  const togglePause = () => {
+    setShowMoreOptions(false);
+    setIsPaused(!isPaused);
+    if (videoRef.current) {
+      if (isPaused) {
+        videoRef.current.play();
+      } else {
+        videoRef.current.pause();
+      }
+    }
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'ArrowLeft') {
+      goToPreviousMedia();
+    } else if (e.key === 'ArrowRight') {
+      goToNextMedia();
+    } else if (e.key === 'Escape') {
+      onClose();
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [currentStoryIndex, currentMediaIndex]);
+
+  const handleMoreOptionsClick = () => {
+    setShowMoreOptions(!showMoreOptions);
+    setIsPaused(true);
+  };
+
+
+  const TimeAgo:React.FC<{ timestamp: string }>  = ({ timestamp }) => {
+    const getTimeAgo = (timestamp :string) => {
+      const now = new Date();
+      const uploadTime = new Date(timestamp);
+      const diff = now.getTime() - uploadTime.getTime();
+
+      
+
+   
+      const minutes = Math.floor(diff / (1000 * 60));
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
     
+      
+      if (days > 0) {
+        return `${days}d ago`;
+      }
+      if (hours > 0) {
+        return `${hours}h ago`;
+      }
+      if (minutes > 0) {
+        return `${minutes}m ago`;
+      }
+      return 'Just now';
+    };
+  
     return (
-      <div 
-        className="fixed inset-0 bg-black z-50 flex items-center justify-center"
-        onClick={() => setIsPlaying(!isPlaying)}
-      >
-        <div className="relative w-full h-full flex items-center justify-center">
-          <div className="relative w-full max-w-md">
-            {/* Progress Bar */}
-            <div className="absolute top-4 left-0 right-0 px-4 z-10">
-              <div className="h-1 w-full bg-gray-600/50 rounded-full">
-                <div 
-                  className="h-full bg-white rounded-full transition-all duration-300 ease-linear"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Previous Story Preview */}
-            {activeStoryIndex > 0 && (
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-48 h-96 -translate-x-56 opacity-50 transition-all duration-300">
-                <img
-                  src={stories[activeStoryIndex - 1].imageUrl}
-                  alt="Previous"
-                  className="w-full h-full object-cover rounded-lg"
-                />
-              </div>
-            )}
-
-            {/* Current Story */}
-            <div className="relative aspect-[9/16] bg-black rounded-lg overflow-hidden">
-              <img
-                src={stories[activeStoryIndex].imageUrl}
-                alt="Current Story"
-                className="w-full h-full object-contain"
-              />
-
-              {/* User Info */}
-              <div className="absolute top-8 left-4 flex items-center space-x-2">
-                <img
-                  src={stories[activeStoryIndex].avatarUrl}
-                  alt={stories[activeStoryIndex].username}
-                  className="w-8 h-8 rounded-full"
-                />
-                <span className="text-white font-semibold">
-                  {stories[activeStoryIndex].username}
-                </span>
-              </div>
-
-              {/* Close Button */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setActiveStoryIndex(null);
-                }}
-                className="absolute top-8 right-4 text-white"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-
-            {/* Next Story Preview */}
-            {activeStoryIndex < stories.length - 1 && (
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-48 h-96 translate-x-56 opacity-50 transition-all duration-300">
-                <img
-                  src={stories[activeStoryIndex + 1].imageUrl}
-                  alt="Next"
-                  className="w-full h-full object-cover rounded-lg"
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Navigation Buttons */}
-          {activeStoryIndex > 0 && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handlePreviousStory();
-              }}
-              className="absolute left-8 top-1/2 -translate-y-1/2 text-white p-2"
-            >
-              <ChevronLeft className="w-8 h-8" />
-            </button>
-          )}
-
-          {activeStoryIndex < stories.length - 1 && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleNextStory();
-              }}
-              className="absolute right-8 top-1/2 -translate-y-1/2 text-white p-2"
-            >
-              <ChevronRight className="w-8 h-8" />
-            </button>
-          )}
-        </div>
-      </div>
+      <p className="text-white text-sm opacity-75">
+        {getTimeAgo(timestamp)}
+      </p>
     );
   };
 
+
+  
   return (
-    <div className="relative w-full max-w-4xl mx-auto p-4">
-      <StoriesList />
-      <StoryViewer />
+    <div className="fixed inset-0 bg-black rouned-lg bg-opacity-90 z-50 flex items-center justify-center">
+      {/* Close button */}
+      <button
+        onClick={onClose}
+        className="absolute lg:top-4 top-5  lg:right-4 right-0 text-white z-10 p-2"
+      >
+        <IoClose size={28} />
+      </button>
+
+      {/* Previous Story Preview */}
+      {currentStoryIndex > 0 && (
+        <div className="absolute left-36 top-1/2 -translate-y-1/2 h-[60vh] w-[200px]  transform scale-75 transition-all duration-300">
+          <img
+            src={stories[currentStoryIndex - 1].media[0].url}
+            alt="Previous story"
+            className="w-full h-full object-cover rounded-lg opacity-50"
+          />
+          <img src={stories[currentStoryIndex - 1].userAvatar} alt="" className='rounded-full w-20 h-20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-100 border-2 border-white' />
+
+          <button
+            onClick={()=>{
+               goToPreviousMedia();
+               setShowMoreOptions(false);
+               setIsPaused(false);
+               } }
+            className="absolute left-96 top-1/2 -translate-y-1/2 text-white p-2"
+          >
+             <ChevronLeft className="w-12 h-12 text-gray-600 bg-white/80 rounded-full opacity-60 " />
+          </button>
+        </div>
+      )}
+
+      {/* Next Story Preview */}
+      {currentStoryIndex < stories.length - 1 && (
+        <div className="absolute right-36 top-1/2 -translate-y-1/2 h-[60vh] w-[200px]  transform scale-75 transition-all duration-300">
+          <img
+            src={stories[currentStoryIndex + 1].media[0].url}
+            alt="Next story"
+            className="w-full h-full object-cover rounded-lg opacity-50"
+          />
+          <img src={stories[currentStoryIndex + 1].userAvatar} alt="" className='rounded-full w-20 h-20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-100 border-2 border-white' />
+          <button
+            onClick={()=>{
+               goToNextMedia();
+               setShowMoreOptions(false);
+               setIsPaused(false);
+
+               } }
+            className="absolute right-96 top-1/2 -translate-y-1/2 text-white p-2"
+          >
+           <ChevronRight className="w-12 h-12 text-gray-600 bg-white/80 rounded-full opacity-60 " />
+          </button>
+        </div>
+      )}
+
+      {/* Main content */}
+      <div className="relative w-full lg:max-w-[400px]  h-[98vh] rounded-lg">
+        {/* Story header */}
+        <div className="absolute top-0 left-0 right-0 p-4 z-10 flex items-center justify-between">
+          <div className="flex items-center">
+            <img
+              src={currentStory.userAvatar}
+              alt={currentStory.userName}
+              className="w-8 h-8 rounded-full mr-2"
+            />
+            <div>
+              <p className="text-white font-semibold">{currentStory.userName}</p>
+              <p className="text-white text-sm opacity-75"><TimeAgo timestamp={currentStory.uploadTime} /></p>
+            </div>
+          </div>
+          
+          <div className="relative">
+            <button
+              onClick={handleMoreOptionsClick}
+              className="text-white p-2"
+            >
+              <BsThreeDotsVertical size={20} className='absolute lg:right-2 lg:top-4 right-6 top-0' />
+            </button>
+            
+            {showMoreOptions && (
+              <div className="absolute right-0 mt-2 w-28 backdrop-blur-lg bg-opacity-70 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                <div className="py-1" role="menu">
+                  <button
+                    className="block px-4 py-2  text-sm text-red-700 hover:bg-gray-100 w-full text-left"
+                    role="menuitem"
+                    onClick={() => {/* Handle Report */}}
+                  >
+                    Report
+                  </button>
+                  <button
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                    role="menuitem"
+                    onClick={() => {/* Handle Mute */}}
+                  >
+                    Mute
+                  </button>
+                  <button
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                    role="menuitem"
+                    onClick={() => {/* Handle Unfollow */}}
+                  >
+                    Unfollow
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Media content */}
+        <div
+          className="w-full h-full flex items-center justify-center cursor-pointer bg-black"
+          onClick={togglePause}
+        >
+          {currentMedia.type === 'image' ? (
+            <img
+              src={currentMedia.url}
+              alt=""
+              className="h-full w-full object-contain"
+            />
+          ) : (
+            <video
+              ref={videoRef}
+              src={currentMedia.url}
+              autoPlay={!isPaused}
+              loop={false}
+              muted
+              playsInline
+              className="h-full w-full object-contain"
+              style={{ backgroundColor: 'black' }}
+            />
+          )}
+          {isPaused && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+              <BsPlayFill size={48} className="text-white" />
+            </div>
+          )}
+        </div>
+
+        {/* Progress bars */}
+        <div className="absolute top-0 left-0 right-0 flex gap-1 p-2">
+          {currentStory.media.map((media, index) => (
+            <div
+              key={media.id}
+              className="flex-1 h-1 bg-white bg-opacity-30 rounded-full overflow-hidden"
+            >
+              <div
+                className="h-full bg-white transition-all duration-100 ease-linear"
+                style={{
+                  width: `${index === currentMediaIndex ? progress : index < currentMediaIndex ? '100' : '0'}%`
+                }}
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Reply section */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 flex items-center gap-2 bg-black bg-opacity-50">
+        <input
+              type="text"
+              value={replyText}
+              onChange={(e) => setReplyText(e.target.value)}
+              placeholder="Reply to story..."
+              className="flex-1 bg-gray-100 bg-opacity-10 border border-white rounded-full px-4 py-1.5 text-white placeholder-white placeholder-opacity-75 focus:outline-none"
+            />
+            {replyText.trim() && (
+              <button onClick={handleSendReply} className="text-white p-2">
+                Send
+              </button>
+            )}
+          <button
+            onClick={() => onLikeStory(currentStory.id)}
+            className="text-white p-2"
+          >
+            {currentStory.isLiked ? (
+              <img src={liked} alt="" className='w-6 h-6' />
+            ) : (
+              <img src={like} alt="" className='w-6 h-6' />
+            )}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
-
-export default StoriesSection;
