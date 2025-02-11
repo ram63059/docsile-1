@@ -175,25 +175,25 @@ export const Stories: React.FC<StoriesProps> = ({ stories }) => {
   };
 
   // Function to add a new story (you would call this from your story creation modal)
-  const handleAddNewStory = (mediaUrl: string) => {
-    const newStory: MyStoryData = {
-      id: `my-story-${Date.now()}`,
-      userId: profileData.userId,
-      userName: profileData.name,
-      userAvatar: profileData.avatar,
-      uploadTime: new Date().toISOString(),
-      isViewed: false,
-      media: [
-        {
-          id: `my-media-${Date.now()}`,
-          type: "image",
-          url: mediaUrl,
-          duration: 5,
-        },
-      ],
-    };
-    setMyStory(newStory);
-  };
+  // const handleAddNewStory = (mediaUrl: string) => {
+  //   const newStory: MyStoryData = {
+  //     id: `my-story-${Date.now()}`,
+  //     userId: profileData.userId,
+  //     userName: profileData.name,
+  //     userAvatar: profileData.avatar,
+  //     uploadTime: new Date().toISOString(),
+  //     isViewed: false,
+  //     media: [
+  //       {
+  //         id: `my-media-${Date.now()}`,
+  //         type: "image",
+  //         url: mediaUrl,
+  //         duration: 5,
+  //       },
+  //     ],
+  //   };
+  //   setMyStory(newStory);
+  // };
   
   return (
     <>

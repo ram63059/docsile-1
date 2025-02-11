@@ -17,7 +17,9 @@ const DropDownWithSearch: React.FC<DropDownWithSearchProps> = ({ place,  onSelec
 
  
   
-  
+  useEffect(() => {
+    setOptions(dropDownOptions);
+  }, [dropDownOptions]);
 
   // Handle search and filter based on search term
   useEffect(() => {
@@ -51,16 +53,14 @@ const DropDownWithSearch: React.FC<DropDownWithSearchProps> = ({ place,  onSelec
 
   return (
     <div className="relative mt-5 ">
-        <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-            Organization
-          </label>
+        
       <input
         type="text"
         value={selectedOption || searchTerm}
         onChange={handleInputChange}
         onFocus={() => setIsDropdownOpen(!!filteredOptions.length)} // Open dropdown on focus if there are filtered options
-        className="mt-1 p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:border-fillc  focus:outline-none"
-        placeholder={place}
+        className="mt-1 p-2 block w-full text-gray-800 font-light  rounded-xl border bg-buttonclr border-gray-300 shadow-sm focus:border-fillc  focus:outline-none"
+        placeholder={place }
       />
 
       {/* Dropdown list */}

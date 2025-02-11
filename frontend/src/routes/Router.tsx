@@ -58,6 +58,10 @@ import Profile from "@/components/profile/Profile";
 import QuestionDetail from "../pages/QuestionDetail";
 import Verifying from "@/pages/Verifying";
 import NotificationsComponent from "@/components/notifications/NotificationPage";
+import SignupPage from "@/components/loginpages/SignUpPage1";
+import SignupPage2 from "@/components/loginpages/SIgnUpPage2";
+import SignupPage3 from "@/components/loginpages/SignUpPage3";
+import SignupPage4 from "@/components/loginpages/SignUpPage4";
 // import { ReelsPlayer } from "@/components/videos/reels/ReelsPlayer";
 
 
@@ -140,6 +144,10 @@ export const router = createBrowserRouter([
   {path: "/profile",element:<Profile/>},
   {path: "/verifying",element:<Verifying/>},
   {path: "/notifications",element:<NotificationsComponent />},
+  {path: "/signup1",element:<SignupPage />},
+  {path: "/signup2",element:<SignupPage2 />},
+  {path: "/signup3",element:<SignupPage3 />},
+  {path: "/signup4",element:<SignupPage4 />},
   {
     path: "/question/:questionId",
     element: <QuestionDetail />,
