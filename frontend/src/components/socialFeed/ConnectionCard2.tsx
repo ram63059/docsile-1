@@ -92,14 +92,14 @@ const ConnectionCard2: React.FC = () => {
               <button className="absolute right-1 top-1 bg-white rounded-full p-1 hover:bg-gray-100 transition-colors">
                 <X className="w-3 h-3 text-gray-400" />
               </button>
-              <div className="w-40 text-center flex flex-col items-center">
+              <div className="w-40  flex flex-col items-center">
                 <img src={person.avatar} alt={person.name} className="w-16 h-16 rounded-full" />
                 <div className="text-xs font-medium pt-2 line-clamp-1">{person.name}</div>
-                <div className="text-fontlit text-gray-500 line-clamp-2">{person.title}</div>
-                <div className="flex justify-center items-center   mb-2 pt-2">
-                    <div className="w-5 h-5 rounded-full "><img src={person.avatar} alt="" /></div>
-                    <div className="text-fontlit text-gray-400  line-clamp-2 ">
-                        {person.mutualConnection} and {person.mutualCount} mutual connections
+                <div className="text-fontlit text-center text-gray-500 line-clamp-2">{person.title}</div>
+                <div className="flex justify-center px-2   mb-2 pt-2">
+                
+                    <div className="text-fontlit flex  text-center text-gray-400  gap-0  line-clamp-2 ">
+                       <img src={person.avatar} className='w-5 h-5 mr-1 ' alt="" />{person.mutualConnection} and {person.mutualCount} mutual connections
                     </div>
                 </div>
                 <button className="py-1.5 px-3 text-xs text-white bg-maincl rounded-3xl transition-colors mt-2">

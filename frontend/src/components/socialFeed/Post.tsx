@@ -201,6 +201,7 @@ export const Post: React.FC<PostProps> = ({
   onRepost,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpand, setIsExpand] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showArrows, setShowArrows] = useState(false);
   const [showComments, setShowComments] = useState(false);
@@ -456,17 +457,17 @@ export const Post: React.FC<PostProps> = ({
           {/* Content section */}
           <div className="mt-4">
             <h4 className="text-sm font-medium text-neutral-700">{title}</h4>
-            <p className={`mt-1 text-sm font-light text-neutral-500 ${isExpanded ? "" : "line-clamp-1"}`}>
+            <p className={`mt-1 text-sm font-light text-neutral-500 ${isExpand ? "" : "line-clamp-2"}`}>
               {content}
             </p>
             {content.length > 150 && (
-              <button onClick={() => setIsExpanded(!isExpanded)} className="mt-1 text-xs text-slate-500 hover:text-slate-700 pb-4">
-                {isExpanded ? "Show less" : "Show more"}
+              <button onClick={()=>setIsExpand(!isExpand)}  className="mt-1 text-xs text-slate-500 hover:text-slate-700 pb-4">
+                {isExpand ? "Show less" : "Show more"}
               </button>
             )}
           </div>
           {/* Image slider section */}
-          <div  className="relative w-full mb-4 group" onMouseEnter={() => setShowArrows(true)} onMouseLeave={() => setShowArrows(false)}>
+          <div onClick={() => setIsExpanded(!isExpanded)}  className="relative w-full mb-4 group" onMouseEnter={() => setShowArrows(true)} onMouseLeave={() => setShowArrows(false)}>
             <div  className="absolute top-2 right-4 z-10 bg-gray-400 bg-opacity-50 text-white text-xs py-1 px-2 rounded-full">
               {currentIndex + 1}/{images.length}
             </div>
