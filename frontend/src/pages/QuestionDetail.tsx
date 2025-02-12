@@ -10,9 +10,15 @@ import share from "../assets/icon/share.svg";
 import like from "../assets/icon/like1.svg";
 import liked from "../assets/icon/liked.svg";
 import more1 from "../assets/icon/more1.svg";
+import more2 from "../assets/icon/more2.svg"
 import comment from "../assets/icon/comment1.svg";
 import { Header } from '@/components/questionFeed/Header';
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from 'react-icons/io';
+import { ImageIcon, X } from 'lucide-react';
+import sharev from "../assets/icon/sharev.svg";
+import hide from "../assets/icon/hide.svg";
+import notinterested from "../assets/icon/notintrested.svg";
+
 
 interface Author {
   name: string;
@@ -41,6 +47,8 @@ interface Answer {
   showReplies?: boolean;
   isLiked?: boolean;
   isDisliked?: boolean;
+  ansimages: string[];
+  
 }
 
 interface QuestionStats {
@@ -77,7 +85,31 @@ const QuestionDetail: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [questionData, setQuestionData] = useState<QuestionData | null>(null);
   const [relatedQuestions, setRelatedQuestions] = useState<RelatedQuestion[]>([]);
- 
+
+  const [ansimages, setAnsimages] = useState<string[]>([]);
+  const [popupImage, setPopupImage] = useState<string | null>(null);
+  const moreButtonRef = useRef<HTMLButtonElement>(null);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
+  const moreMenuRef = useRef<HTMLDivElement>(null);
+
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const uploadedFiles = Array.from(event.target.files);
+      const imageUrls = uploadedFiles.map((file) => URL.createObjectURL(file));
+      setAnsimages((prev) => [...prev, ...imageUrls]);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setAnsimages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const toggleMore = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event from bubbling up
+    setIsMoreOpen(!isMoreOpen);
+  };
+
 
   useEffect(() => {
     const fetchQuestionData = async () => {
@@ -163,7 +195,8 @@ const QuestionDetail: React.FC = () => {
       likes: 0,
       dislikes: 0,
       replies: [],
-      showReplies: false
+      showReplies: false,
+      ansimages,
     };
 
     setQuestionData(prev => {
@@ -177,6 +210,7 @@ const QuestionDetail: React.FC = () => {
         }
       };
     });
+    setAnsimages([]);
 
     setAnswerText('');
   };
@@ -517,22 +551,73 @@ const QuestionDetail: React.FC = () => {
                     <span className="text-xs text-[#9CA3AF]">{questionData.author.timeAgo}</span>
                   </div>
                 </div>
-                <div className="flex ">
+                <div className="flex  relative">
                   <button 
                     onClick={() => setIsSaved(!isSaved)}
                     className="hover:bg-gray-50 p-2 rounded-full"
                   >
                     <img src={isSaved ? save2 : save1} alt="Save" className="w-5 h-5" />
                   </button>
-                  <button className="hover:bg-gray-50 p-1 rounded-full">
-                    <img src={more1} alt="Share" className="w-5 h-5" />
-                  </button>
+                  <button 
+                  ref={moreButtonRef}
+                 onClick={(e) => toggleMore(e)} 
+                 aria-label="More options" 
+                 className="p-2 hover:bg-slate-100 rounded-full  transition-colors"
+              >
+                <img src={isMoreOpen?more2:more1} className="w-6 h-6" alt="" />
+              </button>
+              {isMoreOpen && (
+                <div
+                  ref={moreMenuRef}
+                  onClick={(e) => e.stopPropagation()}
+                  className="rounded-md shadow-md flex flex-col w-40   text-xs p-3 z-20 absolute top-7 right-0 mt-2"
+                  style={{
+                    background: "rgba(255, 255, 255, 0.3  )",
+                    backdropFilter: "blur(60px)",
+                    WebkitBackdropFilter: "blur(60px)",
+                    border: "1px solid rgba(255, 255, 255, 0.3)",
+                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"
+                  }}
+                >
+                  <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded">
+                    <img src={sharev} alt="Share Via" className="w-4 h-4" />
+                    <p>Share Via</p>
+                  </div>
+                  <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded">
+                    <img src={hide} alt="Hide" className="w-4 h-4" />
+                    <p>Hide</p>
+                  </div>
+                  <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded">
+                    <img src={notinterested} alt="Not Interested" className="w-4 h-4" />
+                    <p>Not Interested</p>
+                  </div>
+                  <hr className="my-2" />
+                  <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded">
+                    <p>Follow Account</p>
+                  </div>
+                  <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded text-red-500">
+                    <p>Report</p>
+                  </div>
+                  <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded text-red-500">
+                    <p>Block</p>
+                  </div>
+                </div>
+              )}
+
+
+
+
+
+
                 </div>
               </div>
 
               {/* Question Content */}
               <h2 className="text-sm font-medium mt-4 text-[#1F2937]">
                 {questionData.title}
+              </h2>
+              <h2 className="text-sm   mt-2 text-gray-600">
+                {questionData.content}
               </h2>
 
 
@@ -545,13 +630,13 @@ const QuestionDetail: React.FC = () => {
               {/* Question Images */}
     
 
-<div className="relative w-full mb-4 group mt-2" onMouseEnter={() => setShowArrows(true)} onMouseLeave={() => setShowArrows(false)}>
+        <div className="relative w-full mb-4 group mt-2 lg:w-[60%] flex flex-col items-center mx-auto justify-center"  onMouseEnter={() => setShowArrows(true)} onMouseLeave={() => setShowArrows(false)}>
           <div className="absolute top-2 right-4 z-10 bg-gray-400 bg-opacity-50 text-white text-xs py-1 px-2 rounded-full">
             {currentIndex + 1}/{questionData.images.length }
           </div>
           {showArrows && currentIndex > 0 && (
             <button
-              className="absolute top-1/2 left-2 z-10 transform -translate-y-1/2 bg-gray bg-opacity-50 text-white p-2 rounded-full group-hover:opacity-80"
+              className="absolute top-1/2 left-1 z-10 transform -translate-y-1/2 bg-gray bg-opacity-50 text-white p-2 rounded-full group-hover:opacity-80"
               onClick={handlePrev}
             >
               <IoIosArrowDropleftCircle size={30} className='text-yellow-600 opacity-80' />
@@ -559,17 +644,17 @@ const QuestionDetail: React.FC = () => {
           )}
           {showArrows && currentIndex < questionData.images.length  - 1 && (
             <button
-              className="absolute top-1/2 right-2 z-10 transform -translate-y-1/2 bg-gray bg-opacity-50 text-white p-2 rounded-full group-hover:opacity-80"
+              className="absolute top-1/2 right-1 z-10 transform -translate-y-1/2 bg-gray bg-opacity-50 text-white p-2 rounded-full group-hover:opacity-80"
               onClick={handleNext}
             >
               <IoIosArrowDroprightCircle size={30} className='text-yellow-600 opacity-80' />
             </button>
           )}
           <div className="relative overflow-hidden" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
-            <div className="flex transition-transform duration-300" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
+            <div className="flex transition-transform  duration-300" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
               {questionData.images.map((image, index) => (
-                <div key={index} className="flex-none w-full lg:h-[440px] rounded-lg bg-gray-200">
-                  <img src={image} alt={`Post image ${index + 1}`} className="w-full h-full object-cover rounded-lg" />
+                <div key={index} className="flex-none w-full   lg:h-[400px] rounded-lg bg-gray-200">
+                  <img src={image} alt={`Post image ${index + 1}`} className="w-full h-full object-contain  rounded-lg" />
                 </div>
               ))}
             </div>
@@ -631,24 +716,64 @@ const QuestionDetail: React.FC = () => {
                     alt="Your avatar"
                     className="w-8 h-8 rounded-full"
                   />
-                  <div className="flex-1 flex gap-2">
-                    <input
-                      type="text"
-                      value={answerText}
-                      onChange={(e) => setAnswerText(e.target.value)}
-                      placeholder="Write your answer..."
-                      className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm outline-none"
-                    />
-                    <button
-                      onClick={handleAnswerSubmit}
-                      disabled={!answerText.trim()}
-                      className={`px-3 py-0.5 bg-maincl text-white rounded-full text-sm font-medium ${
-                        !answerText.trim() ? 'opacity-50 cursor-not-allowed' : 'hover:bg-fillc'
-                      }`}
-                    >
-                      Answer
-                    </button>
+                   <div className="flex items-center w-full gap-2 border bg-gray-100 rounded-lg px-4 py-2 relative">
+                  <input
+                    type="text"
+                    value={answerText}
+                    onChange={(e) => setAnswerText(e.target.value)}
+                    placeholder="Write your answer..."
+                    className="flex-1 bg-transparent text-sm outline-none"
+                  />  
+          {ansimages.length > 0 && (
+                  <div className="flex gap-2 mt-2">
+                    {ansimages.map((image, index) => (
+                      <div key={index} className="relative w-16 h-16">
+                        <img
+                          src={image}
+                          alt={`Uploaded ${index}`}
+                          className="w-full h-full object-cover rounded-md"
+                        />
+                        <button
+                          onClick={() => removeImage(index)}
+                          className="absolute top-0 right-0 bg-gray-500 text-white rounded-full p-1 text-xs"
+                        >
+                          <X size={12} />
+                        </button>
+                      </div>
+                    ))}
                   </div>
+                )}
+
+
+        {/* Image Upload Icon */}
+           <label htmlFor="image-upload" className="cursor-pointer">
+          <ImageIcon className="w-5 h-5 text-fillc hover:text-gray-700" />
+                    <input
+                      type="file"
+                      id="image-upload"
+                      accept="image/*"
+                      multiple
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                  </label>
+
+                    {/* Image Previews */}
+              
+                  {/* Submit Button */}
+                
+                </div>
+                <button
+                    onClick={handleAnswerSubmit}
+                    disabled={!answerText.trim() && ansimages.length === 0}
+                    className={`px-3 py-0.5 bg-maincl text-white rounded-full text-sm font-medium ${
+                      !answerText.trim() && ansimages.length === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-fillc"
+                    }`}
+                  >
+                    Answer
+                  </button>
+
+              
                 </div>
               </div>
 
@@ -671,6 +796,45 @@ const QuestionDetail: React.FC = () => {
                           </div>
                           <p className="text-sm text-[#6B7280]">{answer.author.bio}</p>
                           <p className="mt-2 text-sm text-[#374151]">{answer.content}</p>
+                          {/* Display Images in Grid */}
+                            {answer.ansimages.length > 0 && (
+                              <div className="grid grid-cols-3 gap-2 mt-2">
+                                {answer.ansimages.map((image, index) => (
+                                  <img
+                                    key={index}
+                                    src={image}
+                                    alt={`Uploaded ${index}`}
+                                    className="w-30 max-h-30 object-cover  rounded-md"
+                                    onClick={() => setPopupImage(image)}
+                                  />
+                                ))}
+                              </div>
+                            )}
+
+
+                             {/* Image Popup Modal */}
+                        {popupImage && (
+                          <div
+                            className="fixed inset-0 bg-black/30 bg-opacity-75 flex items-center justify-center z-50"
+                            onClick={() => setPopupImage(null)}
+                          >
+                            <div className="relative">
+                              <img
+                                src={popupImage}
+                                alt="Popup"
+                                className="max-w-full max-h-[90vh] rounded-lg"
+                                onClick={(e) => e.stopPropagation()} // Prevent modal close when clicking the image
+                              />
+                              <button
+                                onClick={() => setPopupImage(null)}
+                                className="absolute top-2 right-2 bg-gray-500 text-white rounded-full p-2"
+                              >
+                                <X size={24} />
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                                            
 
                           <div className="flex items-center gap-4 mt-3">
                             <button
