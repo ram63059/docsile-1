@@ -200,7 +200,7 @@ export const Stories: React.FC<StoriesProps> = ({ stories }) => {
   return (
     <>
       <div className="bg-white rounded-xl shadow-sm p-4">
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+        <div className="flex gap-4 overflow-x-auto scrollbar-hide">
           <div
             className="flex-shrink-0 cursor-pointer transition-transform duration-200 hover:scale-105 relative"
             onClick={handleMyStoryClick}
