@@ -1,34 +1,57 @@
 import { Header } from "@/components/jobs/Header";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { FaEllipsisV, FaPaperPlane, FaSearch } from "react-icons/fa";
+import { FaEllipsisV, FaPaperPlane, FaSearch, FaPlus, FaMicrophone, FaSmile, FaPause, FaPlay, FaTimes, FaDownload, FaUsers, FaFile, FaImage } from "react-icons/fa";
 import { BACKEND_URL } from "@/config";
 import { io, Socket } from "socket.io-client";
+import EmojiPicker from 'emoji-picker-react';
 
-type Conversation = {
+type MessageType = "text" | "image" | "video" | "document" | "voice";
+type TabType = "all" | "unread" | "connections" | "community" | "drafts";
+type MoreTabType = "overview" | "files" | "media" | "members";
+type FileUploadType = "document" | "media" | null;
+
+interface FilePreview {
+  type: "image" | "video" | "document";
+  url: string;
+  name: string;
+  size: number;
+}
+
+interface Conversation {
   id: number;
   name: string;
   imageUrl: string;
   lastMessage: string;
   lastActive: string;
   isGroup: boolean;
-  members?: { id: number; name: string }[];
+  unread?: boolean;
+  lastSeen?: string;
+  members?: { id: number; name: string; imageUrl?: string }[];
   otherUser?: {
     id: number;
     name: string;
     email: string;
+    lastSeen?: string;
+    isOnline?: boolean;
   };
-};
+}
 
-type Message = {
-  id?: string;
-  sender: string;
+interface Message {
+  id: string;
   content: string;
+  sender: string;
   timestamp: string;
-  type: string;
-};
+  type: MessageType;
+  fileUrl?: string;
+  fileName?: string;
+  fileSize?: number;
+  previewUrl?: string;
+  duration?: number;
+  isCurrentUser?: boolean;
+}
 
-type SocketMessage = {
+interface SocketMessage {
   messageId?: string;
   groupId?: number;
   conversationId?: number;
@@ -45,9 +68,9 @@ type SocketMessage = {
     name: string;
     email: string;
   };
-};
+}
 
-type DirectConversation = {
+interface DirectConversation {
   id: number;
   User1: {
     id: number;
@@ -64,9 +87,9 @@ type DirectConversation = {
     sentAt: string;
     createdAt: string;
   }>;
-};
+}
 
-type GroupConversation = {
+interface GroupConversation {
   id: number;
   name: string;
   messages?: Array<{
@@ -80,9 +103,9 @@ type GroupConversation = {
       name: string;
     };
   }>;
-};
+}
 
-type MessageResponse = {
+interface MessageResponse {
   id?: number;
   content: string;
   sentAt?: string;
@@ -98,7 +121,7 @@ type MessageResponse = {
     name?: string;
     email?: string;
   };
-};
+}
 
 function UnifiedChat() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -106,8 +129,84 @@ function UnifiedChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [uploadType, setUploadType] = useState<FileUploadType>(null);
+  const [filePreview, setFilePreview] = useState<FilePreview | null>(null);
+  const [activeTab, setActiveTab] = useState<TabType>("all");
+  const [moreTabOpen, setMoreTabOpen] = useState(false);
+  const [activeMoreTab, setActiveMoreTab] = useState<MoreTabType>("overview");
+  const [recordingDuration, setRecordingDuration] = useState(0);
+  const [recordingPaused, setRecordingPaused] = useState(false);
+  const [showFullScreenImage, setShowFullScreenImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const socketRef = useRef<Socket | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const recordingTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Filter conversations based on active tab and search query
+  const filteredConversations = conversations.filter(conv => {
+    const matchesSearch = conv.name.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    switch (activeTab) {
+      case "unread":
+        return conv.unread && matchesSearch;
+      case "connections":
+        return !conv.isGroup && matchesSearch;
+      case "community":
+        return conv.isGroup && matchesSearch;
+      case "drafts":
+        // Implement draft logic here
+        return false;
+      default:
+        return matchesSearch;
+    }
+  });
+
+  // Format last seen time
+  const formatLastSeen = (lastSeen: string | undefined, isOnline?: boolean): string => {
+    if (isOnline) return "Active Now";
+    if (!lastSeen) return "";
+
+    const lastSeenDate = new Date(lastSeen);
+    const now = new Date();
+    const diffMinutes = Math.floor((now.getTime() - lastSeenDate.getTime()) / (1000 * 60));
+
+    if (diffMinutes < 1) return "Just now";
+    if (diffMinutes < 60) return `Last active ${diffMinutes} minutes ago`;
+    
+    const diffHours = Math.floor(diffMinutes / 60);
+    if (diffHours < 24) return `Last active ${diffHours} hours ago`;
+
+    return `Last active on ${lastSeenDate.toLocaleDateString()}`;
+  };
+
+  // Handle recording timer
+  useEffect(() => {
+    if (isRecording && !recordingPaused) {
+      recordingTimerRef.current = setInterval(() => {
+        setRecordingDuration(prev => prev + 1);
+      }, 1000);
+    } else if (recordingTimerRef.current) {
+      clearInterval(recordingTimerRef.current);
+    }
+
+    return () => {
+      if (recordingTimerRef.current) {
+        clearInterval(recordingTimerRef.current);
+      }
+    };
+  }, [isRecording, recordingPaused]);
+
+  // Format recording duration
+  const formatDuration = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   useEffect(() => {
     // Initialize WebSocket connection
@@ -194,7 +293,8 @@ function UnifiedChat() {
           return {
             ...group,
             lastMessage: `${senderName}: ${data.content}`,
-            lastActive: lastActiveDate
+            lastActive: lastActiveDate,
+            unread: true
           };
         }
         return group;
@@ -202,12 +302,17 @@ function UnifiedChat() {
 
       // Only add the message if it's from the current group
       if (data.groupId === selectedConversation?.id) {
-        const formattedMessage = {
+        const formattedMessage: Message = {
           id: data.messageId || `${Date.now()}-${Math.random()}`,
           sender: senderName,
           content: data.content || "",
           timestamp: messageTime,
-          type: "other",
+          type: (data as any).type || "text",
+          fileUrl: (data as any).fileUrl,
+          fileName: (data as any).fileName,
+          fileSize: (data as any).fileSize,
+          previewUrl: (data as any).type === "video" ? (data as any).fileUrl : undefined,
+          duration: (data as any).duration
         };
 
         // Check if message already exists to prevent duplicates
@@ -228,7 +333,6 @@ function UnifiedChat() {
       }
     });
 
-    // Handle user joined/left events
     socket.on('user_joined', (data) => {
       console.log('User joined:', data);
     });
@@ -248,6 +352,22 @@ function UnifiedChat() {
         return;
       }
 
+      // Update conversations list with unread state
+      setConversations(prev => prev.map(conv => {
+        if (conv.id === data.conversationId && !conv.isGroup) {
+          return {
+            ...conv,
+            lastMessage: data.content,
+            lastActive: new Date().toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            }),
+            unread: selectedConversation?.id !== conv.id // Only mark as unread if not currently selected
+          };
+        }
+        return conv;
+      }));
+
       // Add message to UI if it's for the current conversation
       if (selectedConversation && data.conversationId === selectedConversation.id && !selectedConversation.isGroup) {
         const formattedMessage: Message = {
@@ -258,11 +378,16 @@ function UnifiedChat() {
             hour: '2-digit',
             minute: '2-digit'
           }),
-          type: "other"
+          type: (data as any).type || "text",
+          fileUrl: (data as any).fileUrl,
+          fileName: (data as any).fileName,
+          fileSize: (data as any).fileSize,
+          previewUrl: (data as any).type === "video" ? (data as any).fileUrl : undefined,
+          duration: (data as any).duration,
+          isCurrentUser: false
         };
 
         setMessages(prevMessages => {
-          // Check if message already exists
           const messageExists = prevMessages.some(msg => msg.id === formattedMessage.id);
           if (messageExists) {
             return prevMessages;
@@ -277,21 +402,6 @@ function UnifiedChat() {
           }
         }, 100);
       }
-
-      // Update conversations list
-      setConversations(prev => prev.map(conv => {
-        if (conv.id === data.conversationId && !conv.isGroup) {
-          return {
-            ...conv,
-            lastMessage: data.content,
-            lastActive: new Date().toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            })
-          };
-        }
-        return conv;
-      }));
     });
 
     return () => {
@@ -394,6 +504,56 @@ function UnifiedChat() {
     return () => clearInterval(intervalId);
   }, []);
 
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (!selectedConversation) return;
+
+      setLoading(true);
+      try {
+        const userId = localStorage.getItem('Id');
+        const endpoint = selectedConversation.isGroup
+          ? `${BACKEND_URL}/groups/${selectedConversation.id}/messages`
+          : `${BACKEND_URL}/messages/${selectedConversation.id}`;
+
+        const response = await axios.get(endpoint);
+        const fetchedMessages = response.data.map((msg: any) => ({
+          id: msg.id.toString(),
+          content: msg.content || "",
+          sender: msg.sender?.name || msg.Sender?.name || "Unknown",
+          timestamp: new Date(msg.sentAt || msg.created_at).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit'
+          }),
+          type: msg.type || "text",
+          fileUrl: msg.fileUrl,
+          fileName: msg.fileName,
+          fileSize: msg.fileSize,
+          previewUrl: msg.type === "video" ? msg.fileUrl : undefined,
+          duration: msg.duration,
+          isCurrentUser: msg.senderId === parseInt(userId || "0")
+        }));
+
+        setMessages(fetchedMessages);
+        
+        // Mark conversation as read
+        if (selectedConversation) {
+          setConversations(prev => prev.map(conv => {
+            if (conv.id === selectedConversation.id) {
+              return { ...conv, unread: false };
+            }
+            return conv;
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMessages();
+  }, [selectedConversation?.id]);
+
   const handleConversationClick = async (conversation: Conversation) => {
     setSelectedConversation(conversation);
     setMessages([]); // Clear messages immediately when switching conversations
@@ -409,110 +569,71 @@ function UnifiedChat() {
     }
   };
 
-  // Fetch messages whenever selected conversation changes
-  useEffect(() => {
-    const fetchMessages = async () => {
-      if (!selectedConversation) return;
-
-      try {
-        const userId = localStorage.getItem("Id");
-        const endpoint = selectedConversation.isGroup
-          ? `${BACKEND_URL}/groups/${selectedConversation.id}/messages`
-          : `${BACKEND_URL}/messages/${selectedConversation.id}?userId=${userId}`;
-        
-        const response = await axios.get(endpoint);
-
-        // If no messages, retry after a short delay
-        if (!response.data || !Array.isArray(response.data) || response.data.length === 0) {
-          console.log('No messages found or invalid response, retrying in 1 second...');
-          setTimeout(fetchMessages, 1000);
-          return;
-        }
-
-        const formattedMessages = response.data.map((msg: MessageResponse) => {
-          const isCurrentUser = msg.senderId === parseInt(userId || '0');
-          let senderName;
-
-          if (isCurrentUser) {
-            senderName = "You";
-          } else if (selectedConversation.isGroup) {
-            senderName = msg.sender?.name || msg.Sender?.name || "Other User";
-          } else {
-            senderName = selectedConversation.name;
-          }
-
-          const timestamp = new Date(msg.sentAt || msg.createdAt || Date.now()).toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit'
-          });
-
-          return {
-            id: msg.id?.toString() || `temp-${Date.now()}`,
-            sender: senderName,
-            content: msg.content,
-            timestamp: timestamp,
-            type: isCurrentUser ? "self" : "other"
-          };
-        });
-
-        // Only update messages if they're different from current messages
-        setMessages(prevMessages => {
-          const isDifferent = JSON.stringify(prevMessages) !== JSON.stringify(formattedMessages);
-          return isDifferent ? formattedMessages : prevMessages;
-        });
-
-        // Scroll to bottom after loading messages
-        setTimeout(() => {
-          if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-          }
-        }, 100);
-      } catch (error) {
-        console.error("Failed to fetch messages:", error);
-        setTimeout(fetchMessages, 2000);
-      }
-    };
-
-    fetchMessages();
-    const refreshInterval = setInterval(fetchMessages, 10000);
-
-    return () => {
-      clearInterval(refreshInterval);
-    };
-  }, [selectedConversation]);
-
+  // Handle sending different types of messages
   const handleSendMessage = async () => {
-    if (!newMessage.trim() || !selectedConversation) return;
+    if ((!newMessage.trim() && !filePreview) || !selectedConversation) return;
 
     const currentUserId = localStorage.getItem("Id");
     if (!currentUserId) return;
 
     try {
+      let messageContent = newMessage.trim();
+      let messageType: MessageType = "text";
+      let fileData = null;
+
+      // Handle file uploads
+      if (filePreview) {
+        // Here you would typically upload the file to your server
+        // and get back a URL. For now, we'll use the local preview URL
+        fileData = {
+          url: filePreview.url,
+          name: filePreview.name,
+          size: filePreview.size,
+          type: filePreview.type
+        };
+        messageType = filePreview.type;
+        messageContent = `Sent ${filePreview.type}: ${filePreview.name}`;
+      }
+
+      // Add message to UI immediately
+      const formattedMessage: Message = {
+        id: `temp-${Date.now()}`,
+        sender: "You",
+        content: messageContent,
+        timestamp: new Date().toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+        type: messageType,
+        ...(fileData && {
+          fileUrl: fileData.url,
+          fileName: fileData.name,
+          fileSize: fileData.size,
+          previewUrl: fileData.type === 'video' ? fileData.url : undefined
+        }),
+        isCurrentUser: true
+      };
+
+      setMessages(prev => [...prev, formattedMessage]);
+      setNewMessage("");
+      setFilePreview(null);
+
+      // Send message through appropriate endpoint
       const messageData = {
-        content: newMessage.trim(),
+        content: messageContent,
         senderId: parseInt(currentUserId),
+        type: messageType,
+        ...(fileData && {
+          fileUrl: fileData.url,
+          fileName: fileData.name,
+          fileSize: fileData.size
+        }),
         ...(selectedConversation.isGroup 
           ? { groupId: selectedConversation.id }
           : { conversationId: selectedConversation.id }
         )
       };
 
-      // Add message to UI immediately
-      const formattedMessage: Message = {
-        id: `temp-${Date.now()}`,
-        sender: "You",
-        content: newMessage,
-        timestamp: new Date().toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit'
-        }),
-        type: "self"
-      };
-
-      setMessages(prev => [...prev, formattedMessage]);
-      setNewMessage("");
-
-      // Send message through appropriate endpoint
       const endpoint = selectedConversation.isGroup
         ? `${BACKEND_URL}/groups/${selectedConversation.id}/messages`
         : `${BACKEND_URL}/messages/send`;
@@ -525,7 +646,7 @@ function UnifiedChat() {
         if (conv.id === selectedConversation.id) {
           return {
             ...conv,
-            lastMessage: `You: ${newMessage}`,
+            lastMessage: `You: ${messageContent}`,
             lastActive: new Date().toLocaleDateString("en-US", {
               month: "short",
               day: "numeric",
@@ -542,7 +663,13 @@ function UnifiedChat() {
         groupId: selectedConversation.isGroup ? selectedConversation.id : undefined,
         conversationId: !selectedConversation.isGroup ? selectedConversation.id : undefined,
         senderId: parseInt(currentUserId),
-        content: newMessage,
+        content: messageContent,
+        type: messageType,
+        ...(fileData && {
+          fileUrl: fileData.url,
+          fileName: fileData.name,
+          fileSize: fileData.size
+        }),
         sentAt: new Date().toISOString(),
         sender: { name: "You" }
       });
@@ -570,6 +697,225 @@ function UnifiedChat() {
     // Handle profile click
   };
 
+  // Handle emoji selection
+  const onEmojiClick = (emojiObject: any) => {
+    setNewMessage(prev => prev + emojiObject.emoji);
+    setShowEmojiPicker(false);
+  };
+
+  // Handle file upload
+  const handleFileUpload = (type: FileUploadType) => {
+    setUploadType(type);
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = type === 'document' ? '.pdf,.doc,.docx' : 'image/*,video/*';
+    input.onchange = async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        // Here you would typically upload the file to your server
+        // and get back a URL or ID to send in the message
+        console.log('File selected:', file);
+        // For now, we'll just send the file name as a message
+        setNewMessage(`Sent ${file.name}`);
+        setFilePreview({
+          type: type === 'document' ? 'document' : file.type.split('/')[0],
+          url: URL.createObjectURL(file),
+          name: file.name,
+          size: file.size
+        });
+      }
+    };
+    input.click();
+  };
+
+  // Handle voice recording
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          audioChunksRef.current.push(e.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
+        // Here you would typically upload the audio blob to your server
+        // and get back a URL or ID to send in the message
+        console.log('Audio recording finished:', audioBlob);
+        // For now, we'll just send a placeholder message
+        setNewMessage('Voice message');
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (error) {
+      console.error('Error starting recording:', error);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      // Stop all audio tracks
+      mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+    }
+  };
+
+  const handleMicClick = () => {
+    if (isRecording) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  };
+
+  // Add click outside handler for More popup
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const morePopup = document.getElementById('more-popup');
+      const moreButton = document.getElementById('more-button');
+      
+      if (morePopup && moreButton && moreTabOpen) {
+        if (!morePopup.contains(event.target as Node) && !moreButton.contains(event.target as Node)) {
+          setMoreTabOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [moreTabOpen]);
+
+  // Render More Tab Content
+  const renderMoreTabContent = () => {
+    if (!selectedConversation) return null;
+
+    switch (activeMoreTab) {
+      case "overview":
+        return (
+          <div className="p-6">
+            <div className="flex flex-col items-center">
+              <div className="relative">
+                <img
+                  src={selectedConversation.imageUrl || "/default-avatar.png"}
+                  alt={selectedConversation.name}
+                  className="w-24 h-24 rounded-full object-cover"
+                />
+                <button className="absolute bottom-0 right-0 p-2 bg-blue-600 text-white rounded-full">
+                  <FaImage className="w-4 h-4" />
+                </button>
+              </div>
+              <h2 className="mt-4 text-lg font-semibold">{selectedConversation.name}</h2>
+              {selectedConversation.isGroup && (
+                <p className="text-sm text-gray-500">{selectedConversation.members?.length || 0} members</p>
+              )}
+            </div>
+          </div>
+        );
+
+      case "files":
+        const documentMessages = messages.filter(m => m.type === "document");
+        return (
+          <div className="p-6">
+            <div className="space-y-4">
+              {documentMessages.length === 0 ? (
+                <p className="text-center text-gray-500">No files shared yet</p>
+              ) : (
+                documentMessages.map((message, index) => (
+                  <div key={index} className="flex items-center space-x-3 p-3 bg-white rounded-lg shadow-sm">
+                    <FaFile className="w-5 h-5 text-gray-500" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{message.fileName}</p>
+                      <p className="text-xs text-gray-500">
+                        {message.sender} • {message.timestamp}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => window.open(message.fileUrl, '_blank')}
+                      className="p-2 hover:bg-gray-100 rounded-full"
+                    >
+                      <FaDownload className="w-4 h-4 text-gray-600" />
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        );
+
+      case "media":
+        const mediaMessages = messages.filter(m => m.type === "image" || m.type === "video");
+        return (
+          <div className="p-6">
+            <div className="grid grid-cols-3 gap-4">
+              {mediaMessages.length === 0 ? (
+                <p className="col-span-3 text-center text-gray-500">No media shared yet</p>
+              ) : (
+                mediaMessages.map((message, index) => (
+                  <div
+                    key={index}
+                    className="relative cursor-pointer"
+                    onClick={() => message.type === "image" && setShowFullScreenImage(message.fileUrl)}
+                  >
+                    {message.type === "image" ? (
+                      <img
+                        src={message.fileUrl}
+                        alt={message.fileName}
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                    ) : (
+                      <div className="relative">
+                        <video
+                          src={message.fileUrl}
+                          poster={message.previewUrl}
+                          className="w-full h-32 object-cover rounded-lg"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+                          <FaPlay className="w-8 h-8 text-white" />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        );
+
+      case "members":
+        if (!selectedConversation.isGroup) return null;
+        return (
+          <div className="p-6">
+            <div className="space-y-4">
+              {selectedConversation.members?.map((member, index) => (
+                <div key={index} className="flex items-center space-x-3">
+                  <span className="text-sm text-gray-500">{index + 1}.</span>
+                  <img
+                    src={member.imageUrl || "/default-avatar.png"}
+                    alt={member.name}
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                  <p className="text-sm font-medium">{member.name}</p>
+                </div>
+              ))}
+              <button className="w-full py-2 mt-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                Add Member
+              </button>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Header
@@ -579,47 +925,41 @@ function UnifiedChat() {
         onSearch={handleSearch}
       />
       
-      <div className="max-w-[1200px] mx-auto px-8 py-2  font-fontsm">
-      
+      <div className="max-w-[1200px] mx-auto px-8 py-2 font-fontsm">
         <div className="bg-white rounded-xl shadow-sm flex h-[calc(100vh-120px)]">
-       
           {/* Left Sidebar */}
           <div className="w-[320px] border-r border-gray-200 flex flex-col rounded-l-xl">
-          <div className="px-6 pt-6 pb-2 bg-white rounded-tl-xl border-b-maincl border  ">
-              <h1 className="text-xl font-semibold pb-2  ">Messages</h1>
-            </div>
-
-
-            {/* Messages Header */}
-           
-              
-            {/* Search Bar */}
-            <div className="px-6 pb-4 ">
+            <div className="px-6 pt-6 pb-4 bg-white rounded-tl-xl border-b border-gray-200">
+              <h1 className="text-xl font-semibold mb-4">Messages</h1>
+              {/* Search Bar */}
               <div className="relative">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search..."
-                  className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-gray-100 border-0 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
+                  placeholder="Search messages..."
+                  className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-gray-50 border-0 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
                 />
                 <FaSearch className="absolute left-3 top-3 text-gray-400 w-4 h-4" />
               </div>
             </div>
 
             {/* Tabs */}
-            <div className="px-6 pb-4">
-              <div className="flex space-x-4">
-                <button className="text-sm font-medium text-gray-500 hover:text-gray-900">
+            <div className="px-6 py-3 border-b border-gray-200">
+              <div className="flex space-x-6">
+                <button onClick={() => setActiveTab("all")} className={`text-sm font-medium ${activeTab === "all" ? "text-blue-600" : "text-gray-500 hover:text-gray-900"}`}>
                   All
                 </button>
-                <button className="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                <button onClick={() => setActiveTab("unread")} className={`text-sm font-medium ${activeTab === "unread" ? "text-blue-600" : "text-gray-500 hover:text-gray-900"}`}>
                   Unread
                 </button>
-                <button className="text-sm font-medium text-gray-500 hover:text-gray-900">
-                  Communities
+                <button onClick={() => setActiveTab("connections")} className={`text-sm font-medium ${activeTab === "connections" ? "text-blue-600" : "text-gray-500 hover:text-gray-900"}`}>
+                  Connections
                 </button>
-                <button className="text-sm font-medium text-gray-500 hover:text-gray-900">
+                <button onClick={() => setActiveTab("community")} className={`text-sm font-medium ${activeTab === "community" ? "text-blue-600" : "text-gray-500 hover:text-gray-900"}`}>
+                  Community
+                </button>
+                <button onClick={() => setActiveTab("drafts")} className={`text-sm font-medium ${activeTab === "drafts" ? "text-blue-600" : "text-gray-500 hover:text-gray-900"}`}>
                   Drafts
                 </button>
               </div>
@@ -627,33 +967,51 @@ function UnifiedChat() {
 
             {/* Conversations List */}
             <div className="flex-1 overflow-y-auto">
-              {conversations.map((conversation) => (
-                <div
-                  key={conversation.id}
-                  onClick={() => handleConversationClick(conversation)}
-                  className={`flex items-center px-6 py-3 cursor-pointer ${
-                    selectedConversation?.id === conversation.id
-                      ? "bg-blue-50"
-                      : "hover:bg-gray-50"
-                  }`}
-                >
-                  <img
-                    src={conversation.imageUrl || "/default-avatar.png"}
-                    alt={conversation.name}
-                    className="w-12 h-12 rounded-full object-cover flex-shrink-0"
-                  />
-                  <div className="ml-3 flex-1 min-w-0">
-                    <div className="flex justify-between items-center">
-                      <h3 className="font-medium text-gray-900 truncate">
-                        {conversation.name}
-                        {conversation.isGroup && <span className="text-sm text-gray-500 ml-1">(Group)</span>}
-                      </h3>
-                      <span className="text-xs text-gray-500 flex-shrink-0 ml-2">{conversation.lastActive}</span>
-                    </div>
-                    <p className="text-sm text-gray-500 truncate mt-0.5">{conversation.lastMessage}</p>
-                  </div>
+              {filteredConversations.length === 0 ? (
+                <div className="flex items-center justify-center h-full text-gray-500">
+                  No Messages
                 </div>
-              ))}
+              ) : (
+                filteredConversations.map((conversation) => (
+                  <div
+                    key={conversation.id}
+                    onClick={() => handleConversationClick(conversation)}
+                    className={`flex items-center p-3 cursor-pointer hover:bg-gray-50 transition-colors duration-150 ${
+                      selectedConversation?.id === conversation.id
+                        ? 'bg-gray-100'
+                        : conversation.unread
+                        ? 'bg-blue-50'
+                        : ''
+                    }`}
+                  >
+                    <img
+                      src={conversation.imageUrl || "/default-avatar.png"}
+                      alt={conversation.name}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                    <div className="ml-3 flex-1 min-w-0">
+                      <div className="flex justify-between items-start">
+                        <p className={`font-medium ${conversation.unread ? 'text-blue-600' : 'text-gray-900'} truncate`}>
+                          {conversation.name}
+                        </p>
+                        <div className="flex items-center space-x-2">
+                          {conversation.unread && (
+                            <span className="px-2 py-0.5 text-xs bg-blue-500 text-white rounded-full">
+                              New
+                            </span>
+                          )}
+                          <span className="text-xs text-gray-500">
+                            {conversation.lastActive}
+                          </span>
+                        </div>
+                      </div>
+                      <p className={`text-sm ${conversation.unread ? 'text-gray-900 font-medium' : 'text-gray-500'} truncate`}>
+                        {conversation.lastMessage}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 
@@ -662,82 +1020,275 @@ function UnifiedChat() {
             {selectedConversation ? (
               <>
                 {/* Chat Header */}
-                <div className="h-[72px] px-6 border-b bg-white flex items-center justify-between rounded-tr-xl">
-                  <div className="flex items-center">
-                    <img
-                      src={selectedConversation.imageUrl || "/default-avatar.png"}
-                      alt={selectedConversation.name}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                    <div className="ml-3">
-                      <h2 className="font-medium text-gray-900">
-                        {selectedConversation.name}
-                        {selectedConversation.isGroup && <span className="text-sm text-gray-500 ml-1">(Group)</span>}
-                      </h2>
-                      <p className="text-sm text-gray-500">
-                        {selectedConversation.isGroup 
-                          ? `${selectedConversation.members?.length || 0} members`
-                          : "Active now"
-                        }
-                      </p>
+                <div className="bg-white border-b p-4">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center space-x-3">
+                      <img
+                        src={selectedConversation.imageUrl || "/default-avatar.png"}
+                        alt={selectedConversation.name}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                      <div>
+                        <h2 className="font-semibold text-gray-900">
+                          {selectedConversation.name}
+                        </h2>
+                        <p className="text-sm text-gray-500">
+                          {selectedConversation.isGroup
+                            ? `${selectedConversation.members?.length || 0} members`
+                            : "Online"}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      id="more-button"
+                      onClick={() => setMoreTabOpen(!moreTabOpen)}
+                      className="p-2 hover:bg-gray-100 rounded-full"
+                    >
+                      <FaEllipsisV className="w-5 h-5 text-gray-600" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* More Button Pop-up */}
+                {moreTabOpen && (
+                  <div
+                    id="more-popup"
+                    className="absolute right-4 top-16 w-1/2 bg-white shadow-lg rounded-lg overflow-hidden z-50"
+                    style={{ maxHeight: 'calc(100vh - 4rem)' }}
+                  >
+                    <div className="border-b">
+                      <div className="flex p-4">
+                        {['Overview', 'Files', 'Media', 'Members'].map((tab) => (
+                          <button
+                            key={tab}
+                            onClick={() => setActiveMoreTab(tab.toLowerCase() as MoreTabType)}
+                            className={`px-4 py-2 text-sm font-medium rounded-lg mr-2 ${
+                              activeMoreTab === tab.toLowerCase()
+                                ? 'bg-blue-50 text-blue-600'
+                                : 'text-gray-600 hover:bg-gray-50'
+                            }`}
+                          >
+                            {tab}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="overflow-y-auto" style={{ maxHeight: 'calc(100vh - 8rem)' }}>
+                      {renderMoreTabContent()}
                     </div>
                   </div>
-                  <button className="p-2 hover:bg-gray-100 rounded-full">
-                    <FaEllipsisV className="text-gray-600 w-4 h-4" />
-                  </button>
-                </div>
+                )}
 
                 {/* Messages Container */}
                 <div
                   ref={chatContainerRef}
-                  className="flex-1 overflow-y-auto p-6 space-y-4"
+                  className="flex-1 overflow-y-auto p-4 space-y-4"
+                  style={{ height: 'calc(100vh - 200px)' }}
                 >
-                  {messages.map((message, index) => (
-                    <div
-                      key={message.id || index}
-                      className={`flex ${
-                        message.type === "self" ? "justify-end" : "justify-start"
-                      }`}
-                    >
-                      <div
-                        className={`max-w-[70%] rounded-2xl px-4 py-2.5 ${
-                          message.type === "self"
-                            ? "bg-blue-600 text-white"
-                            : "bg-white text-gray-900 shadow-sm"
-                        }`}
-                      >
-                        {message.type !== "self" && (
-                          <p className="text-sm font-medium text-gray-900 mb-1">
-                            {message.sender}
-                          </p>
-                        )}
-                        <p className="text-sm">{message.content}</p>
-                        <p className="text-[11px] mt-1 opacity-70">
-                          {message.timestamp}
-                        </p>
-                      </div>
+                  {loading ? (
+                    <div className="flex justify-center items-center h-full">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
                     </div>
-                  ))}
+                  ) : messages.length === 0 ? (
+                    <div className="flex justify-center items-center h-full text-gray-500">
+                      No messages yet
+                    </div>
+                  ) : (
+                    messages.map((message, index) => (
+                      <div
+                        key={message.id}
+                        className={`flex ${message.isCurrentUser ? 'justify-end' : 'justify-start'}`}
+                      >
+                        <div
+                          className={`max-w-[70%] ${
+                            message.isCurrentUser
+                              ? 'bg-blue-500 text-white rounded-l-lg rounded-tr-lg'
+                              : 'bg-white text-gray-800 rounded-r-lg rounded-tl-lg'
+                          } p-3 shadow-sm`}
+                        >
+                          {!message.isCurrentUser && (
+                            <p className="text-xs text-gray-500 mb-1">{message.sender}</p>
+                          )}
+                          {message.type === "text" && (
+                            <p className="whitespace-pre-wrap break-words">{message.content}</p>
+                          )}
+                          {message.type === "image" && (
+                            <div className="space-y-2">
+                              <img
+                                src={message.fileUrl}
+                                alt={message.fileName}
+                                className="max-w-full rounded-lg cursor-pointer"
+                                onClick={() => setShowFullScreenImage(message.fileUrl)}
+                              />
+                              <p className="text-xs opacity-75">{message.fileName}</p>
+                            </div>
+                          )}
+                          {message.type === "video" && (
+                            <div className="space-y-2">
+                              <video
+                                src={message.fileUrl}
+                                controls
+                                className="max-w-full rounded-lg"
+                              />
+                              <p className="text-xs opacity-75">{message.fileName}</p>
+                            </div>
+                          )}
+                          {message.type === "document" && (
+                            <div className="flex items-center space-x-2">
+                              <FaFile className="w-4 h-4" />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm truncate">{message.fileName}</p>
+                                <p className="text-xs text-gray-500">{(message.fileSize / 1024).toFixed(1)} KB</p>
+                              </div>
+                              <button
+                                onClick={() => window.open(message.fileUrl, '_blank')}
+                                className="p-1 hover:bg-gray-200 rounded-full"
+                              >
+                                <FaDownload className="w-4 h-4" />
+                              </button>
+                            </div>
+                          )}
+                          {message.type === "voice" && (
+                            <div className="flex items-center space-x-2">
+                              <audio src={message.fileUrl} controls className="max-w-[200px]" />
+                              {message.duration && (
+                                <span className="text-xs opacity-75">
+                                  {Math.floor(message.duration / 60)}:
+                                  {(message.duration % 60).toString().padStart(2, '0')}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                          <p className={`text-xs ${message.isCurrentUser ? 'text-white' : 'text-gray-500'} mt-1`}>
+                            {message.timestamp}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
+
+                {/* Full Screen Image Viewer */}
+                {showFullScreenImage && (
+                  <div className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center">
+                    <button
+                      onClick={() => setShowFullScreenImage(null)}
+                      className="absolute top-4 right-4 text-white"
+                    >
+                      <FaTimes className="w-6 h-6" />
+                    </button>
+                    <img
+                      src={showFullScreenImage}
+                      alt="Full screen"
+                      className="max-w-[90%] max-h-[90vh] object-contain"
+                    />
+                  </div>
+                )}
 
                 {/* Message Input */}
                 <div className="px-6 py-4 bg-white border-t rounded-br-xl">
-                  <div className="flex items-center">
-                    <input
-                      type="text"
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-                      placeholder="Type your message here..."
-                      className="flex-1 py-2.5 px-4 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
-                    />
-                    <button
-                      onClick={handleSendMessage}
-                      disabled={!newMessage.trim()}
-                      className="ml-2 p-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50"
-                    >
-                      <FaPaperPlane className="w-4 h-4" />
+                  <div className="flex items-center space-x-2">
+                    {/* File Upload Buttons */}
+                    <button onClick={() => handleFileUpload("document")} className="p-2.5 hover:bg-gray-100 rounded-full">
+                      <FaFile className="w-5 h-5 text-gray-600" />
                     </button>
+                    <button onClick={() => handleFileUpload("media")} className="p-2.5 hover:bg-gray-100 rounded-full">
+                      <FaImage className="w-5 h-5 text-gray-600" />
+                    </button>
+
+                    {/* Message Input with File Preview */}
+                    <div className="flex-1 relative">
+                      {filePreview && (
+                        <div className="absolute bottom-full mb-2 left-0 right-0 bg-white rounded-lg shadow-lg p-3">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              {filePreview.type === "image" && (
+                                <img src={filePreview.url} alt={filePreview.name} className="w-12 h-12 object-cover rounded" />
+                              )}
+                              {filePreview.type === "video" && (
+                                <video src={filePreview.url} className="w-12 h-12 object-cover rounded" />
+                              )}
+                              {filePreview.type === "document" && (
+                                <FaFile className="w-8 h-8 text-gray-600" />
+                              )}
+                              <div>
+                                <p className="text-sm font-medium truncate">{filePreview.name}</p>
+                                <p className="text-xs text-gray-500">{(filePreview.size / 1024).toFixed(1)} KB</p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => setFilePreview(null)}
+                              className="p-1 hover:bg-gray-100 rounded-full"
+                            >
+                              <FaTimes className="w-4 h-4 text-gray-600" />
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      <input
+                        type="text"
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                        placeholder="Type your message here..."
+                        className="w-full py-2.5 px-4 pr-20 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm"
+                      />
+
+                      {/* Input Actions */}
+                      <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center space-x-1">
+                        <button
+                          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                          className="p-2 hover:bg-gray-100 rounded-full"
+                        >
+                          <FaSmile className="w-5 h-5 text-gray-600" />
+                        </button>
+
+                        {showEmojiPicker && (
+                          <div className="absolute bottom-full right-0 mb-2">
+                            <EmojiPicker onEmojiClick={onEmojiClick} />
+                          </div>
+                        )}
+
+                        {isRecording ? (
+                          <div className="flex items-center space-x-2">
+                            <span className="text-sm text-red-600">{formatDuration(recordingDuration)}</span>
+                            {recordingPaused ? (
+                              <button
+                                onClick={() => setRecordingPaused(false)}
+                                className="p-2 text-red-600 hover:bg-red-50 rounded-full"
+                              >
+                                <FaPlay className="w-5 h-5" />
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => setRecordingPaused(true)}
+                                className="p-2 text-red-600 hover:bg-red-50 rounded-full"
+                              >
+                                <FaPause className="w-5 h-5" />
+                              </button>
+                            )}
+                            <button
+                              onClick={stopRecording}
+                              className="p-2 text-blue-600 hover:bg-blue-50 rounded-full"
+                            >
+                              <FaPaperPlane className="w-5 h-5" />
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={newMessage.trim() || filePreview ? handleSendMessage : handleMicClick}
+                            className="p-2 hover:bg-gray-100 rounded-full"
+                          >
+                            {newMessage.trim() || filePreview ? (
+                              <FaPaperPlane className="w-5 h-5 text-blue-600" />
+                            ) : (
+                              <FaMicrophone className="w-5 h-5 text-gray-600" />
+                            )}
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </>

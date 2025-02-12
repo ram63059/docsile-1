@@ -46,7 +46,7 @@ const Networkpage = () => {
   const peopleData: Person[] = Array(10).fill(null).map((_, i) => ({
     id: `person-${i}`,
     avatar:"https://cdn.builder.io/api/v1/image/assets/TEMP/13d83c993760da19a222234c3cbcb356d551631f91a34653bf73ab3984455ff6?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-    name: 'Nampally Sriram',
+    name: 'Vamshidhar seelam',
     title: 'Ophthalmologist | AIIMS Delhi`25 |Aspiring Medical',
     mutualConnection: 'Bruhath Nimmani ',
     mutualCount: 56,
