@@ -213,18 +213,7 @@ const ReelsFeed = () => {
     // Add more reels with the same structure
   ], []);
 
-  const toggleMute = useCallback(() => {
-    const newMutedState = !isMuted;
-    setIsMuted(newMutedState);
-    
-    // Update all video elements with the new mute state
-    Object.values(videoRefs.current).forEach(video => {
-      if (video) {
-        video.muted = newMutedState;
-      }
-    });
-  }, [isMuted]);
-      
+ 
   // Initialize state for each reel
   useEffect(() => {
     const initialState = reelsData.reduce((acc, reel) => ({
@@ -243,6 +232,19 @@ const ReelsFeed = () => {
     setReelsState(initialState);
   }, [reelsData]);
 
+
+  const toggleMute = useCallback(() => {
+    const newMutedState = !isMuted;
+    setIsMuted(newMutedState);
+    
+    // Update all video elements with the new mute state
+    Object.values(videoRefs.current).forEach(video => {
+      if (video) {
+        video.muted = newMutedState;
+      }
+    });
+  }, [isMuted]);
+     
   
   const handleAddComment = (reelId: string, newComment: Omit<Comment, 'id'>) => {
     if (!commentText.trim()) return;
@@ -268,8 +270,10 @@ const ReelsFeed = () => {
   useEffect(() => {
     if (reelsData.length > 0) {
       setTimeout(() => {
+
         const firstReel = reelsData[0];
         const video = videoRefs.current[firstReel.id];
+
         if (video) {
           video.muted = true; // Initial mute for autoplay
           console.log("Auto-playing first video");
@@ -288,6 +292,54 @@ const ReelsFeed = () => {
       }, 1);
     }
   }, [reelsData]);
+
+  
+  const handleLikeReply = (commentId: string, replyId: string) => {
+    setLikedReplies(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(replyId)) {
+        newSet.delete(replyId);
+      } else {
+        newSet.add(replyId);
+      }
+      return newSet;
+    });
+    
+
+    setReelsState(prev => {
+      const currentReel = prev[reelsData[currentReelIndex].id];
+      if (!currentReel) return prev;
+
+      const updatedComments = currentReel.comments.map(comment => {
+        if (comment.id === commentId) {
+          const updatedReplies = comment.replies?.map(reply => {
+            if (reply.id === replyId) {
+              return {
+                ...reply,
+                likes: likedReplies.has(replyId) ? reply.likes - 1 : reply.likes + 1,
+                isLiked: !likedReplies.has(replyId)
+              };
+            }
+            return reply;
+          });
+
+          return {
+            ...comment,
+            replies: updatedReplies
+          };
+        }
+        return comment;
+      });
+
+      return {
+        ...prev,
+        [reelsData[currentReelIndex].id]: {
+          ...currentReel,
+          comments: updatedComments,
+        },
+      };
+    });
+  };
 
   const handleLikeComment = (commentId: string) => {
     setLikedComments(prev => {
@@ -324,51 +376,6 @@ const ReelsFeed = () => {
     });
   };
 
-  const handleLikeReply = (commentId: string, replyId: string) => {
-    setLikedReplies(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(replyId)) {
-        newSet.delete(replyId);
-      } else {
-        newSet.add(replyId);
-      }
-      return newSet;
-    });
-
-    setReelsState(prev => {
-      const currentReel = prev[reelsData[currentReelIndex].id];
-      if (!currentReel) return prev;
-
-      const updatedComments = currentReel.comments.map(comment => {
-        if (comment.id === commentId) {
-          const updatedReplies = comment.replies?.map(reply => {
-            if (reply.id === replyId) {
-              return {
-                ...reply,
-                likes: likedReplies.has(replyId) ? reply.likes - 1 : reply.likes + 1,
-                isLiked: !likedReplies.has(replyId)
-              };
-            }
-            return reply;
-          });
-
-          return {
-            ...comment,
-            replies: updatedReplies
-          };
-        }
-        return comment;
-      });
-
-      return {
-        ...prev,
-        [reelsData[currentReelIndex].id]: {
-          ...currentReel,
-          comments: updatedComments,
-        },
-      };
-    });
-  };
 
   const handleSubmitReply = (commentId: string) => {
     if (!replyText.trim()) return;
@@ -488,9 +495,8 @@ useEffect(() => {
   useEffect(() => {
     // Function to handle wheel events with proper type
     const handleWheelEvent = (e: WheelEvent) => {
-      e.preventDefault();
+      // e.preventDefault();
       
-      // Extract the values we need for the check before calling handleReelChange
       const newIndex = e.deltaY > 0 ? 
         currentReelIndex + 1 : 
         currentReelIndex - 1;
@@ -528,7 +534,7 @@ useEffect(() => {
 
  
   const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
-    e.preventDefault();
+    // e.preventDefault();
     
     if (isScrolling.current) return;
     isScrolling.current = true;
@@ -616,18 +622,19 @@ useEffect(() => {
     setShowComments(!showComments);
   };
  const [showInteraction, setShowInteraction] = useState(true);
+ 
  const handleCloseComments = () => {
   setShowComments(false); // Immediately close comments
   setTimeout(() => {
     setShowInteraction(true); // Delay showing interaction div
-  }, 400); // Adjust delay time as needed
+  }, 800); // Adjust delay time as needed
 };
 
-useEffect(() => {
-  if (showComments) {
-    setShowInteraction(false); // Hide interaction while comments are open
-  }
-}, [showComments]);
+// useEffect(() => {
+//   if (showComments) {
+//     setShowInteraction(false); // Hide interaction while comments are open
+//   }
+// }, [showComments]);
 
 
   useEffect(() => {
@@ -653,7 +660,7 @@ useEffect(() => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex flex-1 min-h-screen lg:pl-24 max-w-7xl mx-auto w-full gap-10  ">
+      <div className="flex flex-1 min-h-screen lg:pl-32 max-w-7xl mx-auto w-full gap-10  ">
         {/* Left Sidebar */}
           <div className="hidden lg:block w-[300px] flex-shrink-0 font-fontsm">
             <div className="sticky top-[calc(theme(spacing.20)+1px)] space-y-4">
@@ -725,8 +732,8 @@ useEffect(() => {
                       className="h-full w-full "
                       onLoadedMetadata={(e) => handleLoadedMetadata(e.target as HTMLVideoElement)}
                       loop
-                      autoPlay
                       playsInline
+                      autoPlay
                       onClick={() => togglePlay(reel.id)}
                       
                     >
@@ -799,6 +806,8 @@ useEffect(() => {
                     )}
                   </div>
 
+
+
                   {/* Progress Bar */}
                   <div 
                     className="absolute bottom-16 lg:bottom-3 rounded-b-3xl   left-0 right-0 h-1 bg-gray-700 cursor-pointer"
@@ -823,11 +832,12 @@ useEffect(() => {
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
                           <h3 className="text-white font-medium">{reel.author.name}</h3>
-                          <button className="text-maincl text-xs ml-1 bg-buttonclr bg-opacity-40 px-3 py-0.5 rounded-full hover:bg-white/70 transition-colors">
+                          <button className="text-fillc text-xs ml-1 bg-buttonclr bg-opacity-40 px-3 py-0.5 rounded-full hover:bg-white/70 transition-colors">
                             Follow
                           </button>
                         </div>
                         <p className="text-white/80 text-xs">{reel.author.title}</p>
+
                         <p className="text-white/80 text-xs">{reel.author.date}</p>
                       </div>
                     </div>
@@ -862,6 +872,8 @@ useEffect(() => {
                     </div>
                   </div>
                 </div>
+
+
                 {showInteraction && !showComments && (
                   <div className={`${ 
                     'lg:absolute lg:-right-12 lg:-bottom-32 lg:-translate-y-1/2 lg:flex lg:flex-col  lg:gap-4 ' + ' absolute right-1 z-40 bottom-24 mb-2 flex flex-col gap-4' 
@@ -875,7 +887,7 @@ useEffect(() => {
                       }))}
                     >
                       <div className="p-2 rounded-full hover:bg-black/40 transition-colors lg:hover:bg-gray-100">
-                        <img src={reelsState[reel.id]?.isLiked ? liked : like} alt="" className='w-8' />
+                        <img src={reelsState[reel.id]?.isLiked ? liked : like} alt="" className='w-7' />
                       </div>
                       <span className="text-sm lg:text-gray-700">
                         {reelsState[reel.id]?.isLiked ? reel.likes + 1 : reel.likes}
@@ -888,7 +900,7 @@ useEffect(() => {
                       onClick={() => setShowComments(true)}
                     >
                       <div className="p-2 rounded-full hover:bg-black/40 transition-colors lg:hover:bg-gray-100">
-                        <img src={comment} alt="" className="w-8" />
+                        <img src={comment} alt="" className="w-7" />
                       </div>
                       <span className="text-sm lg:text-gray-700">{reel.comments.length}</span>
                     </button>
@@ -896,7 +908,7 @@ useEffect(() => {
                     {/* Share button */}
                     <button className="flex flex-col items-center text-white">
                       <div className="p-2 rounded-full hover:bg-black/40 transition-colors lg:hover:bg-gray-100">
-                        <img src={share} alt="" className="w-8" />
+                        <img src={share} alt="" className="w-7" />
                       </div>
                       <span className="text-sm lg:text-gray-700">{reel.shares}</span>
                     </button>
@@ -918,12 +930,6 @@ useEffect(() => {
                   </div>
              )}
                
-              
-
-                        
-
-
-               
               </div>
               
             ))}
@@ -935,7 +941,7 @@ useEffect(() => {
               
           {/* Desktop Comments Panel */}
           <div 
-            className={` lg:block bg-white  h-[100vh] ${showComments ? 'pl-4 pt-12' : ''}  font-fontsm overflow-y-scroll no-scrollbar   rounded-xl shadow-lg border-gray-300  transition-all duration-300 ${
+            className={` lg:block hidden bg-white  h-[100vh] ${showComments ? 'pl-4 pt-12' : ''}  font-fontsm overflow-y-scroll no-scrollbar   rounded-xl shadow-lg border-gray-300  transition-all duration-300 ${
               showComments ? 'w-[450px]' : 'w-0'
             }`}
           >
@@ -1057,7 +1063,7 @@ useEffect(() => {
                               onClick={() => setShowReplyInput(comment.id)}
                               className="hover:text-gray-700 text-xs flex gap-1"
                             >
-                              <img src={comment1} alt="" />
+                              <img src={comment1} alt="" className='w-5' />
                               Reply
                             </button>
                           </div>

@@ -7,8 +7,8 @@ import rightarrow from "../assets/icon/rightarrow.svg";
 import disagree1 from "../assets/icon/disagree1.svg";
 import disagree2 from "../assets/icon/disagree2.svg";
 import share from "../assets/icon/share.svg";
-import like from "../assets/icon/like1.svg";
-import liked from "../assets/icon/liked.svg";
+import like from "../assets/icon/agree1.svg";
+import liked from "../assets/icon/agree2.svg";
 import more1 from "../assets/icon/more1.svg";
 import more2 from "../assets/icon/more2.svg"
 import comment from "../assets/icon/comment1.svg";
