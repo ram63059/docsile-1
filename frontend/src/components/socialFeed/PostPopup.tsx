@@ -54,7 +54,21 @@ const PostPopup: React.FC<PostPopupProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
 
   // const [localPostType, setLocalPostType] = useState(postType);
-
+  const handleClose=()=>{
+    setIsTypeOpen(false);
+    // setLocalPostType(type);
+    // Reset media when changing type
+    setSelectedMedia([]);
+    setPdfFile(null);
+    setShowUpload(true);
+    setPostTitle("");
+    setPostContent("");
+    setTitleCount(100);
+    setThumbnail(null);
+    setVideoThumbnail(null);
+    setCurrVideoStep(1)
+    setCurrentStep(1);
+  }
 
   useEffect(() => {
     setPostType(postType1 as PostType);
@@ -636,7 +650,10 @@ const PostPopup: React.FC<PostPopupProps> = ({
             </div>
 
             <button
-              onClick={onClose}
+              onClick={()=>{
+                handleClose();
+                onClose();
+              }}
               
               className="p-1 hover:bg-gray-100 rounded-full"
             >

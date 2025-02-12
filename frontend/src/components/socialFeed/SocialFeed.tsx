@@ -400,7 +400,7 @@ export const SocialFeed: React.FC = () => {
               onScroll={handleStoriesScroll}
             >
     
-             <Stories stories ={stories} />
+             <Stories stories={stories} usersProfiles={[]} />
 
       </div>
 
@@ -471,9 +471,9 @@ export const SocialFeed: React.FC = () => {
 
         {/* Right Sidebar */}
         <div className="hidden lg:block w-[300px] flex-shrink-0 font-fontsm">
-          <div className="sticky top-[calc(theme(spacing.24)+1px)] space-y-4">
+          <div className="sticky top-[calc(theme(spacing.20)+1px)] space-y-4">
             {/* Explore Videos */}
-            <div className="px-4 py-4 bg-fillc bg-opacity-10 rounded-xl">
+            <div className="px-4 py-4 bg-fillc bg-opacity-10 rounded-xl"> 
       {/* Heading Section */}
       <div className="flex justify-between items-center mb-4">
         <div>

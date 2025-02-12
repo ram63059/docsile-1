@@ -580,12 +580,16 @@ function UnifiedChat() {
       />
       
       <div className="max-w-[1200px] mx-auto px-8 py-2  font-fontsm">
-      <div className="px-6 pt-6 pb-2 bg-white rounded-t-xl border border-x-gray-150  border-t-gray-150  ">
-              <h1 className="text-xl font-semibold border-b pb-2 border-fillc text-maincl ">Messages</h1>
-            </div>
-        <div className="bg-white rounded-b-xl shadow-sm flex h-[calc(100vh-180px)]">
+      
+        <div className="bg-white rounded-xl shadow-sm flex h-[calc(100vh-120px)]">
+       
           {/* Left Sidebar */}
           <div className="w-[320px] border-r border-gray-200 flex flex-col rounded-l-xl">
+          <div className="px-6 pt-6 pb-2 bg-white rounded-tl-xl border-b-maincl border  ">
+              <h1 className="text-xl font-semibold pb-2  ">Messages</h1>
+            </div>
+
+
             {/* Messages Header */}
            
               

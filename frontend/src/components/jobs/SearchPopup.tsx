@@ -87,7 +87,7 @@ const SearchPopup: React.FC<SearchPopupProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div ref={popupRef} className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 p-4 w-[480px] mx-auto">
+    <div ref={popupRef} className="absolute top-full left-0 right-0 mt-2 z-10 bg-white rounded-lg shadow-lg border border-gray-200 p-4 w-[480px] mx-auto">
       {/* Popular Searches Section */}
       <div className="mb-6">
         <h3 className="text-sm font-normal text-gray-900 mb-3">Popular Searches</h3>
