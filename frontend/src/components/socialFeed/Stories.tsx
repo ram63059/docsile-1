@@ -54,11 +54,13 @@ interface MyStoryData  {
 export const Stories: React.FC<StoriesProps> = ({ stories }) => {
   const [selectedStoryIndex, setSelectedStoryIndex] = React.useState<number | null>(null);
   const [localStories, setLocalStories] = React.useState<Story[]>(stories);
-  const MAX_STORIES = 8;
+  const MAX_STORIES = 10;
 
   const usersProfiles = React.useMemo(() => [
     { userId: "user5", userName: "Jane Wilson", userAvatar: "https://randomuser.me/api/portraits/women/5.jpg" },
     { userId: "user6", userName: "Tom Harris", userAvatar: "https://randomuser.me/api/portraits/men/6.jpg" },
+    { userId: "user7", userName: "Jane Wilson", userAvatar: "https://randomuser.me/api/portraits/women/5.jpg" },
+    { userId: "user8", userName: "Tom Harris", userAvatar: "https://randomuser.me/api/portraits/men/6.jpg" },
     // ... more user profiles
   ], []);
 
@@ -197,8 +199,8 @@ export const Stories: React.FC<StoriesProps> = ({ stories }) => {
   
   return (
     <>
-      <div className="bg-white rounded-xl shadow-sm p-4">
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+      <div className="bg-white rounded-xl shadow-sm py-4 pt-4 ">
+        <div className="flex gap-2 overflow-x-auto justify-center items-center scrollbar-hide">
           <div
             className="flex-shrink-0 cursor-pointer transition-transform duration-200 hover:scale-105 relative"
             onClick={handleMyStoryClick}
@@ -252,8 +254,8 @@ export const Stories: React.FC<StoriesProps> = ({ stories }) => {
               </p>
             </div>
           ))}
-        </div>
-        {usersWithoutStories.slice(0, placeholdersToShow).map((profile) => (
+
+          {usersWithoutStories.slice(0, placeholdersToShow).map((profile) => (
             <div 
               key={profile.userId}
               className="flex-shrink-0 cursor-pointer transition-transform duration-200 hover:scale-105 relative"
@@ -265,15 +267,17 @@ export const Stories: React.FC<StoriesProps> = ({ stories }) => {
                   alt={profile.userName}
                   className="w-full h-full rounded-full object-cover"
                 />
-                <div className="absolute bottom-0  w-5 h-5 bg-gray-100 rounded-full flex items-center justify-center border-2 border-white">
-                    <img src={userconnect} alt="userconnect" />
-                </div>
+             
+                    <img src={userconnect} alt="userconnect" className="absolute -bottom-2 left-4 w-8" />
+              
               </div>
               <p className="mt-1 text-[13px] text-gray-900 text-center truncate w-14">
                 {profile.userName}
               </p>
             </div>
           ))}
+        </div>
+        
       </div>
 
       {selectedStoryIndex !== null && (
