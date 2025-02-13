@@ -9,6 +9,7 @@ import PostPopup from "./PostPopup";
 import { Stories } from "./Stories";
 import ConnectionCard1 from "./ConnectionCard1";
 import ConnectionCard2 from "./ConnectionCard2";
+import Slider from "./Slider";
 
 interface VideoCardProps {
   videoImage: string;
@@ -259,6 +260,9 @@ export const SocialFeed: React.FC = () => {
                   />
                 </div>
               </div>
+            </div>
+            <div>
+              <Slider/>
             </div>
           </div>
         </div>

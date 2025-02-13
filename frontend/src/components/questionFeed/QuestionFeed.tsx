@@ -6,6 +6,7 @@ import { SearchBar } from "./SearchBar";
 import { Navigation } from "./Navigation";
 import { QuestionPost } from "./questionPost";
 import JobFilterStatic from "./JobFilterCard";
+import Slider from "./Slider";
 
 interface ProfileData {
   name: string;
@@ -111,6 +112,10 @@ export const QuestionFeed: React.FC = () => {
           
               <JobFilterStatic/>
              
+          </div>
+          <div className="mt-3">
+
+          <Slider/>
           </div>
         </div>
 

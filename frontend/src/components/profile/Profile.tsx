@@ -180,25 +180,7 @@ interface MembershipFormData {
   membershipId?: string;
 }
 
-// interface ProfileProps {
-//   name: string;
-//   title: string;
-//   location: string;
-//   profileImage: string;
-//   addIcon: string;
-//   locationIcon: string;
-// }
 
-
-
-// interface ExperienceFormData {
-//   title: string;
-//   company: string;
-//   date: string;
-//   description?: string;
-//   location?: string;
-//   img?: string | File;
-// }
 
 const Profile: React.FC = () => {
   const [activeTab, setActiveTab] = useState('about');
@@ -250,6 +232,20 @@ const Profile: React.FC = () => {
 
   const tabs = ['About', 'Activity', 'Events', 'Memberships', 'Saved', 'Draft'];
   const Desktoptabs = ['About', 'Activity', 'Jobs', 'Events', 'Saved', 'Draft'];
+
+  const profileData={
+
+    name:"Seelam Vamshidhar Goud",
+    imageSrc:"https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c",
+    role:"Ophthalmologist | AIIMS Delhi | Aspiring Medical Professional",
+    locationText:"Mumbai, Maharashtra, India",
+    followers:546,
+    following:478,
+    posts:5,
+    profileLink:"profile.seelam.vamshidhar.goud",
+    isMentorAvailable:true,
+  }
+  
 
   // Sample data for posts and questions
   const posts: Post[] = [
@@ -1106,7 +1102,20 @@ const [activeIndex, setActiveIndex] = useState(0);
       </div>
     </div>
   );
+
+
+    const [pimage, setPImage] = useState<string | null>(null);
   
+      const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            setPImage(reader.result as string);
+          };
+          reader.readAsDataURL(file);
+        }
+      };
 
 
   const [showEditButtons, setShowEditButtons] = useState(false);
@@ -1153,22 +1162,32 @@ const [activeIndex, setActiveIndex] = useState(0);
                 <div className='flex lg:flex-col  items-center' >
 
                 <div className="relative "> 
+                <label htmlFor="file-input" className="cursor-pointer ">
+
                   <img
-                    src={  profile ||"https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c"}
+                    src={ pimage||profileData.imageSrc || profile}
                     alt="Profile"
                     className=" w-28   rounded-full object-cover"
                     />
-                  <div className="absolute bottom-0 right-0  w-6 h-6 flex items-center justify-center text-xs">
-                  <img src={add} alt="" />
-                  </div>
+                  <button className="absolute bottom-0 right-0  w-6 h-6 flex items-center justify-center text-xs">
+                  <img src={add} onClick={()=> handleImageUpload} alt=""  />
+                  </button>
+                  </label>
+                  <input
+                    id="file-input"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
                 </div>
                 <div>
 
-                <h1 className="text-lg font-medium text-gray-700   mt-4">Seelam Vamshidhar Goud</h1>
-                <p className="text-gray-600 text-sm mt-1 lg:mx-2 px-4 ">Ophthalmologist | AIIMS Delhi |Aspiring Medical Professional</p>
+                <h1 className="text-lg font-medium text-gray-700   mt-4">{profileData.name}</h1>
+                <p className="text-gray-600 text-sm mt-1 lg:mx-2 px-4 ">{profileData.role}</p>
                 <p className="text-gray-500 text-sm mt-4 flex items-center justify-center gap-1">
                   <img src={location} alt="" className='w-4' />
-                  Mumbai, Maharashtra, India
+                  {profileData.locationText}
                 </p>
                 </div>
                     </div>
@@ -1195,16 +1214,16 @@ const [activeIndex, setActiveIndex] = useState(0);
 
                 <div className="flex justify-between  mt-6 mx-3">
                   <div className="text-center">
-                    <div className="font-semibold text-sm text-fillc">546</div>
+                    <div className="font-semibold text-sm text-fillc">{profileData.followers} </div>
                     <div className="text-sm text-gray-700">Followers</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-semibold text-sm text-fillc">478</div>
+                    <div className="font-semibold text-sm text-fillc">{profileData.following} </div>
                     <div className="text-sm text-gray-700">Following</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-semibold text-sm text-fillc">5</div>
-                    <div className="text-sm text-gray-700">Questions</div>
+                    <div className="font-semibold text-sm text-fillc">{profileData.posts} </div>
+                    <div className="text-sm text-gray-700">Posts</div>
                   </div>
                 </div>
                   </div>
@@ -1446,7 +1465,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                     <FaLink className="text-gray-400" />
                     Profile Link
                   </p>
-                  <p className="text-xs text-gray-600 mt-1 cursor-pointer">profile.seelam.vamshidhar.goud</p>
+                  <p className="text-xs text-gray-600 mt-1 cursor-pointer">{profileData.profileLink}</p>
                 </div>
 
                 
@@ -3626,3 +3645,5 @@ const [activeIndex, setActiveIndex] = useState(0);
 };
 
 export default Profile;
+
+

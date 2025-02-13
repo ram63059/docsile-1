@@ -199,7 +199,6 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
   postId,
   postAnswers,
   onShare,
-  onAnswer,
 }) => {
   const navigate = useNavigate();
 
@@ -213,7 +212,6 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
   const [showArrows, setShowArrows] = useState(false);
   // const [showAnswers, setShowAnswers] = useState(false);
   const [answerText, setAnswerText] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
  
   const [isSaved, setIsSaved] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
@@ -262,19 +260,7 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
 
   const visibleDots = getVisibleDots();
 
-  const handleSubmitAnswer = async () => {
-    if (answerText.trim() && onAnswer && !isSubmitting) {
-      try {
-        setIsSubmitting(true);
-        await onAnswer(postId, answerText.trim());
-        setAnswerText('');
-      } catch (error) {
-        console.error('Failed to submit answer:', error);
-      } finally {
-        setIsSubmitting(false);
-      }
-    }
-  };
+  
 
   const toggleMore = () => {
     setIsMoreOpen(!isMoreOpen);
@@ -441,7 +427,24 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
               </div>
             )}
 
-        <div className="flex justify-between mt-4 pt-4 pb-3 px-3 border-t border-neutral-200">
+   
+
+        <div className="mt-1 w-full pt-4 border-t border-neutral-200">
+          {/* Answer Input */}
+          <div className="mt-4" onClick={handleQuestionClick}>
+            <div className="flex gap-3 items-center">
+              
+              <div className="flex-1 flex gap-2">
+                <input
+                  type="text"
+                  value={answerText}
+                  onChange={(e) => setAnswerText(e.target.value)}
+                  placeholder="Write your answer..."
+                  className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm outline-none"
+                  
+                />
+             
+                <div className="flex  gap-2 items-center  px-3  border-neutral-200">
           <div
             className={`flex 'bg-gray-100' } rounded-lg p-1 cursor-pointer`}
             onClick={handleQuestionClick}
@@ -472,34 +475,6 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
             </div>
           </div>
         </div>
-
-        <div className="mt-1 w-full pt-4 border-t border-neutral-200">
-          {/* Answer Input */}
-          <div className="mt-4" onClick={handleQuestionClick}>
-            <div className="flex gap-3 items-center">
-              <img
-                src={avatar}
-                alt={`${name}'s avatar`}
-                className="w-8 h-8 rounded-full"
-              />
-              <div className="flex-1 flex gap-2">
-                <input
-                  type="text"
-                  value={answerText}
-                  onChange={(e) => setAnswerText(e.target.value)}
-                  placeholder="Write your answer..."
-                  className="flex-1 bg-gray-100 rounded-full px-4 py-2 text-sm outline-none"
-                  disabled={isSubmitting}
-                />
-                <button
-                  onClick={handleSubmitAnswer}
-                  disabled={!answerText.trim() || isSubmitting}
-                  className={`px-3 py-0.5 bg-maincl text-white rounded-full text-sm font-medium ${
-                    (!answerText.trim() || isSubmitting) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-fillc'
-                  }`}
-                >
-                  {isSubmitting ? 'Submitting...' : 'Answer'}
-                </button>
               </div>
             </div>
           </div>

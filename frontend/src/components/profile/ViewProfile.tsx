@@ -143,17 +143,6 @@ interface MentionedPost {
 
 
 
-interface ProfileCardProps {
-    name: string;
-    imageSrc: string;
-    role: string;
-    locationText: string;
-    followers: number;
-    following: number;
-    questions: number;
-    profileLink?: string;
-    isMentorAvailable?: boolean;
-  }
 
 
 
@@ -192,6 +181,22 @@ const ViewProfile: React.FC = () => {
 
   const tabs = ['About', 'Activity',  'Memberships'];
   const Desktoptabs = ['About', 'Activity',  'Memberships'];
+
+  
+const profileData={
+
+    name:"Seelam Vamshidhar Goud",
+    imageSrc:"https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c",
+    role:"Ophthalmologist | AIIMS Delhi | Aspiring Medical Professional",
+    locationText:"Mumbai, Maharashtra, India",
+    followers:546,
+    following:478,
+    posts:5,
+    profileLink:"profile.seelam.vamshidhar.goud",
+    isMentorAvailable:true,
+  }
+  
+  
 
   // Sample data for posts and questions
   const posts: Post[] = [
@@ -902,14 +907,14 @@ const [activeIndex, setActiveIndex] = useState(0);
                    {/* Profile Section */}
                 <div className="flex lg:flex-col items-center">
                     <div className="relative">
-                    <img src={imageSrc} alt="Profile" className="w-28 rounded-full object-cover" />
+                    <img src={profileData.imageSrc || profile} alt="Profile" className="w-28 rounded-full object-cover" />
                     </div>
                     <div className="text-center lg:text-left">
-                    <h1 className="text-lg font-medium text-gray-700 mt-4">{name}</h1>
-                    <p className="text-gray-600 text-sm mt-1 lg:mx-2 px-4">{role}</p>
+                    <h1 className="text-lg font-medium text-gray-700 text-center mt-4">{profileData.name}</h1>
+                    <p className="text-gray-600 text-sm mt-1 lg:mx-2 px-4">{profileData.role}</p>
                     <p className="text-gray-500 text-sm mt-4 flex items-center justify-center gap-1">
                         <img src={location} alt="Location" className="w-4" />
-                        {locationText}
+                        {profileData.locationText}
                     </p>
                     </div>
                 </div>
@@ -933,39 +938,28 @@ const [activeIndex, setActiveIndex] = useState(0);
                        </div>
 
                     </div>
+                {/* Stats Section */}
+                <div className="flex justify-between mt-6 mx-3">
+                        <div className="text-center">
+                        <div className="font-semibold text-sm text-fillc">{profileData.followers}</div>
+                        <div className="text-sm text-gray-700">Followers</div>
+                        </div>
+                        <div className="text-center">
+                        <div className="font-semibold text-sm text-fillc">{profileData.following}</div>
+                        <div className="text-sm text-gray-700">Following</div>
+                        </div>
+                        <div className="text-center">
+                        <div className="font-semibold text-sm text-fillc">{profileData.posts}</div>
+                        <div className="text-sm text-gray-700">Posts</div>
+                        </div>
+                    </div>
 
-                <div className="flex justify-between  mt-6 mx-3">
-                  <div className="text-center">
-                    <div className="font-semibold text-sm text-fillc">546</div>
-                    <div className="text-sm text-gray-700">Followers</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-semibold text-sm text-fillc">478</div>
-                    <div className="text-sm text-gray-700">Following</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="font-semibold text-sm text-fillc">5</div>
-                    <div className="text-sm text-gray-700">Questions</div>
-                  </div>
-                </div>
+
+
+
                   </div>
 
 
-                   {/* Stats Section */}
-      <div className="flex justify-between mt-6 mx-3">
-        <div className="text-center">
-          <div className="font-semibold text-sm text-fillc">{followers}</div>
-          <div className="text-sm text-gray-700">Followers</div>
-        </div>
-        <div className="text-center">
-          <div className="font-semibold text-sm text-fillc">{following}</div>
-          <div className="text-sm text-gray-700">Following</div>
-        </div>
-        <div className="text-center">
-          <div className="font-semibold text-sm text-fillc">{questions}</div>
-          <div className="text-sm text-gray-700">Questions</div>
-        </div>
-      </div>
 
 
                 <div className="grid grid-cols-2 gap-4 mt-6 w-full text-sm  font-normal">
@@ -977,16 +971,22 @@ const [activeIndex, setActiveIndex] = useState(0);
                   </button>
                 </div>
 
-                <div className='px-2 mt-4 hidden lg:block'>
-                    <div className='bg-buttonclr p-4 rounded-lg' >
-
-                    <p className='text-xs text-gray-700'>vamshidhar is Availbale as a mentor</p>
-                    <div className='flex justify-between pt-2 '>
-                        <button><p className='text-xs text-fillc'> apply for mentorship</p></button>
-                        <button><img src={arrowright} alt=""  className='w-4'/></button>
+            {/* Mentorship Section */}
+                {profileData.isMentorAvailable && (
+                    <div className="px-2 mt-4 hidden lg:block">
+                    <div className="bg-buttonclr p-4 rounded-lg">
+                        <p className="text-xs text-gray-700">{profileData.name} is available as a mentor</p>
+                        <div className="flex justify-between pt-2">
+                        <button>
+                            <p className="text-xs text-fillc">Apply for mentorship</p>
+                        </button>
+                        <button>
+                            <img src={arrowright} alt="Arrow" className="w-4" />
+                        </button>
+                        </div>
                     </div>
                     </div>
-                </div>
+                )}
 
                 <div className="w-full lg:hidden sm:block max-w-4xl mx-auto relative mt-4 h-[180px] overflow-hidden ">
                     {/* First Custom Section */}
@@ -1093,14 +1093,16 @@ const [activeIndex, setActiveIndex] = useState(0);
 
 
 
-                {/* Profile Link */}
-                <div className="mt-6 w-full text-left border border-gray-200 p-4 rounded-lg hidden lg:block">
-                  <p className="text-sm text-gray-500 flex items-center gap-2">
-                    <FaLink className="text-gray-400" />
-                    Profile Link
-                  </p>
-                  <p className="text-xs text-gray-600 mt-1 cursor-pointer">profile.seelam.vamshidhar.goud</p>
-                </div>
+                 {/* Profile Link */}
+                {profileData.profileLink && (
+                    <div className="mt-6 w-full text-left border border-gray-200 p-4 rounded-lg hidden lg:block">
+                    <p className="text-sm text-gray-500 flex items-center gap-2">
+                        <FaLink className="text-gray-400" />
+                        Profile Link
+                    </p>
+                    <p className="text-xs text-gray-600 mt-1 cursor-pointer">{profileData.profileLink}</p>
+                    </div>
+                )}
 
                 
               </div>
