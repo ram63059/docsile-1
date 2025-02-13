@@ -15,6 +15,7 @@ import PostExpandedView from "./PostExpandedView";
 import sharev from "../../assets/icon/sharev.svg";
 import hide from "../../assets/icon/hide.svg";
 import notinterested from "../../assets/icon/notintrested.svg";
+import SharePopUp from "./SharePopUp";
 
 interface Author {
   name: string;
@@ -197,7 +198,6 @@ export const Post: React.FC<PostProps> = ({
   shares,
   reposts,
   onComment,
-  onShare,
   onRepost,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -255,6 +255,13 @@ export const Post: React.FC<PostProps> = ({
       ],
     },
   ]);
+  const [isSharePopupOpen, setIsSharePopupOpen] = useState(false);
+
+  const handleShare = (selectedConnectionIds: string[]) => {
+    // Log the selected connections for testing
+    console.log('Sharing with:', selectedConnectionIds);
+    // Add your sharing logic here
+  };
 
   const handleAddComment = (commentContent: string) => {
     const newComment: Comment = {
@@ -466,6 +473,8 @@ export const Post: React.FC<PostProps> = ({
               </button>
             )}
           </div>
+
+          
           {/* Image slider section */}
           <div onClick={() => setIsExpanded(!isExpanded)}  className="relative w-full mb-4 group" onMouseEnter={() => setShowArrows(true)} onMouseLeave={() => setShowArrows(false)}>
             <div  className="absolute top-2 right-4 z-10 bg-gray-400 bg-opacity-50 text-white text-xs py-1 px-2 rounded-full">
@@ -570,7 +579,7 @@ export const Post: React.FC<PostProps> = ({
             
             <div className="flex">
               <div className="flex">
-                <button onClick={onShare} className="flex items-center gap-1 text-xs text-neutral-500 hover:text-slate-700">
+                <button onClick={() => setIsSharePopupOpen(true)} className="flex items-center gap-1 text-xs text-neutral-500 hover:text-slate-700">
                   <img src={share} className="w-5 h-5" />
                 </button>
               </div>
@@ -591,6 +600,14 @@ export const Post: React.FC<PostProps> = ({
               </div>
             </div>
           </div>
+          
+              <SharePopUp
+                isOpen={isSharePopupOpen}
+                onClose={() => setIsSharePopupOpen(false)}
+                postId="sample-post-id"
+                onShare={handleShare}
+                />
+   
           
           {/* Comments section */}
           {showComments && (

@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import MembershipForm from './forms/MembershipForm';
-import add from "../../assets/icon/add.svg";
 import backbutton from "../../assets/icon/backbutton.svg";
 import more1 from "../../assets/icon/more1.svg";
 import pmessage from "../../assets/icon/pmessage.svg";
-import add2 from "../../assets/icon/add2.svg";
-import { FaLink, FaPlus } from "react-icons/fa";
+import { FaLink} from "react-icons/fa";
 import { Header } from './Header';
 import location from "../../assets/icon/location.svg";
 import edit from "../../assets/icon/edit.svg";
@@ -14,15 +11,6 @@ import PostCard from './PostCard';
 import QuestionCard from './QuestionCard';
 import ResourceCard from './ResourceCard';
 import MentionedCard from './MentionedCard';
-import { JobsCard } from '../jobs/JobCard';
-import ConferenceCard from './ConferenceCard';
-import EventCalendar from './EventCalendar';
-import AwardForm, { AwardFormData } from './forms/AwardForm';
-import InterestForm, { InterestFormData } from './forms/InterestForm';
-import EducationForm from './forms/EducationForm';
-import ExperienceForm from './forms/ExperienceForm';
-import CertificationForm, { CertificationFormData } from './forms/CertificationForm';
-import {  State }  from 'country-state-city';
 import experience from "../../assets/icon/experience.svg";
 import education from "../../assets/icon/education.svg";
 import profile from "../../assets/icon/profile.svg";
@@ -152,89 +140,43 @@ interface MentionedPost {
   reposts: number;
 }
 
-  interface Job {
-    id: number;
-    image: string;
-    date: string;
+
+
+
+interface ProfileCardProps {
     name: string;
-    location: string;
-    amount: string;
-    department: string;
+    imageSrc: string;
+    role: string;
+    locationText: string;
+    followers: number;
+    following: number;
+    questions: number;
+    profileLink?: string;
+    isMentorAvailable?: boolean;
   }
-  interface Conference {
-    id: string;
-    title: string;
-    date: string;
-    avatar: string;
-    location: string;
-    speaker: string;
-    image: string;
-    price?: string;
-    speciality: string;
-  }
-  
-interface MembershipFormData {
-  name: string;
-  category: string;
-  position?: string;
-  membershipId?: string;
-}
-
-// interface ProfileProps {
-//   name: string;
-//   title: string;
-//   location: string;
-//   profileImage: string;
-//   addIcon: string;
-//   locationIcon: string;
-// }
 
 
 
-// interface ExperienceFormData {
-//   title: string;
-//   company: string;
-//   date: string;
-//   description?: string;
-//   location?: string;
-//   img?: string | File;
-// }
 
-const Profile: React.FC = () => {
+const ViewProfile: React.FC = () => {
   const [activeTab, setActiveTab] = useState('about');
-  const [isAddMembershipFormOpen, setIsAddMembershipFormOpen] = useState(false);
-  const [editingMembership, setEditingMembership] = useState<Membership | null>(null);
-  const [showEditExperience, setShowEditExperience] = useState(false);
-  const [isExperienceFormOpen, setIsExperienceFormOpen] = useState(false);
-  const [editingExperience, setEditingExperience] = useState<ExperienceItem | null>(null);
+
   
   
   const [expanded, setExpanded] = useState(false);
   const [interestsexpanded, setInterestsExpanded] = useState(false);
   const [showAllPosts, setShowAllPosts] = useState(false);
-  const [showAllSavedPosts, setShowAllSavedPosts] = useState(false);
   const [showAllQuestions, setShowAllQuestions] = useState(false);
-  const [showAllSavedQuestions, setShowAllSavedQuestions] = useState(false);
   const [showAllCertifications, setShowAllCertifications] = useState(false);
   const [showAllResources, setShowAllResources] = useState(false);
-  const [showAllSavedResources, setShowAllSavedResources] = useState(false);
   const [activeMediaTab, setActiveMediaTab] = useState<'Photos' | 'Videos' | 'Other'>('Photos');
   const [showAllMentioned, setShowAllMentioned] = useState(false);
-  const [showAllJobs, setShowAllJobs] = useState(false);
-  const [showAllSavedJobs, setShowAllSavedJobs] = useState(false);
+ 
   const [activeDesktopTab, setActiveDesktopTab] = useState<string>('activity');
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
-  const [isAwardFormOpen, setIsAwardFormOpen] = useState(false);
+
+
   
-  const [editingAward, setEditingAward] = useState<Award | null>(null);
- 
-  const [isAddInterestFormOpen, setIsAddInterestFormOpen] = useState(false);
-  const [editingInterest, setEditingInterest] = useState<{ id: string; name: string } | null>(null);
-  const [showInterestEditButtons, setShowInterestEditButtons] = useState(false);
-  
-  const [isEducationFormOpen, setIsEducationFormOpen] = useState(false);
-  const [editingEducation, setEditingEducation] = useState<Education | null>(null);
-  const [isEditMode, setIsEditMode] = useState(false);
 
   useEffect(() => {
     setActiveDesktopTab('about');
@@ -248,8 +190,8 @@ const Profile: React.FC = () => {
   }, []);
 
 
-  const tabs = ['About', 'Activity', 'Events', 'Memberships', 'Saved', 'Draft'];
-  const Desktoptabs = ['About', 'Activity', 'Jobs', 'Events', 'Saved', 'Draft'];
+  const tabs = ['About', 'Activity',  'Memberships'];
+  const Desktoptabs = ['About', 'Activity',  'Memberships'];
 
   // Sample data for posts and questions
   const posts: Post[] = [
@@ -338,7 +280,7 @@ const Profile: React.FC = () => {
 
   
 
-  const [experiences, setExperiences] = useState<ExperienceItem[]>([
+  const experiences :ExperienceItem[]=([
     { id:1,
       title: 'Ophthalmology Clinical Intern',
       company: 'Aravind Eye Hospital, Madurai, Tamil Nadu',
@@ -368,7 +310,7 @@ const Profile: React.FC = () => {
     // Add more experiences...
   ]);
 
-  const [educationData, setEducationData] = useState<Education[]>([
+  const educationData :Education[]=([
     { 
       id:1,
       institution: "All India Institute of Medical Sciences (AIIMS), New Delhi",
@@ -403,7 +345,7 @@ const Profile: React.FC = () => {
     },
     // Add more education...
   ]);
-  const [interestsData, setInterestsData] = useState<Interest[]>([
+  const interestsData :Interest[]=([
     {
       id: '1',
       name: "Cataract Surgery",
@@ -434,7 +376,7 @@ const Profile: React.FC = () => {
     }
   ]);
 
-  const [certificationData, setCertificationData] = useState<Certification[]>([
+  const certificationData :Certification[]=([
 
     {
       id: '1',
@@ -466,7 +408,7 @@ const Profile: React.FC = () => {
     }
   ]);
 
-  const [memberships, setMemberships] = useState<Membership[]>([
+  const memberships: Membership[]=([
     { id: 1, name: "Visionary Care Society", category: "Ophthalmology", position: "Member"},
     { id: 2, name: "Visionary Care Society", category: "Ophthalmology", position: "Member"},
     { id: 3, name: "Visionary Care Society", category: "Ophthalmology", position: "Member"},
@@ -475,7 +417,7 @@ const Profile: React.FC = () => {
     { id: 6, name: "Visionary Care Society", category: "Ophthalmology", position: "Member"},
    ]);
 
-  const [awards, setAwards] = useState<Award[]>(
+  const awards :Award[]=(
 
 
    [
@@ -665,29 +607,6 @@ const mediaItems: MediaItem[] = [
   }
 ];
 
-const jobs: Job[] = [
-  {
-    id: 1,
-    department: "Senior Ophthalmologist",
-    
-    name: "City Eye Hospital",
-    location: "Mumbai, India",
-    amount:'$22,000-44,000',
-    date: "Posted 2 days ago",
-    image: "https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
-  },
-  {
-    id: 2,
-    department: "Eye Surgeon",
-
-    name: "Apollo Hospitals",
-    location: "Delhi, India",
-    amount:'$22,000-44,000',
-
-    date: "Posted 3 days ago",
-    image: "https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
-  }
-];
 
 const mentionedPosts: MentionedPost[] = [
   {
@@ -741,176 +660,7 @@ const [activeIndex, setActiveIndex] = useState(0);
     return () => clearInterval(timer);
   }, []);
 
-  // Sample saved data
-  const savedPosts: Post[] = [
-    {
-      id: 1,
-      content: "Just completed a successful cataract surgery using the latest minimally invasive technique. The patient's vision improved significantly...",
-      likes: 45,
-      comments: 12,
-      userTitle:'Opthomology the future of eye care',
-      shares :12,
-      reposts:12,
-      time: "2 hours ago",
-      images: [
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/3179d893d2c64d78a71042d4bbe19d82929393a4cc746e57df0407426f7a4992?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/bacdf5b5cd530c209ad1b1cdb72874c3b55ba49a818704cd3a277725a590f529?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/6939df2c7edaf176e0907ced793a5e28a1df342e59d4610b8999ddc4aed782a9?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-      ],
-      userImage: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c",
-      userName: "Seelam Vamshidhar Goud",
-      postImage: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c"
-    },
-    {
-      id: 2,
-      content: "Excited to share my research findings on advanced IOL technologies at the upcoming ophthalmology conference...",
-      likes: 32,
-      comments: 8,
-      userTitle:'Opthomology the future of eye care',
-      shares :12,
-      reposts:12,
-      time: "5 hours ago",
-      images: [
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/3179d893d2c64d78a71042d4bbe19d82929393a4cc746e57df0407426f7a4992?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/bacdf5b5cd530c209ad1b1cdb72874c3b55ba49a818704cd3a277725a590f529?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/6939df2c7edaf176e0907ced793a5e28a1df342e59d4610b8999ddc4aed782a9?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-      ],
-      userImage: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c",
-      userName: "Seelam Vamshidhar Goud",
-      postImage: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c"
-    }
-    ,
-    {
-      id: 3,
-      content: "Excited to share my research findings on advanced IOL technologies at the upcoming ophthalmology conference...",
-      likes: 32,
-      comments: 8,
-      userTitle:'Opthomology the future of eye care',
-      shares :12,
-      reposts:12,
-      time: "5 hours ago",
-      images: [
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/3179d893d2c64d78a71042d4bbe19d82929393a4cc746e57df0407426f7a4992?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/bacdf5b5cd530c209ad1b1cdb72874c3b55ba49a818704cd3a277725a590f529?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/6939df2c7edaf176e0907ced793a5e28a1df342e59d4610b8999ddc4aed782a9?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-      ],
-      userImage: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c",
-      userName: "Seelam Vamshidhar Goud",
-      postImage: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c"
-    }
-  ];
-
-  const savedQuestions: Question[] = [
-    {
-      id: '1',
-      title: "Latest advancements in cataract surgery techniques?",
-      content: "I'm interested in learning about the newest developments in cataract surgery. What are the most promising techniques being used or researched currently?",
-      images: [
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/3179d893d2c64d78a71042d4bbe19d82929393a4cc746e57df0407426f7a4992?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/bacdf5b5cd530c209ad1b1cdb72874c3b55ba49a818704cd3a277725a590f529?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/6939df2c7edaf176e0907ced793a5e28a1df342e59d4610b8999ddc4aed782a9?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-      ],
-      answers: 12,
-      shares: 8,
-      author: {
-        image: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c",
-        name: "Dr. Seelam Vamshidhar",
-        title: "Ophthalmologist | AIIMS Delhi"
-      },
-      timeAgo: "2 days ago"
-    },
-    {
-      id: '2',
-      title: "Best practices for post-LASIK care?",
-      content: "Looking for recommendations on post-LASIK patient care protocols. What has been your experience with different approaches?",
-      images: [
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/3179d893d2c64d78a71042d4bbe19d82929393a4cc746e57df0407426f7a4992?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/bacdf5b5cd530c209ad1b1cdb72874c3b55ba49a818704cd3a277725a590f529?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/6939df2c7edaf176e0907ced793a5e28a1df342e59d4610b8999ddc4aed782a9?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
-      ],
-      answers: 8,
-      shares: 5,
-      author: {
-        image: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c",
-        name: "Dr. Seelam Vamshidhar",
-        title: "Ophthalmologist | AIIMS Delhi"
-      },
-      timeAgo: "2 days ago"
-    }
-  ];
-
-  const savedResources: Resource[] = [
-    {
-      id: '1',
-      type: 'Article',
-      title: 'The Future of AI in Ophthalmology',
-      description: 'Artificial intelligence (AI) is revolutionizing various fields of medicine, and ophthalmology is no exception. With the rapid advancement of machine learning, deep learning, and computer vision, AI is enhancing diagnostic accuracy, streamlining workflows, and improving patient outcomes. The integration of AI into ophthalmology is set to redefine the way eye diseases are detected, monitored, and treated.',
-      image: 'https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08',
-      
-    },
-    {
-      id: '2',
-      type: 'Research',
-      title: 'Latest Advances in Glaucoma Treatment',
-      description: 'Recent developments in glaucoma treatment have opened new possibilities for patients. This comprehensive review explores innovative therapeutic approaches, surgical techniques, and medication delivery systems that are transforming the management of glaucoma.',
-      image: 'https://cdn.builder.io/api/v1/image/assets/TEMP/3179d893d2c64d78a71042d4bbe19d82929393a4cc746e57df0407426f7a4992?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08',
-      
-    }
-  ];
-
-  const savedJobs: Job[] = [
-    {
-      id: 1,
-      department: "Senior Ophthalmologist",
-      
-      name: "City Eye Hospital",
-      location: "Mumbai, India",
-      amount:'$22,000-44,000',
-      date: "Posted 2 days ago",
-      image: "https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
-    },
-    {
-      id: 2,
-      department: "Eye Surgeon",
-  
-      name: "Apollo Hospitals",
-      location: "Delhi, India",
-      amount:'$22,000-44,000',
-  
-      date: "Posted 3 days ago",
-      image: "https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
-    }
-  ];
-
-  const savedConferences: Conference[] = [
-    {
-      id: '1',
-      title: "International Ophthalmology Conference 2022",
-      date: "June 15-17, 2022",
-      avatar: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c",
-      location: "New York, USA",
-      speaker: "Dr. Seelam Vamshidhar",
-      speciality: "Ophthalmology",
-      price: "$299",
-      image: "https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
-    },
-    {
-      id: '2',
-      title: "World Retina Congress 2022",
-      date: "July 20-22, 2022",
-      avatar: "https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c",
-      location: "Paris, France",
-      speaker: "Dr. Seelam Vamshidhar",
-      speciality: "Retina",
-      price: "$399",
-      image: "https://cdn.builder.io/api/v1/image/assets/TEMP/3179d893d2c64d78a71042d4bbe19d82929393a4cc746e57df0407426f7a4992?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
-    }
-  ];
+ 
 
 
   const ActivitySection = () => (
@@ -1109,11 +859,7 @@ const [activeIndex, setActiveIndex] = useState(0);
   
 
 
-  const [showEditButtons, setShowEditButtons] = useState(false);
-  const [showCertEditButtons, setShowCertEditButtons] = useState(false);
-  const [editingCertification, setEditingCertification] = useState<Certification | null>(null);
-  const [isCertificationFormOpen, setIsCertificationFormOpen] = useState(false);
-  const [showAllConferences, setShowAllConferences] = useState(false);
+
   return (
     <div className="min-h-screen font-fontsm mx-auto ">
       {/* Mobile Header - Only visible on mobile */}
@@ -1150,28 +896,23 @@ const [activeIndex, setActiveIndex] = useState(0);
             <div className="bg-white   ">
               <div className="flex flex-col  items-center text-center">
                   <div className='lg:border p-3 lg:py-8 shadow-sm rounded-xl border-gray-200'>
-                <div className='flex lg:flex-col  items-center' >
 
-                <div className="relative "> 
-                  <img
-                    src={  profile ||"https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c"}
-                    alt="Profile"
-                    className=" w-28   rounded-full object-cover"
-                    />
-                  <div className="absolute bottom-0 right-0  w-6 h-6 flex items-center justify-center text-xs">
-                  <img src={add} alt="" />
-                  </div>
-                </div>
-                <div>
 
-                <h1 className="text-lg font-medium text-gray-700   mt-4">Seelam Vamshidhar Goud</h1>
-                <p className="text-gray-600 text-sm mt-1 lg:mx-2 px-4 ">Ophthalmologist | AIIMS Delhi |Aspiring Medical Professional</p>
-                <p className="text-gray-500 text-sm mt-4 flex items-center justify-center gap-1">
-                  <img src={location} alt="" className='w-4' />
-                  Mumbai, Maharashtra, India
-                </p>
-                </div>
+
+                   {/* Profile Section */}
+                <div className="flex lg:flex-col items-center">
+                    <div className="relative">
+                    <img src={imageSrc} alt="Profile" className="w-28 rounded-full object-cover" />
                     </div>
+                    <div className="text-center lg:text-left">
+                    <h1 className="text-lg font-medium text-gray-700 mt-4">{name}</h1>
+                    <p className="text-gray-600 text-sm mt-1 lg:mx-2 px-4">{role}</p>
+                    <p className="text-gray-500 text-sm mt-4 flex items-center justify-center gap-1">
+                        <img src={location} alt="Location" className="w-4" />
+                        {locationText}
+                    </p>
+                    </div>
+                </div>
 
                   
 
@@ -1209,14 +950,42 @@ const [activeIndex, setActiveIndex] = useState(0);
                 </div>
                   </div>
 
+
+                   {/* Stats Section */}
+      <div className="flex justify-between mt-6 mx-3">
+        <div className="text-center">
+          <div className="font-semibold text-sm text-fillc">{followers}</div>
+          <div className="text-sm text-gray-700">Followers</div>
+        </div>
+        <div className="text-center">
+          <div className="font-semibold text-sm text-fillc">{following}</div>
+          <div className="text-sm text-gray-700">Following</div>
+        </div>
+        <div className="text-center">
+          <div className="font-semibold text-sm text-fillc">{questions}</div>
+          <div className="text-sm text-gray-700">Questions</div>
+        </div>
+      </div>
+
+
                 <div className="grid grid-cols-2 gap-4 mt-6 w-full text-sm  font-normal">
                   <button className=" px-3  py-1 bg-maincl text-white rounded-3xl hover:bg-fillc">
-                    Edit Profile
+                    Message
                   </button>
-                  <button className="flex justify-center px-3 py-1 border rounded-3xl hover:bg-gray-50">
-                    <img src={add2} alt="" />
-                    Be Mentor
+                  <button className="flex justify-center px-3 py-1 text-maincl bg-gray-100 border rounded-3xl hover:bg-gray-50">
+                    Follow
                   </button>
+                </div>
+
+                <div className='px-2 mt-4 hidden lg:block'>
+                    <div className='bg-buttonclr p-4 rounded-lg' >
+
+                    <p className='text-xs text-gray-700'>vamshidhar is Availbale as a mentor</p>
+                    <div className='flex justify-between pt-2 '>
+                        <button><p className='text-xs text-fillc'> apply for mentorship</p></button>
+                        <button><img src={arrowright} alt=""  className='w-4'/></button>
+                    </div>
+                    </div>
                 </div>
 
                 <div className="w-full lg:hidden sm:block max-w-4xl mx-auto relative mt-4 h-[180px] overflow-hidden ">
@@ -1231,9 +1000,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                       <div className=' '> 
                      <div className="flex justify-between items-start mb-2">
                       <h2 className="text-xl font-semibold">About</h2>
-                      <button className="text-gray-500">
-                        <img src={edit} alt="edit" className="w-5 h-5" />
-                      </button>
+                      
                     </div>
                     <div>
                       <p className="text-xs text-gray-600 ">
@@ -1254,49 +1021,18 @@ const [activeIndex, setActiveIndex] = useState(0);
                             : '-translate-x-full'
                       }`}
                     >
-                     <div className="w-full  h-[200px] border border-gray-200 p-4 rounded-lg">
+                     <div className="w-full bg-buttonclr   h-[200px] border border-gray-200 p-4 rounded-xl">
                           
-                          <div className="flex   justify-between items-start mb-4">
-                            <div className='mr-4'>
-                            <h2 className="text-sm flex items-start font-medium text-gray-800">Profile Completion</h2>
-                            <div className="space-y-1 grid grid-cols-2 ">
-                            <button className=" flex  items-center  bg-gray-50 rounded-full py-2 px-2">
-                              <span className="text-xs text-gray-700">Education</span>
-                              <span className="text-sm">+</span>
-                            </button>
-                            <button className=" flex items-center justify-between bg-gray-50 rounded-full py-2 px-4">
-                              <span className="text-xs text-gray-700">Experience</span>
-                              <span className="text-sm">+</span>
-                            </button>
-                            <button className=" flex items-center justify-between bg-gray-50 rounded-full py-2 px-4">
-                              <span className="text-xs text-gray-700">Skills</span>
-                              <span className="text-sm">+</span>
-                            </button>
-                            <button className=" flex items-center justify-between bg-gray-50 rounded-full py-2 px-4">
-                              <span className="text-xs text-gray-700">Awards</span>
-                              <span className="text-sm">+</span>
-                            </button>
-                          </div>
-                          </div> 
-                            <div className="relative mt-4">
-                              <div className="w-14 h-14 rounded-full border-2 border-gray-100 flex items-center justify-center">
-                                <span className="text-sm font-medium text-maincl">75%</span>
-                              </div>
-                              <svg className="absolute top-0 left-0 w-14 h-14 -rotate-90">
-                                <circle
-                                  cx="28"
-                                  cy="28"
-                                  r="26"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                  fill="none"
-                                  className="text-maincl"
-                                  strokeDasharray="163.36"
-                                  strokeDashoffset="40.84"
-                                />
-                              </svg>
+                     <div className='px-2 '>
+                            <div className=' p-4 rounded-lg' >
+
+                            <p className='text-md text-gray-700'>vamshidhar is Availbale as a mentor</p>
+                            <div className='flex justify-between pt-4 px-2 '>
+                                <button><p className='text-xs text-fillc'> apply for mentorship</p></button>
+                                <button><img src={arrowright} alt=""  className='w-4'/></button>
                             </div>
-                          </div>
+                            </div>
+                        </div>
                           
                         </div>
                       
@@ -1357,89 +1093,6 @@ const [activeIndex, setActiveIndex] = useState(0);
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                {/* Profile Completion */}
-                <div className="w-full mt-6 hidden lg:block border border-gray-200 p-4 rounded-lg">
-                  
-                  <div className="flex   justify-between items-start mb-4">
-                    <div className='mr-4'>
-                    <h2 className="text-sm flex items-start font-medium text-gray-800">Profile Completion</h2>
-                    <div className="space-y-1 grid grid-cols-2 ">
-                    <button className=" flex  items-center  bg-gray-50 rounded-full py-2 px-2">
-                      <span className="text-xs text-gray-700">Education</span>
-                      <span className="text-sm">+</span>
-                    </button>
-                    <button className=" flex items-center justify-between bg-gray-50 rounded-full py-2 px-4">
-                      <span className="text-xs text-gray-700">Experience</span>
-                      <span className="text-sm">+</span>
-                    </button>
-                    <button className=" flex items-center justify-between bg-gray-50 rounded-full py-2 px-4">
-                      <span className="text-xs text-gray-700">Skills</span>
-                      <span className="text-sm">+</span>
-                    </button>
-                    <button className=" flex items-center justify-between bg-gray-50 rounded-full py-2 px-4">
-                      <span className="text-xs text-gray-700">Awards</span>
-                      <span className="text-sm">+</span>
-                    </button>
-                  </div>
-                  </div> 
-                    <div className="relative mt-4">
-                      <div className="w-14 h-14 rounded-full border-2 border-gray-100 flex items-center justify-center">
-                        <span className="text-sm font-medium text-maincl">75%</span>
-                      </div>
-                      <svg className="absolute top-0 left-0 w-14 h-14 -rotate-90">
-                        <circle
-                          cx="28"
-                          cy="28"
-                          r="26"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          fill="none"
-                          className="text-maincl"
-                          strokeDasharray="163.36"
-                          strokeDashoffset="40.84"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                  
-                </div>
-
                 {/* Profile Link */}
                 <div className="mt-6 w-full text-left border border-gray-200 p-4 rounded-lg hidden lg:block">
                   <p className="text-sm text-gray-500 flex items-center gap-2">
@@ -1485,336 +1138,8 @@ const [activeIndex, setActiveIndex] = useState(0);
                 )}
                 
               </div>
-            <div className="bg-white rounded-lg shadow-sm lg:hidden">
-                {/* Show ActivitySection for both mobile and desktop when activity tab is active */}
-                {(activeTab === 'events' || (!isMobile && activeDesktopTab === 'events')) && (
-                  <EventCalendar />
-                )}
-                
-              </div>
-            <div className="bg-white rounded-lg shadow-sm lg:hidden">
-                {/* Show ActivitySection for both mobile and desktop when activity tab is active */}
-                {(activeTab === 'saved' || (!isMobile && activeDesktopTab === 'saved')) && (
-
-
-                          
-                            <div className="space-y-8">
-                              {/* Saved Posts Section */}
-                              <div className="space-y-4 relative group">
-                                <div className="flex justify-between items-center mb-4">
-                                  <h2 className="text-xl font-medium">Saved Posts <span className='text-gray-500 text-md' > ({savedPosts.length})</span></h2>
-                                  {savedPosts.length > 1 && (
-                                    <button 
-                                      onClick={() => setShowAllSavedPosts(!showAllSavedPosts)}
-                                      className="text-fillc text-sm font-medium flex items-center gap-1"
-                                    >
-                                      {showAllSavedPosts ? "Show Less" : "See all Posts"}
-                                      <img src={arrowright} alt="" className={`transform ${showAllSavedPosts ? 'rotate-180' : ''} w-4 h-4`} />
-                                    </button>
-                                  )}
-                                </div>
-
-                                {savedPosts.length === 0 ? (
-                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
-                                    <p className="text-gray-600 text-sm">
-                                      No saved posts yet. Save posts you want to revisit later!
-                                    </p>
-                                  </div>
-                                ) : (
-                                  <div className="relative">
-                                    <div 
-                                      id="saved-posts-scroll-container" 
-                                      className={`flex ${showAllSavedPosts ? 'overflow-x-auto' : 'overflow-x-hidden'} scroll-smooth`}
-                                      style={{ 
-                                        scrollSnapType: 'x mandatory',
-                                        scrollBehavior: 'smooth',
-                                        WebkitOverflowScrolling: 'touch',
-                                        scrollbarWidth: 'none',
-                                        msOverflowStyle: 'none'
-                                      }}
-                                    >
-                                      <div className="flex gap-4 transition-transform duration-300">
-                                        {savedPosts.map((post) => (
-                                          <div 
-                                            key={post.id} 
-                                            className="w-[calc(80%)] flex-none"
-                                            style={{ 
-                                             
-                                              scrollSnapAlign: 'start'
-                                            }}
-                                          >
-                                            <PostCard
-                                              userTitle={post.userTitle}
-                                              userImage={post.userImage}
-                                              userName={post.userName}
-                                              timeAgo={post.time}
-                                              content={post.content}
-                                              likes={post.likes}
-                                              reposts={post.reposts}
-                                              comments={post.comments}
-                                              images={post.images}
-                                              shares={post.shares}
-                                            />
-                                          </div>
-                                        ))}
-                                      </div>
-                                    </div>
-
-                                    
-                                  </div>
-                                )}
-                              </div>
-
-                              {/* Saved Questions Section */}
-                                <div className="space-y-4 relative group">
-                                <div className="flex justify-between items-center mb-4">
-                                  <h2 className="text-xl font-medium">Saved Questions <span className='text-gray-500 text-md' > ({savedQuestions.length})</span></h2>
-                                  {savedQuestions.length > 1 && (
-                                  <button 
-                                    onClick={() => setShowAllSavedQuestions(!showAllSavedQuestions)}
-                                    className="text-fillc text-sm font-medium flex items-center gap-1"
-                                  >
-                                    {showAllSavedQuestions ? "Show Less" : "See all Questions"}
-                                    <img src={arrowright} alt="" className={`transform ${showAllSavedQuestions ? 'rotate-180' : ''} w-4 h-4`} />
-                                  </button>
-                                  )}
-                                </div>
-
-                                {savedQuestions.length === 0 ? (
-                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
-                                  <p className="text-gray-600 text-sm">
-                                    No saved questions yet. Save questions you want to revisit later!
-                                  </p>
-                                  </div>
-                                ) : (
-                                  <div className="relative">
-                                  <div 
-                                    id="saved-questions-scroll-container" 
-                                    className={`flex ${showAllSavedQuestions ? 'overflow-x-auto' : 'overflow-x-hidden'} scroll-smooth`}
-                                    style={{ 
-                                    scrollSnapType: 'x mandatory',
-                                    scrollBehavior: 'smooth',
-                                    WebkitOverflowScrolling: 'touch',
-                                    scrollbarWidth: 'none',
-                                    msOverflowStyle: 'none'
-                                    }}
-                                  >
-                                    <div className="flex gap-4 transition-transform duration-300">
-                                    {savedQuestions.map((question) => (
-                                      <div 
-                                      key={question.id} 
-                                      className="w-[calc(100%)] flex-none"
-                                      style={{ 
-                                        scrollSnapAlign: 'start'
-                                      }}
-                                      >
-                                      <QuestionCard
-                                        userImage={question.author.image}
-                                        userName={question.author.name}
-                                        userTitle={question.author.title}
-                                        timeAgo={question.timeAgo}
-                                        questionTitle={question.title}
-                                        questionContent={question.content}
-                                        images={question.images}
-                                        answers={question.answers}
-                                        shares={question.shares}
-                                      />
-                                      </div>
-                                    ))}
-                                    </div>
-                                  </div>
-                                  </div>
-                                )}
-                                </div>
-
-                                {/* Saved Resources Section */}
-                                <div className="space-y-4 relative group">
-                                <div className="flex justify-between items-center mb-4">
-                                  <h2 className="text-xl font-medium">Saved Resources <span className='text-gray-500 text-md' > ({savedResources.length})</span></h2>
-                                  {savedResources.length > 1 && (
-                                  <button 
-                                    onClick={() => setShowAllSavedResources(!showAllSavedResources)}
-                                    className="text-fillc text-sm font-medium flex items-center gap-1"
-                                  >
-                                    {showAllSavedResources ? "Show Less" : "See all Resources"}
-                                    <img src={arrowright} alt="" className={`transform ${showAllSavedResources ? 'rotate-180' : ''} w-4 h-4`} />
-                                  </button>
-                                  )}
-                                </div>
-
-                                {savedResources.length === 0 ? (
-                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
-                                  <p className="text-gray-600 text-sm">
-                                    No saved resources yet. Save resources you want to revisit later!
-                                  </p>
-                                  </div>
-                                ) : (
-                                  <div className="relative">
-                                  
-
-                                  <div 
-                                    id="saved-resources-scroll-container" 
-                                    className={`flex ${showAllSavedResources ? 'overflow-x-auto' : 'overflow-x-hidden'} scroll-smooth`}
-                                    style={{ 
-                                    scrollSnapType: 'x mandatory',
-                                    scrollBehavior: 'smooth',
-                                    WebkitOverflowScrolling: 'touch',
-                                    scrollbarWidth: 'none',
-                                    msOverflowStyle: 'none'
-                                    }}
-                                  >
-                                    <div className="flex gap-4 transition-transform duration-300">
-                                    {savedResources.map((resource) => (
-                                      <div 
-                                      key={resource.id} 
-                                      className="w-[calc(100%)] flex-none"
-                                      style={{ scrollSnapAlign: 'start' }}
-                                      >
-                                      <ResourceCard
-                                        type={resource.type}
-                                        title={resource.title}
-                                        description={resource.description}
-                                        image={resource.image}
-                                      />
-                                      </div>
-                                    ))}
-                                    </div>
-                                  </div>
-                                  </div>
-                                )}
-                                </div>
-
-                              {/* Saved Jobs Section */}
-                                <div className="space-y-4 relative group">
-                                <div className="flex justify-between items-center mb-4">
-                                  <h2 className="text-xl font-medium">Saved Jobs <span className='text-gray-500 text-md' > ({savedJobs.length})</span></h2>
-                                  {savedJobs.length > 1 && (
-                                  <button 
-                                    onClick={() => setShowAllSavedJobs(!showAllSavedJobs)}
-                                    className="text-fillc text-sm font-medium flex items-center gap-1"
-                                  >
-                                    {showAllSavedJobs ? "Show Less" : "See all Jobs"}
-                                    <img src={arrowright} alt="" className={`transform ${showAllSavedJobs ? 'rotate-180' : ''} w-4 h-4`} />
-                                  </button>
-                                  )}
-                                </div>
-
-                                {savedJobs.length === 0 ? (
-                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
-                                  <p className="text-gray-600 text-sm">
-                                    No saved jobs yet. Save jobs you're interested in!
-                                  </p>
-                                  </div>
-                                ) : (
-                                  <div className="relative">
-
-
-                                  <div 
-                                    id="saved-jobs-scroll-container" 
-                                    className={`flex ${showAllSavedJobs ? 'overflow-x-auto' : 'overflow-x-hidden'} scroll-smooth`}
-                                    style={{ 
-                                    scrollSnapType: 'x mandatory',
-                                    scrollBehavior: 'smooth',
-                                    WebkitOverflowScrolling: 'touch',
-                                    scrollbarWidth: 'none',
-                                    msOverflowStyle: 'none'
-                                    }}
-                                  >
-                                    <div className="flex gap-4 transition-transform duration-300">
-                                    {savedJobs.map((job) => (
-                                      <div 
-                                      key={job.id} 
-                                      className="w-[calc(80%)] flex-none"
-                                      style={{ scrollSnapAlign: 'start' }}
-                                      >
-                                      <JobsCard
-                                        job={{
-                                        ...job,
-                                        startingDate: "",  
-                                        applyBy: "",
-                                        numberOfApplicants: 0
-                                        }}
-                                      />
-                                      </div>
-                                    ))}
-                                    </div>
-                                  </div>
-                                  </div>
-                                )}
-                                </div>
-
-                              {/* Saved Conferences Section */}
-                                {/* Saved Conferences Section */}
-                                <div className="space-y-4 relative group">
-                                <div className="flex justify-between items-center mb-4">
-                                  <h2 className="text-xl font-medium">Saved Conferences <span className='text-gray-500 text-md' > ({savedConferences.length})</span></h2>
-                                  {savedConferences.length > 1 && (
-                                  <button 
-                                    onClick={() => setShowAllConferences(!showAllConferences)}
-                                    className="text-fillc text-sm font-medium flex items-center gap-1"
-                                  >
-                                    {showAllConferences ? "Show Less" : "See all Conferences"}
-                                    <img src={arrowright} alt="" className={`transform ${showAllConferences ? 'rotate-180' : ''} w-4 h-4`} />
-                                  </button>
-                                  )}
-                                </div>
-
-                                {savedConferences.length === 0 ? (
-                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
-                                  <p className="text-gray-600 text-sm">
-                                    No saved conferences yet. Save conferences you want to attend or revisit later!
-                                  </p>
-                                  </div>
-                                ) : (
-                                  <div className="relative">
-                                  
-
-                                  <div 
-                                    id="saved-conferences-scroll-container" 
-                                    className={`flex ${showAllConferences ? 'overflow-x-auto' : 'overflow-x-hidden'} scroll-smooth hide-scrollbar`}
-                                    style={{ 
-                                    scrollSnapType: 'x mandatory',
-                                    scrollBehavior: 'smooth',
-                                    WebkitOverflowScrolling: 'touch',
-                                    scrollbarWidth: 'none',
-                                    msOverflowStyle: 'none'
-                                    }}
-                                  >
-                                    <div className="flex gap-4 transition-transform duration-300">
-                                    {savedConferences.map((conference) => (
-                                      <div 
-                                      key={conference.id} 
-                                      className="w-[calc(80%)] flex-none"
-                                      style={{ scrollSnapAlign: 'start' }}
-                                      >
-                                      <ConferenceCard
-                                        title={conference.title}
-                                        date={conference.date}
-                                        speaker={conference.speaker}
-                                        price={conference.price}
-                                        location={conference.location}
-                                        speciality={conference.speciality}
-                                        image={conference.image}
-                                        avatar={conference.avatar}
-                                        id={conference.id}
-                                      />
-                                      </div>
-                                    ))}
-                                    </div>
-                                  </div>
-                                  </div>
-                                )}
-                                </div>
-                            </div>
-                          )}
-
-
-             
-                
-              </div>
-
-
-
+       
+       
 
             <div className="bg-white rounded-lg shadow-sm">
              
@@ -1822,12 +1147,7 @@ const [activeIndex, setActiveIndex] = useState(0);
               <div className="divide-">
           
 
-                   
-
                  
-             
-
-
 
                       {/* tabs for the desktop */}
                       <div className=" mt-2 mb-6">
@@ -1855,31 +1175,14 @@ const [activeIndex, setActiveIndex] = useState(0);
                         <div className="mt-6 ">
                           {(activeDesktopTab==='About' || activeDesktopTab==='about') &&(
                             <div>
-                                 {/* Post Input */}
-                          <div className="p-4 border border-gray-100 rounded-xl hidden lg:block">
-                            <div className="flex items-center gap-3">
-                              <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/1d6a37aa68c806868e46fc0d99e42c21115610fa1b71c977a03eb08090c9e74c" alt="" className="w-10 h-10 rounded-full" />
-                              <input
-                                type="text"
-                                placeholder="What's on your mind?"
-                                className="flex-1  px-4 py-2"
-                              />
-                              <button className="px-4 py-1.5 flex items-center text-sm text-nowrap bg-maincl text-white rounded-3xl">
-                                <img src={add} alt="" className='w-5 ' />
-                                Add Post
-                              </button>
-                            </div>
-                          </div>
-
+                           
 
                           {/* About Section - Only visible when About tab is active on mobile */}
                         <div className={`${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
                           <div className="p-6 border border-gray-200 rounded-xl my-3 ">
                             <div className="flex justify-between items-center mb-4">
                               <h2 className="text-xl font-medium">About</h2>
-                              <button className="text-gray-500">
-                                <img src={edit } alt="" />
-                              </button>
+                             
                             </div>
                             <p className="text-gray-600">{aboutText}</p>
                           </div>
@@ -1894,21 +1197,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                     <h2 className="text-xl font-medium">Experience</h2>
                     <div className='flex items-center gap-4'>
 
-                    <button 
-                      className="text-gray-500"
-                      onClick={() => setShowEditExperience(!showEditExperience)}
-                      >
-                      <img src={edit} alt="" />
-                    </button>
-                    <button 
-                      className="flex items-center space-x-1 bg-maincl text-white px-2 py-2 rounded-full hover:bg-fillc text-sm"
-                      onClick={() => {
-                        setEditingExperience(null);
-                        setIsExperienceFormOpen(true);
-                      }}
-                      >
-                      <FaPlus className="w-3 h-3" />
-                    </button>
+                   
                       </div>
                   </div>
 
@@ -1916,7 +1205,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                     {experiences.length === 0 ? (
                       <div className="text-center py-8">
                         <p className="text-gray-600 text-sm">
-                          Adding your work experience will highlight your professional journey and showcase your skills, making your profile more compelling and complete!
+                          Adding  work experience will highlight your professional journey and showcase your skills, making your profile more compelling and complete!
                         </p>
                       </div>
                     ) : (
@@ -1958,17 +1247,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                   )}
                                 </div>
                                 <div className="mt-3 sm:pe-8 relative">
-                                  {showEditExperience && (
-                                    <button
-                                      onClick={() => {
-                                        setEditingExperience(exp);
-                                        setIsExperienceFormOpen(true);
-                                      }}
-                                      className="absolute right-0 top-0 p-1 bg-gray-100 rounded-full hover:bg-gray-200"
-                                    >
-                                      <img src={edit} alt="Edit" className="w-3 h-3" />
-                                    </button>
-                                  )}
+                            
                                   <h3 className="text-sm w-72 overflow-hidden text-ellipsis whitespace-wrap font-normal text-gray-900">{exp.title}</h3>
                                   <p className="text-xs font-light text-gray-600">{exp.company}</p>
                                   <time className="block mb-2 text-xs font-normal text-gray-500">{exp.date}</time>
@@ -1990,17 +1269,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                 <img src={exp.img || experience} alt={`${exp.company} logo`} className="w-12 h-12 rounded-full border-2 border-gray-100" />
                               </div>
                               <div className="flex-grow relative">
-                                {showEditExperience && (
-                                  <button
-                                    onClick={() => {
-                                      setEditingExperience(exp);
-                                      setIsExperienceFormOpen(true);
-                                    }}
-                                    className="absolute right-0 top-0 p-1 bg-gray-100 rounded-full hover:bg-gray-200"
-                                  >
-                                    <img src={edit} alt="Edit" className="w-3 h-3" />
-                                  </button>
-                                )}
+                              
                                 <h3 className="text-sm font-normal text-gray-900">{exp.title}</h3>
                                 <p className="text-xs font-light text-gray-600">{exp.company}</p>
                                 <time className="block text-xs font-normal text-gray-500">{exp.date}</time>
@@ -2027,65 +1296,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                   </div>
                 </div>
 
-                {/* Experience Form Modal */}
-                {isExperienceFormOpen && (
-                  <ExperienceForm
-                    isOpen={isExperienceFormOpen}
-                    onClose={() => {
-                      setIsExperienceFormOpen(false);
-                      setEditingExperience(null);
-                    }}
-                    onSubmit={(data) => {
-                      if (editingExperience) {
-                        const updatedExperiences = experiences.map(exp =>
-                          exp.id === editingExperience.id
-                         ? {
-                            ...exp,
-                            title: data.title,
-                            company: data.company,
-                            date: data.date,
-                            city: data.city,
-                            state: data.state,
-                            location: `${data.city}${data.state ? ', ' + State.getStateByCodeAndCountry(data.state, 'IN')?.name : ''}`,
-                            description: data.description,
-                            img: data.img instanceof File ? URL.createObjectURL(data.img) : exp.img
-                          } : exp
-                        );
-                        setExperiences(updatedExperiences);
-                      } else {
-                        const newExperience: ExperienceItem = {
-                          id:Date.now(),
-                          title: data.title,
-                          company: data.company,
-                          date: data.date,
-                          city: data.city,
-                          state: data.state,
-                          location:`${data.city}${data.state ? ', ' + State.getStateByCodeAndCountry(data.state, 'IN')?.name : ''}`,
-                          description: data.description,
-                          img: data.img instanceof File 
-                            ? URL.createObjectURL(data.img)
-                            : "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372"
-                        };
-                        setExperiences([...experiences, newExperience]);
-                      }
-                      setIsExperienceFormOpen(false);
-                      setEditingExperience(null);
-                    }}
-                    initialData={editingExperience ? {
-                      title: editingExperience.title,
-                      company: editingExperience.company,
-                      date: editingExperience.date, 
-                      description: editingExperience.description ?? '',
-                      city: editingExperience.city ?? '',
-                      state: editingExperience.state ?? '',
-                      img: editingExperience.img,
-                      notifyFollowers: false
-                    } : undefined}
-                    isEditing={!!editingExperience}
-                    key={editingExperience ? `edit-${editingExperience.title}` : 'new-experience'}
-                  />
-                )}
-
+             
 
 
 
@@ -2097,24 +1308,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                     <div className={`p-6 border border-gray-100 rounded-xl overflow-hidden my-5 group relative ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
                     <div className="flex gap-4  justify-between items-center mb-6">
                       <h2 className="text-xl  font-medium">Education</h2>
-                      <div className='flex items-center gap-4'>
-
-                      <button 
-                      className="text-gray-500"
-                      onClick={() => setIsEditMode(!isEditMode)}
-                      >
-                      <img src={edit} alt="" />
-                      </button>
-                      <button 
-                      className="flex items-center space-x-1 bg-maincl text-white px-2 py-2 rounded-full hover:bg-fillc text-sm"
-                      onClick={() => {
-                        setEditingEducation(null);
-                        setIsEducationFormOpen(true);
-                      }}
-                      >
-                      <FaPlus className="w-3 h-3" />
-                      </button>
-                        </div>
+                    
                     </div>
 
                     <div className="relative">
@@ -2166,17 +1360,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                             )}
                             </div>
                             <div className="mt-3 sm:pe-8 relative">
-                            {isEditMode && (
-                              <button
-                              onClick={() => {
-                                setEditingEducation(edu);
-                                setIsEducationFormOpen(true);
-                              }}
-                              className="absolute right-0 -top-12 p-1  bg-gray-100 rounded-full hover:bg-gray-200"
-                              >
-                              <img src={edit} alt="Edit" className="w-3  h-3" />
-                              </button>
-                            )}
+                         
                             <h3 className="text-sm w-72 overflow-hidden text-ellipsis whitespace-wrap font-normal text-gray-900">{edu.institution}</h3>
                             <p className="text-xs font-light text-gray-600 line-clamp-1">{edu.degree}</p>
                             <p className="text-xs  text-gray-700 line-clamp-1">{edu.department}</p>
@@ -2196,17 +1380,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                             <img src={edu.logo || education} alt={`${edu.institution} logo`} className="w-12 h-12 rounded-full border-2 border-gray-100" />
                           </div>
                           <div className="flex-grow relative">
-                            {isEditMode && (
-                            <button
-                              onClick={() => {
-                              setEditingEducation(edu);
-                              setIsEducationFormOpen(true);
-                              }}
-                              className="absolute right-0 top-0 p-1 bg-gray-100 rounded-full hover:bg-gray-200"
-                            >
-                              <img src={edit} alt="Edit" className="w-3 h-3" />
-                            </button>
-                            )}
+                         
                             <h3 className="text-sm font-normal text-gray-900">{edu.institution}</h3>
                             <p className="text-xs font-light text-gray-600 line-clamp-1 ">{edu.degree}</p>
                             <p className="text-xs  text-gray-700 line-clamp-1">{edu.department}</p>
@@ -2232,63 +1406,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                       )}
                     </div>
                     </div>
-                  {/* Education Form */}
-                  {isEducationFormOpen && (
-                  <EducationForm
-                    isOpen={isEducationFormOpen}
-                    onClose={() => {
-                    setIsEducationFormOpen(false);
-                    setEditingEducation(null);
-                    }}
-                    onSubmit={(data) => {
-                    if (editingEducation) {
-                      // Update existing education
-                      const updatedEducation = educationData.map(edu =>
-                      edu.id === editingEducation.id ? { 
-                        ...edu,
-                        institution: data.institution,
-                        degree: data.degree,
-                        department: data.department || '',
-                        year: data.year,
-                        grade: data.grade || '',
-                        logo: data.logo instanceof File ? URL.createObjectURL(data.logo) : edu.logo 
-                      } : edu
-                      );
-                      setEducationData(updatedEducation);
-                    } else {
-                      // Add new education
-                      const logoUrl = data.logo instanceof File 
-                      ? URL.createObjectURL(data.logo)
-                      : data.logo || "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372";
-                      
-                      const newEducation: Education = {
-                        id: Date.now(),
-                      institution: data.institution || '',
-                      degree: data.degree || '',
-                      department: data.department || '',
-                      year: data.year || '',
-                      grade: data.grade || '',
-                      logo: logoUrl
-                      };
-                      setEducationData([...educationData, newEducation]);
-                    }
-                    setIsEducationFormOpen(false);
-                    setEditingEducation(null);
-                    }}
-                    initialData={editingEducation ? {
-                    institution: editingEducation.institution ?? '',
-                    degree: editingEducation.degree ?? '', 
-                    year: editingEducation.year ?? '',
-                    grade: editingEducation.grade ?? '',
-                    department: editingEducation.department ?? '',
-                    logo: editingEducation.logo ?? '',
-                    notifyFollowers: false
-                    } : undefined}
-                    isEditing={!!editingEducation}
-                    key={editingEducation ? editingEducation.institution : 'new-education'}
-                  />
-                  )}  
-
+               
 
 
 
@@ -2300,20 +1418,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                       <div>
                       <div className="flex justify-between items-center mb-4">
                         <h2 className="text-lg font-medium">Skills</h2>
-                        <div className='flex gap-4'>
-                        <button onClick={() => setShowInterestEditButtons(!showInterestEditButtons)} className="text-gray-500 hover:text-blue-500">
-                          <img src={edit} alt="" />
-                        </button>
-                        <button
-                        onClick={() => {
-                          setEditingInterest(null); // Clear any existing editing interest
-                          setIsAddInterestFormOpen(true);
-                          }}
-                          className="flex items-center space-x-1 bg-maincl text-white px-1 py-1 rounded-full hover:bg-fillc text-sm"
-                        >
-                          <FaPlus className="w-3 h-3" />
-                        </button>
-                        </div>
+                        
                       </div>
 
                       {/* Interest List */}
@@ -2329,20 +1434,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                           <li key={index} className="border-b py-2 last:border-none">
                           <div className="flex justify-between items-center">
                             <p className="text-sm text-gray-600">{interest.name}</p>
-                            {showInterestEditButtons && (
-                            <button
-                              onClick={() => {
-                              setEditingInterest({
-                                id: interest.id,
-                                name: interest.name,
-                              });
-                              setIsAddInterestFormOpen(true);
-                              }}
-                              className="text-gray-400 hover:text-gray-600"
-                            >
-                              <img src={edit} alt="Edit" className="w-4 h-4" />
-                            </button>
-                            )}
+                          
                           </div>
                           </li>
                         ))}
@@ -2360,39 +1452,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                       </button>
                       )}
                     </div>
-                    <InterestForm
-                      isOpen={isAddInterestFormOpen}
-                      onClose={() => {
-                        setIsAddInterestFormOpen(false);
-                        setEditingInterest(null);
-                      }}
-                      onSubmit={(data: InterestFormData) => {
-                        if (editingInterest) {
-                          // Update existing interest
-                          const updatedInterests = interestsData.map(interest =>
-                            interest.id === editingInterest.id
-                              ? { ...interest, name: data.name }
-                              : interest
-                          );
-                          setInterestsData(updatedInterests);
-                        } else {
-                          // Add new interest
-                          const newInterest = {
-                            id: String(Date.now()),
-                            name: data.name
-                          };
-                          setInterestsData(prevInterests => [...prevInterests, newInterest]);
-                        }
-                        setIsAddInterestFormOpen(false);
-                        setEditingInterest(null);
-                      }}
-                      initialData={{
-                        name: editingInterest ? editingInterest.name : '',
-                        notifyFollowers: false
-                      }}
-                      isEditing={!!editingInterest}
-                      key={editingInterest ? editingInterest.id : 'new'}
-                    />
+                    
 
 
 
@@ -2402,23 +1462,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                     <div className={`w-full lg:w-1/2 bg-white shadow-md rounded-xl p-6 ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
                       <div className="flex justify-between items-center mb-4">
                       <h2 className="text-lg font-medium">Licenses and Certification</h2>
-                      <div className='flex gap-4'>
-                        <button 
-                        onClick={() => setShowCertEditButtons(!showCertEditButtons)} 
-                        className="text-gray-500 hover:text-blue-500"
-                        >
-                        <img src={edit} alt="" />
-                        </button>
-                        <button
-                        onClick={() => {
-                          setEditingCertification(null);
-                          setIsCertificationFormOpen(true);
-                        }}
-                        className="flex items-center space-x-1 bg-maincl text-white px-1 py-1 rounded-full hover:bg-fillc text-sm"
-                        >
-                        <FaPlus className="w-3 h-3" />
-                        </button>
-                      </div>
+                      
                       </div>
 
                       {/* Certification List */}
@@ -2447,17 +1491,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                                 Show Credential
                               </button>
                               </div>
-                              {showCertEditButtons && (
-                              <button
-                                onClick={() => {
-                                setEditingCertification(cert);
-                                setIsCertificationFormOpen(true);
-                                }}
-                                className="text-gray-400 hover:text-gray-600"
-                              >
-                                <img src={edit} alt="Edit" className="w-4 h-4" />
-                              </button>
-                              )}
+                             
                             </div>
                             </div>
                           </div>
@@ -2478,55 +1512,8 @@ const [activeIndex, setActiveIndex] = useState(0);
                       )}
                     </div>
                     </div>
-                             {/* Certification Form */}
-                  <CertificationForm
-                    isOpen={isCertificationFormOpen}
-                    onClose={() => {
-                      setIsCertificationFormOpen(false);
-                      setEditingCertification(null);
-                    }}
-                    onSubmit={(data: CertificationFormData) => {
-                      if (editingCertification) {
-                        // Update existing certification
-                        const updatedCertifications = certificationData.map(cert =>
-                          cert.id === editingCertification.id
-                            ? { 
-                                ...cert,
-                                title: data.title,
-                                organization: data.organization,
-                                issueDate: data.issueDate,
-                                logo: data.logo instanceof File ? URL.createObjectURL(data.logo) : cert.logo
-                              }
-                            : cert
-                        );
-                        setCertificationData(updatedCertifications);
-                      } else {
-                        // Add new certification
-                        const newCertification = {
-                          id: String(Date.now()),
-                          title: data.title,
-                          organization: data.organization,
-                          issueDate: data.issueDate,
-                          logo: data.logo instanceof File 
-                            ? URL.createObjectURL(data.logo)
-                            : "https://cdn.builder.io/api/v1/image/assets/TEMP/e6f21b8e48966c867e6781375245b708b2595a844a18bfe5cb5ae20e42019372"
-                        };
-                        setCertificationData([...certificationData, newCertification]);
-                      }
-                      setIsCertificationFormOpen(false);
-                      setEditingCertification(null);
-                    }}
-                    initialData={editingCertification ? {
-                      title: editingCertification.title,
-                      organization: editingCertification.organization,
-                      issueDate: editingCertification.issueDate,
-                      logo: editingCertification.logo,
-                      notifyFollowers: false
-                    } : undefined}
-                    isEditing={!!editingCertification}
-                  />
-
-
+                            
+                 
 
 
 
@@ -2539,23 +1526,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                    
                    <div className="flex justify-between items-center mb-6">
                    <h2 className="text-lg font-medium">Memberships</h2>
-                   <div className='flex gap-4'>
-                     <button 
-                     onClick={() => setShowEditButtons(!showEditButtons)} 
-                     className="text-gray-400 hover:text-gray-600"
-                     >
-                     <img src={edit} alt="" />
-                     </button>
-                     <button
-                     onClick={() => {
-                       setEditingMembership(null); // Clear any existing editing membership
-                       setIsAddMembershipFormOpen(true);
-                     }}
-                     className="flex items-center space-x-1 bg-maincl text-white px-1 py-1 rounded-full hover:bg-fillc text-sm"
-                     >
-                     <FaPlus className="w-3 h-3" />
-                     </button>
-                   </div>
+                   
                    </div>
  
                    {/* Membership List */}
@@ -2619,17 +1590,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                            <p className="text-fontlit text-gray-500">{membership.position}</p>
                          </div>
                          </div>
-                         {showEditButtons && (
-                         <button
-                           onClick={() => {
-                           setEditingMembership(membership);
-                           setIsAddMembershipFormOpen(true);
-                           }}
-                           className="text-gray-400 hover:text-gray-600"
-                         >
-                           <img src={edit} alt="Edit" className="w-4 h-4" />
-                         </button>
-                         )}
+                         
                        </div>
                        ))}
                      </div>
@@ -2637,65 +1598,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                    </div>
                    )}
                  </div>
-                   {/* Membership Form Modal */}
-                   {isAddMembershipFormOpen && (
-                     <MembershipForm
-                     isOpen={isAddMembershipFormOpen}
-                     onClose={() => {
-                       setIsAddMembershipFormOpen(false);
-                       setEditingMembership(null);
-                     }}
-                     onSubmit={(data: MembershipFormData) => {
-                       if (editingMembership) {
-                       // Update existing membership
-                       const updatedMemberships = memberships.map(membership =>
-                         membership.id === editingMembership.id
-                         ? { 
-                           ...membership, 
-                           name: data.name ,
-                           category: data.category,
-                           position: data.position,
-                           membershipId: data.membershipId,
-                           // Keep the existing image if no new file is provided
-                         
-                           }
-                         : membership
-                       );
-                       setMemberships(updatedMemberships);
-                       } else {
-                       // Add new membership
-                       const newMembership: Membership = {
-                         id: Date.now(),
-                         name: data.name,
-                         category: data.category,
-                         position: data.position,
-                         membershipId: data.membershipId,
-                     
-                       };
-                       setMemberships([...memberships, newMembership]);
-                       }
-                       setIsAddMembershipFormOpen(false);
-                       setEditingMembership(null);
-                     }}
-                     initialData={editingMembership ? {
-                       name: editingMembership.name || '',
-                       category: editingMembership.category || '',
-                       position: editingMembership.position || '',
-                       membershipId: editingMembership.membershipId || '',
-                       notifyFollowers: false
-                     } : undefined}
-                     isEditing={!!editingMembership}
-                     />
-                   )}
-
-
-
-
-
-
-
-
-                    
+                
 
                
 
@@ -2703,21 +1606,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                     <div className={`bg-white shadow-md rounded-xl p-6 ${activeTab === 'about' || activeTab === 'About' ? 'block' : 'hidden lg:block'}`}>
                     <div className="flex justify-between items-center mb-4">
                       <h2 className="text-lg font-medium">Awards and Achievements</h2>
-                      <div className='flex gap-4'>
-
-                      <button onClick={() => setShowEditButtons(!showEditButtons)} className="text-gray-400 hover:text-gray-600">
-                      <img src={edit} alt="" /> {/* Edit Icon */}
-                      </button>
-                      <button
-                       onClick={() => {
-                      setEditingAward(null); // Clear any existing editing award
-                      setIsAwardFormOpen(true);
-                      }}
-                      className="flex items-center space-x-1 bg-maincl text-white px-1 py-1 rounded-full hover:bg-fillc text-sm"
-                      >
-                       <FaPlus className="w-3 h-3" />
-                     </button>
-                      </div>
+                     
                     </div>
 
                     {/* Awards List */}
@@ -2748,25 +1637,7 @@ const [activeIndex, setActiveIndex] = useState(0);
                           </a>
                         )}
                         </div>
-                        {showEditButtons && (
-                        <button
-                          onClick={() => {
-                          // Set the award data to edit
-                          setEditingAward({
-                            id: award.id,
-                            title: award.title,
-                            organization: award.organization,
-                            year: award.year,
-                            description: award.description,
-                            credentialLink: award.credentialLink || ''
-                          });
-                          setIsAwardFormOpen(true);
-                          }}
-                          className="text-gray-400 hover:text-gray-600"
-                        >
-                          <img src={edit} alt="Edit" className="w-4 h-4" />
-                        </button>
-                        )}
+                      
                       </div>
                       </div>
                       ))}
@@ -2784,51 +1655,13 @@ const [activeIndex, setActiveIndex] = useState(0);
                       )}
                     </div>
                     </div>
-                     {/* Award Form Modal */}
-                     <AwardForm
-                      isOpen={isAwardFormOpen}
-                      onClose={() => {
-                      setIsAwardFormOpen(false);
-                      setEditingAward(null);
-                      }}
-                      onSubmit={(data: AwardFormData) => {
-                      if (editingAward) {
-                        // Update existing award
-                        const updatedAwards = awards.map(award =>
-                        award.id === editingAward.id
-                          ? { ...award, ...data }
-                          : award
-                        );
-                        setAwards(updatedAwards);
-                      } else {
-                        // Add new award
-                        const newAward = {
-                        id: Date.now(),
-                        ...data
-                        };
-                        setAwards([...awards, newAward]);
-                      }
-                      setIsAwardFormOpen(false);
-                      setEditingAward(null);
-                      }}
-                      initialData={editingAward ? {
-                        title: editingAward.title,
-                        organization: editingAward.organization,
-                        year: editingAward.year,
-                        description: editingAward.description,
-                        notifyFollowers: false,
-                        credentialLink: editingAward.credentialLink || ''
-                      } : undefined} // Transform Award to AwardFormData
-                      isEditing={!!editingAward}
-                    />
-
-
-
-
-
-
+               
                             </div>
                           )}
+
+
+
+
                           {(activeDesktopTab === 'activity' ) && (
                             <div className="space-y-1">
                               {/* Posts Section */}
@@ -3188,429 +2021,8 @@ const [activeIndex, setActiveIndex] = useState(0);
 
                             </div>
                           )}
-
-
-                          {/* Events Section */}
-                          {activeDesktopTab === 'events' && (
-
-
-                            <div>
-                              
-
-                              <div className="w-full">
-                                <EventCalendar />
-                              </div>
-                                                
-                              
-                              
-                              </div>
-                          )}
-                          {activeDesktopTab === 'jobs' && (
-                            <div>
-                              <div className="flex justify-between items-center mb-4">
-                                <h2 className="text-xl font-medium">Jobs <span className='text-gray-500 text-md' > ({jobs.length})</span></h2>
-                                
-                              </div>
-                              <div className="grid grid-cols-2 gap-4">
-                                {jobs.map((job) => (
-                                  <JobsCard
-                                    key={job.id}
-                                    job={{
-                                      ...job,
-                                      startingDate: "",  
-                                      applyBy: "",
-                                      numberOfApplicants: 0
-                                    }}
-                                  />
-                                ))}
-                              </div>
-                              <button 
-                                      onClick={() => setShowAllJobs(!showAllJobs)}
-                                      className="text-fillc text-sm font-medium flex just  items-center gap-1"
-                                      >
-                                      {showAllJobs ? "Show Less" : "See all Jobs"}
-                                      <img src={arrowright} alt="" className={`transform ${showAllJobs ? 'rotate-180' : ''} w-4 h-4`} />
-                                    </button>
-                            </div>
-                          )}
-                          {activeDesktopTab === 'saved' && (
-                            <div className="space-y-8">
-                              {/* Saved Posts Section */}
-                                <div className="space-y-4 relative group">
-                                <h2 className="text-xl font-medium">Saved Posts <span className='text-gray-500 text-md' > ({savedPosts.length})</span></h2>
-                                {savedPosts.length > 2 && (
-                                      <button 
-                                        onClick={() => setShowAllSavedPosts(!showAllSavedPosts)}
-                                        className="text-fillc text-sm font-medium flex items-center gap-1"
-                                      >
-                                        {showAllSavedPosts ? "Show Less" : "See all Posts"}
-                                        <img src={arrowright} alt="" className={`transform ${showAllSavedPosts ? 'rotate-180' : ''} w-4 h-4`} />
-                                      </button>
-                                    )}
-                                {savedPosts.length ===0 ? (
-                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
-                                  <p className="text-gray-600 text-sm">
-                                    No saved posts yet. !
-                                  </p>
-                                  <button className="mt-4 px-4 py-2 bg-maincl text-white rounded-full text-sm hover:bg-fillc">
-                                    Save  Posts
-                                  </button>
-                                </div>
-                                    ) : (
-                                      <div className="relative">
-                                        <button 
-                                          className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedPosts?'opacity-100' : 'opacity-0'} group-hover: transition-opacity`}
-                                          onClick={() => {
-                                            const container = document.getElementById('posts-scroll-container2');
-                                            if (container) {
-                                              container.scrollLeft -= container.offsetWidth;
-                                            }
-                                          }}
-                                        >
-                                          <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
-                                        </button>
-  
-                                        <button 
-                                          className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedPosts?'opacity-100' : 'opacity-0'} group-hover: transition-opacity`}
-                                          onClick={() => {
-                                            const container = document.getElementById('posts-scroll-container2');
-                                            if (container) {
-                                              container.scrollLeft += container.offsetWidth;
-                                            }
-                                          }}
-                                        >
-                                          <img src={arrowright} alt="Next" className="w-4 h-4" />
-                                        </button>
-  
-                                        <div 
-                                          id="posts-scroll-container2" 
-                                          className="flex overflow-x-hidden scroll-smooth"
-                                          style={{ scrollBehavior: 'smooth' }}
-                                        >
-                                          <div className="flex gap-4 transition-transform duration-300">
-                                            {savedPosts.map((post) => (
-                                              <div key={post.id} className="w-[calc(50%-8px)] flex-none">
-                                                <PostCard
-                                                  userTitle={post.userTitle}
-                                                  userImage={post.userImage}
-                                                  userName={post.userName}
-                                                  timeAgo={post.time}
-                                                  content={post.content}
-                                                  likes={post.likes}
-                                                  reposts={post.reposts}
-                                                  comments={post.comments}
-                                                  images={post.images}
-                                                  shares={post.shares}
-                                                />
-                                              </div>
-                                            ))}
-                                          </div>
-                                        </div>
-                                      </div>
-                                    )}
-                                
-                        
-                                </div>
-
-                              {/* Saved Questions Section */}
-                              <div className="mt-8 relative group">
-                                <div className="flex justify-between items-center mb-4">
-                                  <h2 className="text-xl font-medium">Saved Questions <span className='text-gray-500 text-md' > ({savedQuestions.length})</span></h2>
-                                  {savedQuestions.length > 2 && (
-                                    <button 
-                                      onClick={() => setShowAllSavedQuestions(!showAllSavedQuestions)}
-                                      className="text-fillc text-sm font-medium flex items-center gap-1"
-                                    >
-                                      {showAllSavedQuestions ? "Show Less" : "See all Questions"}
-                                      <img src={arrowright} alt="" className={`transform ${showAllSavedQuestions ? 'rotate-180' : ''} w-4 h-4`} />
-                                    </button>
-                                  )}
-                                </div>
-
-                                {savedQuestions.length === 0 ? (
-                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
-                                    <p className="text-gray-600 text-sm">
-                                      No questions posted yet. Start engaging with your network by asking your first question!
-                                    </p>
-                                    <button className="mt-4 px-4 py-2 bg-maincl text-white rounded-full text-sm hover:bg-fillc">
-                                      Ask Question
-                                    </button>
-                                  </div>
-                                ) : (
-                                  <div className="relative">
-                                    {/* Arrow buttons - Show on hover */}
-                                    <button 
-                                      className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedQuestions ? 'opacity-100' : 'opacity-0'}  transition-opacity`}
-                                      onClick={() => {
-                                        const container = document.getElementById('questions-scroll-container2');
-                                        if (container) {
-                                          container.scrollLeft -= container.offsetWidth;
-                                        }
-                                      }}
-                                    >
-                                      <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
-                                    </button>
-
-                                    <button 
-                                      className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedQuestions ? 'opacity-100' : 'opacity-0'} transition-opacity`}
-                                      onClick={() => {
-                                        const container = document.getElementById('questions-scroll-container2');
-                                        if (container) {
-                                          container.scrollLeft += container.offsetWidth;
-                                        }
-                                      }}
-                                    >
-                                      <img src={arrowright} alt="Next" className="w-4 h-4" />
-                                    </button>
-
-                                    <div 
-                                      id="questions-scroll-container2" 
-                                      className="flex overflow-x-hidden scroll-smooth"
-                                      style={{ scrollBehavior: 'smooth' }}
-                                    >
-                                      <div className="flex gap-4 transition-transform duration-300">
-                                        {savedQuestions.map((question) => (
-                                          <div key={question.id} className="w-[calc(50%-8px)] flex-none">
-                                            <QuestionCard
-                                              userImage={question.author.image}
-                                              userName={question.author.name}
-                                              userTitle={question.author.title}
-                                              timeAgo={question.timeAgo}
-                                              questionTitle={question.title}
-                                              questionContent={question.content}
-                                              images={question.images}
-                                              answers={question.answers}
-                                              shares={question.shares}
-                                            />
-                                          </div>
-                                        ))}
-                                      </div>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-
-                              {/* Saved Resources Section */}
-                              <div className="pt-6 relative group">
-                              <div className="flex justify-between items-center mb-4">
-                              <h2 className="text-xl font-medium"> Saved Resources <span className='text-gray-500 text-md' > ({savedResources.length})</span></h2>
-                              {savedResources.length > 2 && (
-                                <button 
-                                onClick={() => setShowAllSavedResources(!showAllSavedResources)}
-                                className="text-fillc text-sm font-medium flex items-center gap-1"
-                                >
-                                {showAllSavedResources ? "Show Less" : "See all Resources"}
-                                <img src={arrowright} alt="" className={`transform ${showAllSavedResources ? 'rotate-180' : ''} w-4 h-4`} />
-                                </button>
-                              )}
-                              </div>
-
-                              {savedResources.length === 0 ? (
-                              <div className="text-center py-8 bg-gray-50 rounded-lg">
-                                <p className="text-gray-600 text-sm">
-                                No Saved resources  yet.
-                                </p>
-                                <button className="mt-4 px-4 py-2 bg-maincl text-white rounded-full text-sm hover:bg-fillc">
-                                Share Resource
-                                </button>
-                              </div>
-                              ) : (
-                              <div className="relative">
-                                {/* Arrow buttons - Show on hover */}
-                                <button 
-                                className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedResources ? 'opacity-100' : 'opacity-0'} transition-opacity`}
-                                onClick={() => {
-                                  const container = document.getElementById('resources-scroll-container2');
-                                  if (container) {
-                                  container.scrollLeft -= container.offsetWidth;
-                                  }
-                                }}
-                                >
-                                <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
-                                </button>
-
-                                <button 
-                                className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedResources ? 'opacity-100' : 'opacity-0'} transition-opacity`}
-                                onClick={() => {
-                                  const container = document.getElementById('resources-scroll-container2');
-                                  if (container) {
-                                  container.scrollLeft += container.offsetWidth;
-                                  }
-                                }}
-                                >
-                                <img src={arrowright} alt="Next" className="w-4 h-4" />
-                                </button>
-
-                                <div 
-                                id="resources-scroll-container2" 
-                                className="flex overflow-x-hidden scroll-smooth"
-                                style={{ scrollBehavior: 'smooth' }}
-                                >
-                                <div className="flex gap-4 transition-transform duration-300">
-                                  {savedResources.map((resource) => (
-                                  <div key={resource.id} className="w-[calc(50%-8px)] flex-none">
-                                    <ResourceCard
-                                    type={resource.type}
-                                    title={resource.title}
-                                    description={resource.description}
-                                    image={resource.image}
-                                    />
-                                  </div>
-                                  ))}
-                                </div>
-                                </div>
-                              </div>
-                              )}
-                            </div>
-
-                              {/* Saved Jobs Section */}
-                                <div className="space-y-4 relative group">
-                                <div className="flex justify-between items-center mb-4">
-                                  <h2 className="text-xl font-medium">Saved Jobs <span className='text-gray-500 text-md' > ({savedJobs.length})</span></h2>
-                                  {savedJobs.length > 2 && (
-                                  <button 
-                                    onClick={() => setShowAllSavedJobs(!showAllSavedJobs)}
-                                    className="text-fillc text-sm font-medium flex items-center gap-1"
-                                  >
-                                    {showAllSavedJobs ? "Show Less" : "See all Jobs"}
-                                    <img src={arrowright} alt="" className={`transform ${showAllSavedJobs ? 'rotate-180' : ''} w-4 h-4`} />
-                                  </button>
-                                  )}
-                                </div>
-
-                                {savedJobs.length === 0 ? (
-                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
-                                  <p className="text-gray-600 text-sm">
-                                    No saved jobs yet. Start saving jobs that interest you!
-                                  </p>
-                                  </div>
-                                ) : (
-                                  <div className="relative">
-                                  {/* Arrow buttons - Show on hover */}
-                                  <button 
-                                    className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedJobs ? 'opacity-100' : 'opacity-0'} transition-opacity`}
-                                    onClick={() => {
-                                    const container = document.getElementById('saved-jobs-scroll-container2');
-                                    if (container) {
-                                      container.scrollLeft -= container.offsetWidth;
-                                    }
-                                    }}
-                                  >
-                                    <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
-                                  </button>
-
-                                  <button 
-                                    className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllSavedJobs ? 'opacity-100' : 'opacity-0'} transition-opacity`}
-                                    onClick={() => {
-                                    const container = document.getElementById('saved-jobs-scroll-container2');
-                                    if (container) {
-                                      container.scrollLeft += container.offsetWidth;
-                                    }
-                                    }}
-                                  >
-                                    <img src={arrowright} alt="Next" className="w-4 h-4" />
-                                  </button>
-
-                                  <div 
-                                    id="saved-jobs-scroll-container2" 
-                                    className="flex overflow-x-hidden scroll-smooth"
-                                    style={{ scrollBehavior: 'smooth' }}
-                                  >
-                                    <div className="flex gap-4 w-full  transition-transform duration-300">
-                                    {savedJobs.map((job) => (
-                                      <div key={job.id} className="w-[calc(50%-8px)]  flex-none">
-                                      <JobsCard
-                                        job={{
-                                        ...job,
-                                        startingDate: "",  
-                                        applyBy: "",
-                                        numberOfApplicants: 0
-                                        }}
-                                      />
-                                      </div>
-                                    ))}
-                                    </div>
-                                  </div>
-                                  </div>
-                                )}
-                                </div>
-
-                              {/* Saved Conferences Section */}
-                              <div className="space-y-4 relative group">
-                                <div className="flex justify-between items-center mb-4">
-                                  <h2 className="text-xl font-medium">Saved Conferences <span className='text-gray-500 text-md' > ({savedConferences.length})</span></h2>
-                                  {savedConferences.length > 2 && (
-                                    <button 
-                                      onClick={() => setShowAllConferences(!showAllConferences)}
-                                      className="text-fillc text-sm font-medium flex items-center gap-1"
-                                    >
-                                      {showAllConferences ? "Show Less" : "See all Conferences"}
-                                      <img src={arrowright} alt="" className={`transform ${showAllConferences ? 'rotate-180' : ''} w-4 h-4`} />
-                                    </button>
-                                  )}
-                                </div>
-
-                                {savedConferences.length === 0 ? (
-                                  <div className="text-center py-8 bg-gray-50 rounded-lg">
-                                    <p className="text-gray-600 text-sm">
-                                      No saved conferences yet. Start saving conferences you're interested in!
-                                    </p>
-                                  </div>
-                                ) : (
-                                  <div className="relative">
-                                    {/* Arrow buttons - Show on hover */}
-                                    <button 
-                                      className={`absolute left-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllConferences ? 'opacity-100' : 'opacity-0'} transition-opacity`}
-                                      onClick={() => {
-                                        const container = document.getElementById('saved-conferences-scroll-container2');
-                                        if (container) {
-                                          container.scrollLeft -= container.offsetWidth;
-                                        }
-                                      }}
-                                    >
-                                      <img src={arrowright} alt="Previous" className="w-4 h-4 transform rotate-180" />
-                                    </button>
-
-                                    <button 
-                                      className={`absolute right-0 top-1/2 z-10 -translate-y-1/2 bg-gray-200 p-2 rounded-full shadow-md ${showAllConferences ? 'opacity-100' : 'opacity-0'} transition-opacity`}
-                                      onClick={() => {
-                                        const container = document.getElementById('saved-conferences-scroll-container2');
-                                        if (container) {
-                                          container.scrollLeft += container.offsetWidth;
-                                        }
-                                      }}
-                                    >
-                                      <img src={arrowright} alt="Next" className="w-4 h-4" />
-                                    </button>
-
-                                    <div 
-                                      id="saved-conferences-scroll-container2" 
-                                      className="flex overflow-x-hidden  scroll-smooth"
-                                      style={{ scrollBehavior: 'smooth' }}
-                                    >
-                                      <div className="flex gap-4 transition-transform w-full duration-300">
-                                        {savedConferences.map((conference) => (
-                                          <div key={conference.id} className="w-[calc(50%-8px)] flex-none">
-                                            <ConferenceCard
-                                              title={conference.title}
-                                              date={conference.date}
-                                              speaker={conference.speaker}
-                                              price={conference.price}
-                                              location={conference.location}
-                                              speciality={conference.speciality}
-                                              image={conference.image}
-                                              avatar={conference.avatar}
-                                              id={conference.id}
-                                            />
-                                          </div>
-                                        ))}
-                                      </div>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          )}
+                    
+                      
                           {activeTab === 'drafts' && (
                             <div>Drafts content will go here</div>
                           )}
@@ -3625,4 +2037,4 @@ const [activeIndex, setActiveIndex] = useState(0);
   );
 };
 
-export default Profile;
+export default ViewProfile;

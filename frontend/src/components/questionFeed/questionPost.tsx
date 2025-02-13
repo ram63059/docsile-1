@@ -208,9 +208,10 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
   };
 
   const [isExpanded, setIsExpanded] = React.useState(false);
+  const [isExpand, setIsExpand] = React.useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showArrows, setShowArrows] = useState(false);
-  const [showAnswers, setShowAnswers] = useState(false);
+  // const [showAnswers, setShowAnswers] = useState(false);
   const [answerText, setAnswerText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
  
@@ -359,20 +360,20 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
 
         <div className="mt-4 mb-3">
           <h4 className="text-sm font-medium text-neutral-700">{title}</h4>
-          <div className="flex flex-col gap-2 cursor-pointer" onClick={handleQuestionClick}>
+          <div className="flex flex-col gap-2 cursor-pointer">
             <p
               className={`mt-1 text-sm font-light text-neutral-500 ${
-                isExpanded ? "" : "line-clamp-1"
+                isExpand ? "" : "line-clamp-1"
               }`}
             >
               {content}
             </p>
             {content.length > 150 && (
               <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="mt-1 text-xs flex justify-start text-slate-500 hover:text-slate-700"
+              onClick={() => setIsExpand(!isExpand)}
+                className=" text-xs text-slate-500 hover:text-slate-700  flex justify-start"
               >
-                {isExpanded ? "Show less" : "Show more"}
+                {isExpand ? "Show less" : "Show more"}
               </button>
             )}
           </div>
@@ -382,10 +383,14 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
 
         
 
-        <div className="relative w-full mb-4 group" onMouseEnter={() => setShowArrows(true)} onMouseLeave={() => setShowArrows(false)}>
+        <div onClick={() => setIsExpanded(!isExpanded)} className="relative w-full mb-4 group" onMouseEnter={() => setShowArrows(true)} onMouseLeave={() => setShowArrows(false)}>
+          {images.length >0 && (
+            
           <div className="absolute top-2 right-4 z-10 bg-gray-400 bg-opacity-50 text-white text-xs py-1 px-2 rounded-full">
             {currentIndex + 1}/{images.length}
           </div>
+          ) }
+
           {showArrows && currentIndex > 0 && (
             <button
               className="absolute top-1/2 left-2 z-10 transform -translate-y-1/2 bg-gray bg-opacity-50 text-white p-2 rounded-full group-hover:opacity-80"
@@ -438,8 +443,8 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
 
         <div className="flex justify-between mt-4 pt-4 pb-3 px-3 border-t border-neutral-200">
           <div
-            className={`flex ${showAnswers ? 'bg-gray-100' : ''} rounded-lg p-1 cursor-pointer`}
-            onClick={() => setShowAnswers(!showAnswers)}
+            className={`flex 'bg-gray-100' } rounded-lg p-1 cursor-pointer`}
+            onClick={handleQuestionClick}
           >
             <div className="flex">
               <button className="flex items-center gap-1 text-xs text-neutral-500 hover:text-slate-700">
