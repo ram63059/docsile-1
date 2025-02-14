@@ -40,7 +40,7 @@ const ConnectionCard1: React.FC = () => {
   const displayedPeople = isExpanded ? peopleData : peopleData.slice(0, 2);
 
   return (
-    <div className="m-4 mt-6 container mx-auto border border-gray-100 rounded-lg shadow-md  font-fontsm">
+    <div className="m-4 mt-6  container mx-auto border w-full border-gray-100 rounded-lg shadow-md   font-fontsm">
       <div className="flex justify-between  items-center px-3 rounded-t-xl py-2">
         <div className="text-md text-gray-700">
             Start connecting to interact and grow your network 
@@ -48,7 +48,7 @@ const ConnectionCard1: React.FC = () => {
         
       </div>
       <div
-        className={`  px-4 pt-4 transition-all duration-300 ${isExpanded ? "max-h-[1000px]" : "max-h-[220px]"} overflow-hidden`}
+        className={`  px-4 pt-4  transition-all duration-300 ${isExpanded ? "max-h-[1000px]" : "max-h-[220px]"} overflow-hidden`}
       >
         {displayedPeople.map((person) => (
           <div

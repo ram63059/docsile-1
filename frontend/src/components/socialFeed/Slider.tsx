@@ -73,7 +73,7 @@ const InfiniteSmoothSlider = () => {
   if (visibleCards.length === 0) return null;
 
   return (
-    <div className="w-72 mx-auto">
+    <div className="w-[270px] mx-auto">
   <div
     className="relative overflow-hidden rounded-lg  "
     onMouseEnter={() => setIsPaused(true)}
@@ -89,8 +89,8 @@ const InfiniteSmoothSlider = () => {
       onTransitionEnd={handleTransitionEnd}
     >
       {visibleCards.map((card, index) => (
-        <div key={`${card.id}-${index}`} className="relative w-full h-[160px] flex-shrink-0 font-fontsm" >
-          <div className="absolute border-2 border-gray-100 bg-white p-3 rounded-xl shadow-lg  w-[260px] h-[155px ] flex  items-center">
+        <div key={`${card.id}-${index}`} className="relative w-full h-[150px] flex-shrink-0 font-fontsm" >
+          <div className="absolute border-2 border-gray-100 bg-white p-3 rounded-xl   w-[260px] h-[155px ] flex  items-center">
             <div className="w-36  flex justify-center items-center">
               <img src={card.imgage} alt="" className="max-w-full max-h-full object-contain" />
             </div>
@@ -108,7 +108,7 @@ const InfiniteSmoothSlider = () => {
       {cards.map((_, idx) => (
         <button
           key={idx}
-          className={`w-2 h-2 rounded-full transition-colors duration-500 ${
+          className={`w-1 h-1 rounded-full transition-colors duration-500 ${
             idx === activeIndex % cards.length ? "bg-maincl" : "bg-gray-300"
           }`}
           onClick={() => setActiveIndex(idx + cards.length)}

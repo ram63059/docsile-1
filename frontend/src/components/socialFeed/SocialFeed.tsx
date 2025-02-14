@@ -53,6 +53,46 @@ export const SocialFeed: React.FC = () => {
   // const [isPostPopupOpen, setIsPostPopupOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [postType1, setPostType1] = useState("Post");
+  const [visible, setVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerWidth <= 1024) { // Only apply for smaller screens
+        if (window.scrollY > lastScrollY) {
+          setVisible(false); // Hide header on scroll down
+        } else {
+          setVisible(true); // Show header on scroll up
+        }
+      }
+      setLastScrollY(window.scrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
+  
+
+  const [visible2, setVisible2] = useState(true);
+  const lastScrollY2 = useRef(0);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerWidth <= 1024) { // Only apply for smaller screens
+        if (window.scrollY > lastScrollY2.current) {
+          setVisible2(false); // Hide nav on scroll down
+        } else {
+          setVisible2(true); // Show nav on scroll up
+        }
+      }
+      lastScrollY2.current = window.scrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
 
   const popupOpen = (type: string) => {
@@ -210,9 +250,11 @@ export const SocialFeed: React.FC = () => {
   
 
   return (
-    <div className="flex flex-col min-h-screen ">
+    <div className="flex flex-col min-h-screen  mx-auto ">
       {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-50">
+      <div className={`bg-white  border-b sticky top-0 z-50 transition-transform duration-300 ease-in-out ${
+        visible ? "translate-y-0" : "-translate-y-full"
+      } md:translate-y-0`} >
       <Header
         onNotification={() => console.log("Notification clicked")}
         onMessage={() => console.log("Message clicked")}
@@ -224,7 +266,7 @@ export const SocialFeed: React.FC = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex flex-1 px-4 lg:px-16 max-w-7xl mx-auto w-full gap-8 pt-2">
+      <div className="flex flex-1 px-4 lg:pl-1 max-w-7xl mx-auto w-full gap-6 pt-4">
         {/* Left Sidebar */}
         <div className="hidden lg:block w-[270px] flex-shrink-0 font-fontsm">
           <div className="top-[calc(theme(spacing.24)+1px)] space-y-6">
@@ -268,7 +310,7 @@ export const SocialFeed: React.FC = () => {
         </div>
 
         {/* Main Feed */}
-        <div className="flex-1 max-w-[560px] mx-auto  w-full ">
+        <div className="flex-1 lg:max-w-[560px]   mx-auto  w-full ">
           {/* Stories Section */}
           <div className="bg-white rounded-2xl  mb-2  relative">
             {/* Left Arrow */}
@@ -285,7 +327,7 @@ export const SocialFeed: React.FC = () => {
             {/* Stories Container */}
             <div 
               ref={storiesContainerRef}
-              className="flex gap-4 p-2 overflow-x-auto scrollbar-hide relative"
+              className="flex gap-4 p-2 overflow-x-auto  scrollbar-hide relative"
               style={{
                 msOverflowStyle: 'none',
                 scrollbarWidth: 'none'
@@ -311,7 +353,7 @@ export const SocialFeed: React.FC = () => {
 
             {/*Posting Section */}
 
-              <div className=" bg-white font-fontsm flex justify-around  rounded-xl">
+              <div className=" bg-white font-fontsm flex justify-around  w-full rounded-xl">
                 <button className="flex items-center px-2 py-3"  onClick={() => popupOpen("Post")}>
                 <img src={question} alt="" />
                 <p className="text-xs pl-1 text-gray-600">Add Post</p>
@@ -337,13 +379,13 @@ export const SocialFeed: React.FC = () => {
 
                 {/* Connections card} */}
 
-                <div>
+                <div className="w-full">
                 <ConnectionCard1 />
                 <ConnectionCard2 />
                 </div>
 
           {/* Posts */}
-          <div className="space-y-4 mb-16 lg:mb-1">
+          <div className="space-y-4 mb-16 lg:mb-1 mx-auto">
         <Post
           avatar="https://cdn.builder.io/api/v1/image/assets/TEMP/13d83c993760da19a222234c3cbcb356d551631f91a34653bf73ab3984455ff6?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
               name="Seelam Yamshidharm"
@@ -372,9 +414,9 @@ export const SocialFeed: React.FC = () => {
 
         {/* Right Sidebar */}
         <div className="hidden lg:block w-[300px] flex-shrink-0 font-fontsm">
-          <div className="sticky top-[calc(theme(spacing.20)+1px)] space-y-4">
+          <div className=" top-[calc(theme(spacing.20)+1px)] space-y-4">
             {/* Explore Videos */}
-            <div className="px-4 py-4 bg-fillc bg-opacity-10 rounded-xl"> 
+            <div className="px-4 py-4 bg-fillc bg-opacity-10 rounded-xl">
       {/* Heading Section */}
       <div className="flex justify-between items-center mb-4">
         <div>
@@ -397,7 +439,6 @@ export const SocialFeed: React.FC = () => {
           </svg>
         </button>
       </div>
-
       {/* Scrollable Video Cards */}
       <div
         ref={scrollContainerRef}
@@ -421,9 +462,14 @@ export const SocialFeed: React.FC = () => {
         </div>
         
         {/* Mobile Navigation */}
-      <div className="lg:hidden fixed bottom-0  bg-white border-t  w-full">
+      <div className={`fixed lg:hidden bottom-0 left-0 z-40 w-full bg-white shadow-md p-8 transition-transform duration-300 ease-in-out ${
+        visible2 ? "translate-y-0" : "translate-y-full"
+      } md:translate-y-0`} >
         <Navigation />
       </div>
+
+
+
       </div>
 
       

@@ -18,6 +18,7 @@ import careers2 from "../../assets/icon/lcareers2.svg";
 import SearchPopup from "./SearchPopup";
 import { Search} from 'lucide-react';
 import HomeButton from "./HomeButton";
+import docsile from '../../assets/icon/docsile.svg';
 
 interface HeaderProps {
   onNotification: () => void;
@@ -104,19 +105,14 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <div className="flex flex-row items-center justify-between font-fontsm  w-full px-5 py-1 bg-white  ">
+    <div className="flex flex-row items-center md:py-4   justify-between font-fontsm  w-full px-5 py-1 bg-white  ">
       {/* Logo and Search Section */}
-      <div className="flex flex-row w-2/4 items-center gap-4 lg:pl-28 lg:ml-12 mx-auto ml-3">
-        <div className="flex items-center gap-2  w-1/4">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/e026847d49c6384e9ff3e6753813971d077ca33d6044a8e61581beb3afbdabcc?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
-            alt=""
-            className="w-6 h-6"
-          />
-          <span className="text-3xl text-maincl font-medium">Docsile</span>
+      <div className="flex flex-row w-2/4 items-center gap-4 lg:pl-8 lg:ml-16 mx-auto ml-3">
+        <div className="flex items-center gap-2 w-24 lg:w-1/4">
+          <img src={docsile} alt="" />
         </div>
 
-        <div className="hidden lg:block ml-8 w-3/4">
+        <div className="hidden lg:block flex-shrink w-2/4 ">
           <form onSubmit={handleSubmit} className="relative ">
             <div className="relative">
               <input
@@ -152,8 +148,8 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Navigation and Actions */}
-      <div className="flex items-center justify-end gap-2 lg:mr-28 w-2/4 ">
-        <div className="hidden lg:flex items-center gap-3">
+      <div className="flex items-center justify-end gap-2 lg:pr-24 w-2/4  shrink ">
+        <div className="hidden lg:flex items-center  lg:gap-3">
           {navItems.map((item, index) => (
             <button
               key={index}
@@ -167,7 +163,7 @@ export const Header: React.FC<HeaderProps> = ({
           ))}
         </div>
 
-        <div className="flex items-center gap-1 ml-10 bg-buttonclr rounded-3xl">
+        <div className="flex items-center gap-1 lg:ml-12  lg:bg-buttonclr bg-white flex-shrink-  rounded-3xl">
           <button
             onClick={onNotification}
             className="p-1 hover:bg-gray-100 rounded-full flex shrink-0"

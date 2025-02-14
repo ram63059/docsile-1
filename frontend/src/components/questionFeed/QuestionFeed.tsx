@@ -47,6 +47,48 @@ export const QuestionFeed: React.FC = () => {
 
   const scrollContainerRef = React.useRef<HTMLDivElement | null>(null);
 
+  const [visible, setVisible] = React.useState(true);
+    const [lastScrollY, setLastScrollY] = React.useState(0);
+  
+  
+    React.useEffect(() => {
+      const handleScroll = () => {
+        if (window.innerWidth <= 1024) { // Only apply for smaller screens
+          if (window.scrollY > lastScrollY) {
+            setVisible(false); // Hide header on scroll down
+          } else {
+            setVisible(true); // Show header on scroll up
+          }
+        }
+        setLastScrollY(window.scrollY);
+      };
+  
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }, [lastScrollY]);
+  
+    
+  
+    const [visible2, setVisible2] = React.useState(true);
+    const lastScrollY2 = React.useRef(0);
+  
+    React.useEffect(() => {
+      const handleScroll = () => {
+        if (window.innerWidth <= 1024) { // Only apply for smaller screens
+          if (window.scrollY > lastScrollY2.current) {
+            setVisible2(false); // Hide nav on scroll down
+          } else {
+            setVisible2(true); // Show nav on scroll up
+          }
+        }
+        lastScrollY2.current = window.scrollY;
+      };
+  
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+  
+
   const [profileData] = React.useState<ProfileData>({
     name: "Seelam Yamshidhar Goud",
     title: "Ophthalmologist",
@@ -91,7 +133,9 @@ export const QuestionFeed: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen  mx-auto  ">
 
-      <div className="bg-white border-b sticky top-0 z-50">
+      <div className={`bg-white border-b sticky top-0 z-50 transition-transform duration-300 ease-in-out ${
+        visible ? "translate-y-0" : "-translate-y-full"
+      } md:translate-y-0`}>
       <Header
         onNotification={() => console.log("Notification clicked")}
         onMessage={() => console.log("Message clicked")}
@@ -103,7 +147,7 @@ export const QuestionFeed: React.FC = () => {
 
         
       {/* Main Content Area */}
-      <div className="flex flex-1 px-4 lg:pl-16 max-w-7xl mx-auto w-full gap-6 pt-4">
+      <div className="flex flex-1 px-4 lg:pl-1 max-w-7xl mx-auto w-full gap-6 pt-4">
 
          {/* Left Sidebar */}
          <div className="hidden lg:block w-[300px] flex-shrink-0 font-fontsm">
@@ -113,7 +157,7 @@ export const QuestionFeed: React.FC = () => {
               <JobFilterStatic/>
              
           </div>
-          <div className="mt-3">
+          <div className="mt-3 fixed">
 
           <Slider/>
           </div>
@@ -121,7 +165,7 @@ export const QuestionFeed: React.FC = () => {
 
 
 
-        <div className="flex-1 max-w-[560px] mx-auto  w-full ">
+        <div className="flex-1 lg:max-w-[560px] mx-auto    w-full ">
            <div className=" bg-white font-fontsm flex justify-around  rounded-xl">
                <div className="lg:hidden w-full">
                   <SearchBar onSearch={handleSearch} onAddPost={handleAskQuestion} />
@@ -157,6 +201,37 @@ export const QuestionFeed: React.FC = () => {
            </div>
            
 
+           <QuestionPost  
+                  postId="sample-post-1"
+                  isUrgent={true} 
+                  avatar="https://cdn.builder.io/api/v1/image/assets/TEMP/13d83c993760da19a222234c3cbcb356d551631f91a34653bf73ab3984455ff6?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
+                  name="Nampally Sriram"
+                  bio="Ophthalmologist | AIIMS Delhi'25 | Asp"
+                  timeAgo="3 days ago"
+                  title="Ophthalmology: The Future of Eye Care"
+                  content="Ophthalmology has seen incredible advancements in recent years, particularly in surgical techniques and diagnostic tools. The field continues to evolve with new technologies and treatment methods, promising better outcomes for patients."
+                  images={[
+                    "https://cdn.builder.io/api/v1/image/assets/TEMP/1f352924c9d23559e8c19e6d726091def0f7346d30feaddbf142d2c74bc2e05e?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+                    "https://cdn.builder.io/api/v1/image/assets/TEMP/3179d893d2c64d78a71042d4bbe19d82929393a4cc746e57df0407426f7a4992?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+                    "https://cdn.builder.io/api/v1/image/assets/TEMP/bacdf5b5cd530c209ad1b1cdb72874c3b55ba49a818704cd3a277725a590f529?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+                    "https://cdn.builder.io/api/v1/image/assets/TEMP/6939df2c7edaf176e0907ced793a5e28a1df342e59d4610b8999ddc4aed782a9?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08",
+                  ]}
+                  agrees={120}
+                  date="22 dec 2024"
+                  shares={37}
+                  onAnswer={async (postId: string, answerText: string) => {
+                    try {
+                      console.log("Answer submitted:", { postId, answerText });
+                      // Add your actual answer submission logic here
+                    } catch (error) {
+                      console.error("Error submitting answer:", error);
+                    }
+                  }}
+                  onShare={() => console.log("Share clicked")}
+                  onReply={() => console.log("Reply clicked")}
+                  answers={32} 
+                  disagrees={54}    
+            />
            <QuestionPost  
                   postId="sample-post-1"
                   isUrgent={true} 
@@ -241,10 +316,14 @@ export const QuestionFeed: React.FC = () => {
 
           </div>
         </div>
+
+
       </div>
 
 
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t w-full">
+      <div className={`fixed lg:hidden bottom-0 left-0 z-40 w-full bg-white shadow-md p-8 transition-transform duration-300 ease-in-out ${
+        visible2 ? "translate-y-0" : "translate-y-full"
+      } md:translate-y-0`}>
         <Navigation />
       </div>
        

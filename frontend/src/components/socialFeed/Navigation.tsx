@@ -68,13 +68,13 @@ export const Navigation: React.FC<NavigationProps > = ({
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white shadow-lg w-full ">
+    <nav className="fixed bottom-0 left-0 right-0  bg-white   shadow-lg w-full ">
       <div className="flex justify-between items-center  mx-auto px-5 py-3">
         {navItems.map((item, index) => (
           <button
             key={index}
             onClick={() => handleNavClick(index)}
-            className={`flex flex-col items-center gap-2 ${
+            className={`flex flex-col items-center  gap-2 ${
               item.isActive ? "text-blue-600" : "text-neutral-500"
             }`}
           >

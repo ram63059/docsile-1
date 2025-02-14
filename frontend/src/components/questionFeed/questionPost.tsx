@@ -393,7 +393,7 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
               <IoIosArrowDroprightCircle size={30} />
             </button>
           )}
-          <div className="relative overflow-hidden" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+          <div className="relative overflow-hidden z-0" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
             <div className="flex transition-transform duration-300" style={{ transform: `translateX(-${currentIndex * 100}%)` }}>
               {images.map((image, index) => (
                 <div onClick={handleQuestionClick} key={index} className="flex-none w-full lg:h-64 rounded-lg bg-gray-200">
@@ -444,13 +444,13 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
                   
                 />
              
-                <div className="flex  gap-2 items-center  px-3  border-neutral-200">
+                <div className="flex  gap-2 items-center   border-neutral-200">
           <div
             className={`flex 'bg-gray-100' } rounded-lg p-1 cursor-pointer`}
             onClick={handleQuestionClick}
           >
-            <div className="flex">
-              <button className="flex items-center gap-1 text-xs text-neutral-500 hover:text-slate-700">
+            <div className="flex p-1">
+              <button className="flex items-center gap-1 text-xs  shrink-0  text-neutral-500 hover:text-slate-700">
                 <img src={comment1} alt="" className="w-5 h-5" />
               </button>
             </div>
@@ -464,7 +464,7 @@ export const QuestionPost: React.FC<QuestionPostProps> = ({
             <div className="flex">
               <button
                 onClick={onShare}
-                className="flex items-center gap-1 text-xs text-neutral-500 hover:text-slate-700"
+                className="flex items-center gap-1 text-xs shrink-0   text-neutral-500 hover:text-slate-700"
               >
                 <img src={share} alt="" className="w-5 h-5" />
               </button>

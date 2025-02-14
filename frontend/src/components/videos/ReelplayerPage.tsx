@@ -627,7 +627,7 @@ useEffect(() => {
   setShowComments(false); // Immediately close comments
   setTimeout(() => {
     setShowInteraction(true); // Delay showing interaction div
-  }, 800); // Adjust delay time as needed
+  }, 1000); // Adjust delay time as needed
 };
 
 // useEffect(() => {

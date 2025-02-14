@@ -18,6 +18,7 @@ import careers2 from "../../assets/icon/lcareers2.svg";
 import SearchPopup from "./SearchPopup";
 import { Search} from 'lucide-react';
 import HomeButton from "./HomeButton";
+import docsile from '../../assets/icon/docsile.svg'
 
 interface HeaderProps {
   onNotification: () => void;
@@ -107,13 +108,8 @@ export const Header: React.FC<HeaderProps> = ({
     <div className="flex flex-row items-center justify-between font-fontsm  w-full px-5 py-1 bg-white  ">
       {/* Logo and Search Section */}
       <div className="flex flex-row w-2/4 items-center gap-4 lg:pl-28 lg:ml-12 mx-auto ml-3">
-        <div className="flex items-center gap-2  w-1/4">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/e026847d49c6384e9ff3e6753813971d077ca33d6044a8e61581beb3afbdabcc?placeholderIfAbsent=true&apiKey=90dc9675c54b49f9aa0dc15eba780c08"
-            alt=""
-            className="w-6 h-6"
-          />
-          <span className="text-3xl text-maincl font-medium">Docsile</span>
+        <div className="flex items-center gap-2 w-24 flex-shrink-0 lg:w-1/4">
+          <img src={docsile} alt="" />
         </div>
 
         <div className="hidden lg:block ml-8 w-3/4">
