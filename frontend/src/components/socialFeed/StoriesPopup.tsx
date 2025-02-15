@@ -231,7 +231,7 @@ const handleSendReply = () => {
                setShowMoreOptions(false);
                setIsPaused(false);
                } }
-            className="absolute left-96 top-1/2 -translate-y-1/2 text-white p-2"
+            className="absolute left-52 top-1/2 -translate-y-1/2 text-white p-2"
           >
              <ChevronLeft className="w-12 h-12 text-gray-600 bg-white/80 rounded-full opacity-60 " />
           </button>
@@ -254,7 +254,7 @@ const handleSendReply = () => {
                setIsPaused(false);
 
                } }
-            className="absolute right-96 top-1/2 -translate-y-1/2 text-white p-2"
+            className="absolute right-52 top-1/2 -translate-y-1/2 text-white p-2"
           >
            <ChevronRight className="w-12 h-12 text-gray-600 bg-white/80 rounded-full opacity-60 " />
           </button>

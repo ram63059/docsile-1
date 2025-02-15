@@ -54,7 +54,7 @@ interface MyStoryData  {
 export const Stories: React.FC<StoriesProps> = ({ stories }) => {
   const [selectedStoryIndex, setSelectedStoryIndex] = React.useState<number | null>(null);
   const [localStories, setLocalStories] = React.useState<Story[]>(stories);
-  const MAX_STORIES = 13;
+  const MAX_STORIES = 9;
 
   const usersProfiles = React.useMemo(() => [
     { userId: "user5", userName: "Jane Wilson", userAvatar: "https://randomuser.me/api/portraits/women/5.jpg" },

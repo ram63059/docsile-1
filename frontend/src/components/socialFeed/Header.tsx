@@ -105,9 +105,9 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <div className="flex flex-row items-center md:py-4   justify-between font-fontsm  w-full px-5 py-1 bg-white  ">
+    <div className="flex flex-row items-center  justify-between font-fontsm lg:max-w-7xl mx-auto w-full px-5 py-1 bg-white  ">
       {/* Logo and Search Section */}
-      <div className="flex flex-row w-2/4 items-center gap-4 lg:pl-8 lg:ml-16 mx-auto ml-3">
+      <div className="flex flex-row w-2/4 items-center gap-4 lg:pl- lg:ml-1  mx-auto ml-3">
         <div className="flex items-center gap-2 w-24 lg:w-1/4">
           <img src={docsile} alt="" />
         </div>

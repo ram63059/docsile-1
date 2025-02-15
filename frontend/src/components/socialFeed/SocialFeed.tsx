@@ -10,6 +10,7 @@ import { Stories } from "./Stories";
 import ConnectionCard1 from "./ConnectionCard1";
 import ConnectionCard2 from "./ConnectionCard2";
 import Slider from "./Slider";
+import VideoPost from "./VideoPost";
 
 interface VideoCardProps {
   videoImage: string;
@@ -250,7 +251,7 @@ export const SocialFeed: React.FC = () => {
   
 
   return (
-    <div className="flex flex-col min-h-screen  mx-auto ">
+    <div className="flex flex-col w-full  min-h-screen bg-gray-50 mx-auto ">
       {/* Header */}
       <div className={`bg-white  border-b sticky top-0 z-50 transition-transform duration-300 ease-in-out ${
         visible ? "translate-y-0" : "-translate-y-full"
@@ -266,9 +267,9 @@ export const SocialFeed: React.FC = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex flex-1 px-4 lg:pl-1 max-w-7xl mx-auto w-full gap-6 pt-4">
+      <div className="flex flex-1 px-4 lg:pl-1 max-w-7xl  mx-auto w-full gap-4 pt-4 bg-gray-50">
         {/* Left Sidebar */}
-        <div className="hidden lg:block w-[270px] flex-shrink-0 font-fontsm">
+        <div className="hidden lg:block w-[270px] flex-shrink font-fontsm">
           <div className="top-[calc(theme(spacing.24)+1px)] space-y-6">
             {/* Profile Card */}
             <div className="bg-fillc bg-opacity-10 rounded-2xl p-6 shadow-sm">
@@ -379,10 +380,10 @@ export const SocialFeed: React.FC = () => {
 
                 {/* Connections card} */}
 
-                <div className="w-full">
-                <ConnectionCard1 />
-                <ConnectionCard2 />
-                </div>
+                  <div className="w-full">
+                  <ConnectionCard1 />
+                  <ConnectionCard2 />
+                  </div>
 
           {/* Posts */}
           <div className="space-y-4 mb-16 lg:mb-1 mx-auto">
@@ -410,11 +411,32 @@ export const SocialFeed: React.FC = () => {
           onMoreOptions={() => console.log("More options clicked")}
         />
           </div>
+
+          <div className="space-y-4 mb-16 lg:mb-1 mx-auto">
+          <VideoPost
+                    avatar="user-avatar-url"
+                    name="User Name"
+                    bio="User Bio"
+                    timeAgo="2h ago"
+                    title="Video Title"
+                    content="Video description or content"
+                    videoUrl="https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
+                    likes={42}
+                    comments={[]}
+                    shares={10}
+                    reposts={5}
+                    onLike={() => console.log("Like clicked")}
+                onComment={() => console.log("Comment clicked")}
+                onShare={() => console.log("Share clicked")}
+                onRepost={() => console.log("Repost clicked")}
+                  />
+              </div>
+
         </div>
 
         {/* Right Sidebar */}
-        <div className="hidden lg:block w-[300px] flex-shrink-0 font-fontsm">
-          <div className=" top-[calc(theme(spacing.20)+1px)] space-y-4">
+        <div className="hidden lg:block w-[300px]  flex-shrink font-fontsm">
+          <div className="sticky top-[calc(theme(spacing.20)+1px)] space-y-4">
             {/* Explore Videos */}
             <div className="px-4 py-4 bg-fillc bg-opacity-10 rounded-xl">
       {/* Heading Section */}

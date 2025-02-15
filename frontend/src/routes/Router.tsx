@@ -63,6 +63,9 @@ import SignupPage2 from "@/components/loginpages/SIgnUpPage2";
 import SignupPage3 from "@/components/loginpages/SignUpPage3";
 import SignupPage4 from "@/components/loginpages/SignUpPage4";
 import ViewProfile from "@/components/profile/ViewProfile";
+import LandingPage from "../components/landing/LandingPage2";
+import LandingPage3 from "@/components/landing/LandingPage3";
+import LandingPage4 from "@/components/landing/LandingPage4";
 // import { ReelsPlayer } from "@/components/videos/reels/ReelsPlayer";
 
 
@@ -150,6 +153,9 @@ export const router = createBrowserRouter([
   {path: "/signup3",element:<SignupPage3 />},
   {path: "/signup4",element:<SignupPage4 />},
   {path: "/viewingProfile",element:<ViewProfile />},
+  {path: "/landingpage2",element:< LandingPage/>},
+  {path: "/landingpage3",element:< LandingPage3/>},
+  {path: "/landingpage4",element:< LandingPage4/>},
   {
     path: "/question/:questionId",
     element: <QuestionDetail />,
